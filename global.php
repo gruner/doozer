@@ -4,25 +4,51 @@ require_once('config.php');
 require_once('sitemap.php');
 
 
+function is_homepage()
+{
+    if($_section == 'Home' && $page_name == 'Home'){return true;} else {return false;}
+}
+
+
 function stub_name($page_title)
 {	
-	# Create a stub name by stripping special characters from the page title
+	# Create a stub name by stripping 
+	# special characters from the page title
 	# and replacing spaces with dashes
 	
 	# Define special characters that will be stripped from the name
 	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');
 	
-	$stub_name = strtolower(str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_title))));
-	return $stub_name;
+	$stub_name = strtolower(str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))));
+	echo $stub_name;
 }
 
 
-function meta_keywords()
-{
+function page_title() {
+  # use default page title unless
+  # locally defined
+  if(!is_null($_page_title) && !empty($_page_title)) {
+    $page_title = $_page_title];
+  } else { 
+    $page_title = sc_config['page_title'];
+  }
+
+  # add section and page to the title
+  $page_title .= "| $_section";
+  if($_section != $_page) {$page_title .= " > $_page_name";}
+  
+  echo $page_title;
+}
+
+
+function meta_keywords() {
 	# Render the meta keywords string defined in the config file.
 	# Page specific definitions will override the default.
-	# unless $_keywords && !empty($_keywords);
-	$keywords = sc_config['meta_keywords'];
+	if(!is_null($_meta_keywords) && !empty($_meta_keywords)) {
+		$keywords = $_meta_keywords;
+	} else {
+		$keywords = sc_config['meta_keywords'];	
+	}
 	echo $keywords;
 }
 
@@ -32,32 +58,31 @@ function meta_description()
 	# Render the meta description string defined in the config file.
 	# Page specific definitions will override the default.
 	
-	# unless $_description && !empty($_description);
-	$description = sc_config['meta_description'];
+	if(!is_null($_meta_description) && !empty($_meta_description)) {
+		$description = $meta_description;
+	}	else {
+		$description = sc_config['meta_description'];
+	}
+	
 	echo $description;
 }
 
 
-function page_title($value='')
-{
-	# generate the page title
-}
-
-
-function main_navigation()
-{
+function main_navigation() {
     # Parse the sitemap hash for the top level nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
     $sitemap = define_sitemap();
-    $nav_string = '';
+    $nav_string = '<ul>';
     foreach ($sitemap as $section => $sub_items) {
         $nav_string .= '<li ';
-        if (eregi("/$section/", $_SERVER['PHP_SELF'])) { 
-             $nav_string .= "id=\"active\"";
+        if ($section == $_section)) {
+            $nav_string .= "id=\"active\"";
         }
-        $nav_string .= "><a href=\"/$section/index.php\">$section</a></li>";
+        $stub = stub_name($section)
+        $nav_string .= "><a href=\"/$stub.php\">$section</a></li>\n";
     }
+    $nav_string .= '</ul>';
     echo $nav_string;
 }
 
@@ -67,30 +92,32 @@ function sub_navigation() {
     # Print them as separate list items.
     # Tag the current section with "active" id
     $sitemap = define_sitemap();
-    $sub_nav_string = '';
-    foreach ($sitemap as $section => $sub_items) {
-        if (eregi("/$section/", $_SERVER['PHP_SELF'])) {
-            $sub_nav_string .= "<h3><a href=\"/$section/index.php\">$section</a></h3>";
-            $sub_nav_string .= '<ul>';
-            foreach ($sub_items as $sub_name => $sub_url) {
-                $sub_name = replace_text($sub_name); # add special formatting to certain product names
+    $sub_nav_string = "<div id='subnav'\n>";
+    foreach ($sitemap as $section => $sub_items) { # TODO: don't need to loop, just match the names
+        if ($section == $_section) {
+            $sub_nav_string = '<ul>';
+            foreach ($sub_items as $sub_name) {
                 $sub_nav_string .= '<li';
-                if (eregi("/$section/$sub_url.php", $_SERVER['PHP_SELF'])) { $sub_nav_string .= " id=\"sideactive\"";}
-                $sub_nav_string .= "><a href=\"/$section/$sub_url.php\">$sub_name</a></li>";
+                if ($sub_name == "$_page_name")) { $sub_nav_string .= " id=\"sub_active\"";}
+                $stub = stub_name($sub_name);
+                $sub_nav_string .= "><a href=\"$stub.php\">$sub_name</a></li>\n";
             }
-            $sub_nav_string .= '</ul>';
+            $sub_nav_string .= "</ul>\n</div>";
             break;
         }
     }
-    echo $sub_nav_string;
+    if($_section != 'Home' && $_page_name != 'Home'){
+        echo $sub_nav_string;
+    }   
 }
 
 
 function build_breadcrumbs() {
+    # TODO: finish replacing regex $_SERVER checks with internal page vars
     $sitemap = define_sitemap();
     $breadcrumbs = array("Home" => "/"); #initalize the breadcrumbs array and add the homepage
     foreach ($sitemap as $section => $sub_items) {
-        if (eregi("/$section/", $_SERVER['PHP_SELF'])) {
+        if ($section == $_section) {
             $breadcrumbs[$section] = "/$section/index.php";
             foreach ($sub_items as $sub_name => $sub_url) {
                 $sub_name = replace_text($sub_name); # add any special formatting for product names
@@ -132,23 +159,34 @@ function breadcrumbs() {
 }
 
 
+function render_section_index($section) {
+    $sitemap = define_sitemap();
+    $index = "<h2>In this section:</h2>\n<ul class=\"index\">";
+    $section = $sitemap[$section];
+    foreach ($section as $page) {
+        $page_stup = stub_name($page);
+        $index .= "<li><a href=\"$page_stub.php\"></a>$page</li>";
+    }
+    $index .= '</ul>';
+    echo $index;
+}
+
+
 function render_sitemap() {
     # renders the sitemap as nested links
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap"><li><a href="/">Home</a></li>';
-    $breadcrumbs = array("Home" => "/"); #initalize the breadcrumbs array and add the homepage
     foreach ($sitemap as $section => $sub_items) {
-        $sitemap_string .= "<li><a href=\"/$section/index.php\">$section</a></li>";
+        $stub = stub_name($section);
+        $sitemap_string .= "<li><a href=\"$stub.php\">$section</a></li>";
         $sitemap_string .= '<ul>';
-        foreach ($sub_items as $subName => $subURL) {
-                $subName = replace_text($subName); # add any special formatting for product names
-                $subURL = "/$section/$subURL.php";
-                
+        foreach ($sub_items as $sub_name) {
+                $sub_stub = stub_name($sub_name);
                 # Mark the current page, don't create a self referencing link
-                if (eregi($subURL, $_SERVER['PHP_SELF'])) {
+                if ($sub_name == $_page_name) {
                     $sitemap_string .= "<li>$subName (This Page)</li>";
                 } else {
-                    $sitemap_string .= "<li><a href=\"$subURL\">$subName</a></li>";
+                    $sitemap_string .= "<li><a href=\"$sub_stub.php\">$subName</a></li>";
                 }
         }
         $sitemap_string .= '</ul>';
