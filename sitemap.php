@@ -10,7 +10,6 @@
 function define_sitemap() {
     
     $about = array(
-	    'index',
     	'Meet The Orthodontist',
     	'Meet the Team',
     	'Office Tour',
@@ -20,8 +19,7 @@ function define_sitemap() {
     );
 
     $ortho = array(
-      'index',
-      'Why Braces?',
+        'Why Braces?',
     	'For Children',
     	'For Adults',
     	'Two-Phase Treatment',
@@ -32,8 +30,7 @@ function define_sitemap() {
     );
 
     $braces = array(
-      'index',
-      'Life with Braces',
+        'Life with Braces',
     	'Types of Braces',
     	'Types of Appliances',
     	'Braces Diagram',
@@ -42,7 +39,6 @@ function define_sitemap() {
     );
     
     $ortho_tech = array(
-      'index',
       'Invisalign&reg;',
       'Damon&trade; System',
       'Surgical Orthodontics'
@@ -56,12 +52,9 @@ function define_sitemap() {
     );
     
     #Items with no sub pages
-    $emergency = array(
-    	'Emergency Care'
+    $emergency = array('Emergency Care');
     
-    $text_only = array(
-    	'Site Map'
-	);
+    $text_only = array('Site Map');
     
     
     # separate sections are merged to form master sitemap hash
@@ -75,4 +68,11 @@ function define_sitemap() {
     );
     return $sitemap;
 }
+
+function main_nav_exclusions() {
+	# nav sections that don't appear as main tabs
+	$exc = array('Contact Us');
+	return $exc;
+}
+
 ?>

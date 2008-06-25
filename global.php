@@ -4,14 +4,15 @@ require_once('config.php');
 require_once('sitemap.php');
 
 
-function is_homepage()
+function is_homepage($_section, $_page_name)
+	# checks to see if the current page is the homepage
 {
-    if($_section == 'Home' && $page_name == 'Home'){return true;} else {return false;}
+    if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
 }
 
 
-function stub_name($page_title)
-{	
+function stub_name($page_name)
+{
 	# Create a stub name by stripping 
 	# special characters from the page title
 	# and replacing spaces with dashes
@@ -20,22 +21,29 @@ function stub_name($page_title)
 	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');
 	
 	$stub_name = strtolower(str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))));
-	echo $stub_name;
+	return $stub_name;
 }
 
 
-function page_title() {
+function page_title($_section, $_page_name) {
   # use default page title unless
   # locally defined
-  if(!is_null($_page_title) && !empty($_page_title)) {
-    $page_title = $_page_title];
-  } else { 
-    $page_title = sc_config['page_title'];
+  
+  $config = sc_config();
+  
+  $page_title = '';
+  if(isset($_page_title) && !empty($_page_title)) {
+    $page_title = $_page_title;
+  } else {
+    $page_title = $config['page_title'];
   }
 
   # add section and page to the title
-  $page_title .= "| $_section";
-  if($_section != $_page) {$page_title .= " > $_page_name";}
+  if ($_page_name == 'Home' && $_section == 'Home') {
+  	$page_title .= ' | Expert Orthodontics by Dwight A. Frey | Frey Orthodontics';
+  }
+  $page_title .= " | $_section";
+  if($_section != $_page_name) {$page_title .= " > $_page_name";}
   
   echo $page_title;
 }
@@ -44,10 +52,13 @@ function page_title() {
 function meta_keywords() {
 	# Render the meta keywords string defined in the config file.
 	# Page specific definitions will override the default.
-	if(!is_null($_meta_keywords) && !empty($_meta_keywords)) {
+	
+	$config = sc_config();
+	
+	if(!isset($_meta_keywords) && !empty($_meta_keywords)) {
 		$keywords = $_meta_keywords;
 	} else {
-		$keywords = sc_config['meta_keywords'];	
+		$keywords = $config['meta_keywords'];	
 	}
 	echo $keywords;
 }
@@ -58,47 +69,59 @@ function meta_description()
 	# Render the meta description string defined in the config file.
 	# Page specific definitions will override the default.
 	
-	if(!is_null($_meta_description) && !empty($_meta_description)) {
-		$description = $meta_description;
-	}	else {
-		$description = sc_config['meta_description'];
-	}
+	$config = sc_config();
 	
+	if (isset($_meta_description) && !empty($_meta_description)) {
+	    $description = $_meta_description;
+	} else {
+	    $description = $config['meta_description'];
+	}
 	echo $description;
 }
 
 
-function main_navigation() {
+function main_navigation($_section) {
     # Parse the sitemap hash for the top level nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
     $sitemap = define_sitemap();
+    $main_nav_exclusions = main_nav_exclusions();
     $nav_string = '<ul>';
     foreach ($sitemap as $section => $sub_items) {
-        $nav_string .= '<li ';
-        if ($section == $_section)) {
-            $nav_string .= "id=\"active\"";
-        }
-        $stub = stub_name($section)
-        $nav_string .= "><a href=\"/$stub.php\">$section</a></li>\n";
+    	# skip any sections that are in the exclusions array
+    	if (!in_array($section, $main_nav_exclusions)) {
+        	$nav_string .= '<li';
+        	if ($section == $_section) {
+            	$nav_string .= " id=\"active\"";
+        	}
+        	$stub = stub_name($sub_items[0]);
+        	$class = stub_name($section);
+        	$nav_string .= "><a href=\"$stub.php\" class=\"$class\">$section</a></li>\n";
+    	}
     }
     $nav_string .= '</ul>';
     echo $nav_string;
 }
 
 
-function sub_navigation() {
+function sub_navigation($_section, $_page_name) {
     # Parse the sitemap hash for the current level nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
     $sitemap = define_sitemap();
-    $sub_nav_string = "<div id='subnav'\n>";
+    $sub_nav_string = "<div id=\"subnav\"\n>";
     foreach ($sitemap as $section => $sub_items) { # TODO: don't need to loop, just match the names
         if ($section == $_section) {
-            $sub_nav_string = '<ul>';
+            $sub_nav_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
                 $sub_nav_string .= '<li';
-                if ($sub_name == "$_page_name")) { $sub_nav_string .= " id=\"sub_active\"";}
+                # append 'first' or 'last' class names
+                if ($sub_name == $sub_items[0]) {
+                	$sub_nav_string .= ' class="first"';
+                } elseif ($sub_name == end($sub_items)) {
+                	$sub_nav_string .= ' class="last"';
+                }
+                if ($sub_name == "$_page_name") { $sub_nav_string .= " id=\"sub_active\"";}
                 $stub = stub_name($sub_name);
                 $sub_nav_string .= "><a href=\"$stub.php\">$sub_name</a></li>\n";
             }
@@ -172,7 +195,7 @@ function render_section_index($section) {
 }
 
 
-function render_sitemap() {
+function render_sitemap($_page_name) {
     # renders the sitemap as nested links
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap"><li><a href="/">Home</a></li>';
@@ -186,7 +209,7 @@ function render_sitemap() {
                 if ($sub_name == $_page_name) {
                     $sitemap_string .= "<li>$subName (This Page)</li>";
                 } else {
-                    $sitemap_string .= "<li><a href=\"$sub_stub.php\">$subName</a></li>";
+                    $sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
                 }
         }
         $sitemap_string .= '</ul>';
