@@ -3,6 +3,9 @@
 require_once('config.php');
 require_once('sitemap.php');
 
+# TODO need a way to scope the page's vars
+$_page_name = $_page_name;
+
 
 function is_homepage($_section, $_page_name)
 	# checks to see if the current page is the homepage
@@ -32,7 +35,7 @@ function page_title($_section, $_page_name) {
   $config = sc_config();
   
   $page_title = '';
-  if(isset($_page_title) && !empty($_page_title)) {
+  if(isset($_page_title) && !empty($_page_title)) { #TODO $_page_title is out of scope
     $page_title = $_page_title;
   } else {
     $page_title = $config['page_title'];
@@ -84,6 +87,7 @@ function main_navigation($_section) {
     # Parse the sitemap hash for the top level nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
+    
     $sitemap = define_sitemap();
     $main_nav_exclusions = main_nav_exclusions();
     $nav_string = '<ul>';
@@ -105,33 +109,24 @@ function main_navigation($_section) {
 
 
 function sub_navigation($_section, $_page_name) {
-    # Parse the sitemap hash for the current level nav items.
+    # Parse the sitemap hash for the current section's nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
+    
     $sitemap = define_sitemap();
-    $sub_nav_string = "<div id=\"subnav\"\n>";
-    foreach ($sitemap as $section => $sub_items) { # TODO: don't need to loop, just match the names
-        if ($section == $_section) {
-            $sub_nav_string .= '<ul>';
-            foreach ($sub_items as $sub_name) {
-                $sub_nav_string .= '<li';
-                # append 'first' or 'last' class names
-                if ($sub_name == $sub_items[0]) {
-                	$sub_nav_string .= ' class="first"';
-                } elseif ($sub_name == end($sub_items)) {
-                	$sub_nav_string .= ' class="last"';
-                }
-                if ($sub_name == "$_page_name") { $sub_nav_string .= " id=\"sub_active\"";}
-                $stub = stub_name($sub_name);
-                $sub_nav_string .= "><a href=\"$stub.php\">$sub_name</a></li>\n";
-            }
-            $sub_nav_string .= "</ul>\n</div>";
-            break;
-        }
+    $sub_nav_string = "<div id=\"subnav\"\n><ul>\n";
+    $sub_items = $sitemap[$_section];
+    foreach ($sub_items as $sub_name) {
+        $sub_nav_string .= '<li';
+        # append '.first' and '.last' class names
+        if ($sub_name == $sub_items[0]) {$sub_nav_string .= ' class="first"';} 
+        elseif ($sub_name == end($sub_items)) {$sub_nav_string .= ' class="last"';}
+        if ($sub_name == "$_page_name") { $sub_nav_string .= " id=\"sub_active\"";}
+        $stub = stub_name($sub_name);
+        $sub_nav_string .= "><a href=\"$stub.php\">$sub_name</a></li>\n";
     }
-    if($_section != 'Home' && $_page_name != 'Home'){
-        echo $sub_nav_string;
-    }   
+    $sub_nav_string .= "</ul>\n</div>";
+    if($_section != 'Home' && $_page_name != 'Home'){echo $sub_nav_string;}  
 }
 
 
@@ -156,9 +151,11 @@ function build_breadcrumbs() {
 }
 
 
-function render_breadcrumbs($bc_array, $separator) {
+function breadcrumbs($bc_array, $separator=' &#8250') {
+    # assembles a breadcrumbs string 
     # The last array item is bolded, 
     # the rest are linked
+    
     foreach ($bc_array as $bc => $link) {
         if ($bc_array[$bc] == end($bc_array)) {
             # Format the last item as bold with no link
@@ -174,10 +171,9 @@ function render_breadcrumbs($bc_array, $separator) {
 }
 
 
-function breadcrumbs() {
-    $separator = ' &#8250; '; # the HTML character that is inserted between items
+function render_breadcrumbs() {
     $bc_array = build_breadcrumbs();
-    $breadcrumbs = render_breadcrumbs($bc_array, $separator);
+    $breadcrumbs = breadcrumbs($bc_array);
     echo $breadcrumbs;
 }
 

@@ -1,11 +1,11 @@
 <?php
 
 # This is a sitemap used to generate navigation and breadcrumbs.
-# Each site section is composed of a separate hash in the form of:
-#   'Page Title' => 'url' (assumes '.php')
+# Each site section is composed of a separate hash of page titles
+# corresponding to files that follow our naming convention.
 
 # After changing this file be sure to locally run 'sitemapXMLGenerator.php'
-# to create an updated 'sitemap.xml' file at the root level
+# to create an updated 'sitemap.xml' file at the root level of the site.
 
 function define_sitemap() {
     
