@@ -194,12 +194,17 @@ function render_section_index($section) {
 function render_sitemap($_page_name) {
     # renders the sitemap as nested links
     $sitemap = define_sitemap();
-    $sitemap_string = '<ul class="sitemap"><li><a href="/">Home</a></li>';
+    $sitemap_string = '<ul class="sitemap"><li><a href="index.php">Home</a></li>';
     foreach ($sitemap as $section => $sub_items) {
-        $stub = stub_name($section);
+        # Because all sections don't have their own content and are just 'index' pages
+        # each section links to its first sub item.
+        # To change this behavior, swap the following two lines.
+        # $stub = stub_name($section);
+        $stub = stub_name($sub_items[0]);
         $sitemap_string .= "<li><a href=\"$stub.php\">$section</a></li>";
-        $sitemap_string .= '<ul>';
-        foreach ($sub_items as $sub_name) {
+        if !(count($sub_items) == 1 && $section == $sub_items[0]) { #don't create nexted ul if only sub item is same page
+            $sitemap_string .= '<ul>';
+            foreach ($sub_items as $sub_name) {
                 $sub_stub = stub_name($sub_name);
                 # Mark the current page, don't create a self referencing link
                 if ($sub_name == $_page_name) {
@@ -207,8 +212,9 @@ function render_sitemap($_page_name) {
                 } else {
                     $sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
                 }
+            }
+            $sitemap_string .= '</ul>';
         }
-        $sitemap_string .= '</ul>';
     }
     $sitemap_string .= '</ul>';
     echo $sitemap_string;
