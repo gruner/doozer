@@ -2,24 +2,22 @@
 
 require_once('config.php');
 require_once('sitemap.php');
+# require any other modules
+# require_once('breadcrumbs.php');
 
-# TODO need a way to scope the page's vars
-$_page_name = $_page_name;
 
-
-function is_homepage($_section, $_page_name)
-	# checks to see if the current page is the homepage
-{
-    if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
+function is_homepage() {
+  # checks to see if the current page is the homepage
+  global $_section, $_page_name;
+  if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
 }
 
 
-function stub_name($page_name)
-{
+function stub_name($_page_name) {
 	# Create a stub name by stripping 
-	# special characters from the page title
+	# special characters from the given page name
 	# and replacing spaces with dashes
-	
+  
 	# Define special characters that will be stripped from the name
 	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');
 	
@@ -28,14 +26,15 @@ function stub_name($page_name)
 }
 
 
-function page_title($_section, $_page_name) {
-  # use default page title unless
-  # locally defined
+function page_title() {
+  # outputs the page title
   
+  global $_section, $_page_name, $_page_title;
   $config = sc_config();
   
+  # use default page title unless locally defined
   $page_title = '';
-  if(isset($_page_title) && !empty($_page_title)) { #TODO $_page_title is out of scope
+  if(isset($_page_title) && !empty($_page_title)) {
     $page_title = $_page_title;
   } else {
     $page_title = $config['page_title'];
@@ -56,6 +55,7 @@ function meta_keywords() {
 	# Render the meta keywords string defined in the config file.
 	# Page specific definitions will override the default.
 	
+  global $_meta_keywords; 
 	$config = sc_config();
 	
 	if(!isset($_meta_keywords) && !empty($_meta_keywords)) {
@@ -67,11 +67,11 @@ function meta_keywords() {
 }
 
 
-function meta_description()
-{
+function meta_description() {
 	# Render the meta description string defined in the config file.
 	# Page specific definitions will override the default.
 	
+  global $_meta_description;
 	$config = sc_config();
 	
 	if (isset($_meta_description) && !empty($_meta_description)) {
@@ -83,17 +83,17 @@ function meta_description()
 }
 
 
-function main_navigation($_section) {
+function main_navigation($_section, $exclusions) {
     # Parse the sitemap hash for the top level nav items.
     # Print them as separate list items.
-    # Tag the current section with "active" id
+    # Tag the given $_section with "active" id
+    # Takes an array of $exclusions that it will omit from the returned $nav_string
     
     $sitemap = define_sitemap();
-    $main_nav_exclusions = main_nav_exclusions();
     $nav_string = '<ul>';
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
-    	if (!in_array($section, $main_nav_exclusions)) {
+    	if (!in_array($section, $exclusions)) {
         	$nav_string .= '<li';
         	if ($section == $_section) {
             	$nav_string .= " id=\"active\"";
@@ -108,10 +108,12 @@ function main_navigation($_section) {
 }
 
 
-function sub_navigation($_section, $_page_name) {
+function sub_navigation() {
     # Parse the sitemap hash for the current section's nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
+    
+    global $_section, $_page_name;
     
     $sitemap = define_sitemap();
     $sub_nav_string = "<div id=\"subnav\"\n><ul>\n";
@@ -130,69 +132,52 @@ function sub_navigation($_section, $_page_name) {
 }
 
 
-function build_breadcrumbs() {
-    # TODO: finish replacing regex $_SERVER checks with internal page vars
-    $sitemap = define_sitemap();
-    $breadcrumbs = array("Home" => "/"); #initalize the breadcrumbs array and add the homepage
-    foreach ($sitemap as $section => $sub_items) {
-        if ($section == $_section) {
-            $breadcrumbs[$section] = "/$section/index.php";
-            foreach ($sub_items as $sub_name => $sub_url) {
-                $sub_name = replace_text($sub_name); # add any special formatting for product names
-                $sub_url = "/$section/$sub_url.php";
-                if (eregi($sub_url, $_SERVER['PHP_SELF'])) { 
-                    $breadcrumbs[$sub_name] = $sub_url;
-                }
-            }
-            break;
-        }
-    }
-    return $breadcrumbs;
-}
+function text_navigation($exclusions) {
 
-
-function breadcrumbs($bc_array, $separator=' &#8250') {
-    # assembles a breadcrumbs string 
-    # The last array item is bolded, 
-    # the rest are linked
+    # Parse the sitemap hash for the top level nav items.
+    # Print them as a string of links with a separator between items.
+    # Takes an array of $exclusions that it will omit from the returned $nav_string
     
-    foreach ($bc_array as $bc => $link) {
-        if ($bc_array[$bc] == end($bc_array)) {
-            # Format the last item as bold with no link
-            $bc_array[$bc] = "<strong>$bc</strong>";
-        } else {
-            # Format bc item as a link
-            $bc_array[$bc] = "<a href=\"$link\">$bc</a>";
-        }
-    }
-    # Convert the array to a string and insert separator between each element
-    $bcString = implode($separator, $bc_array);
-    return $bcString;
-}
-
-
-function render_breadcrumbs() {
-    $bc_array = build_breadcrumbs();
-    $breadcrumbs = breadcrumbs($bc_array);
-    echo $breadcrumbs;
-}
-
-
-function render_section_index($section) {
     $sitemap = define_sitemap();
-    $index = "<h2>In this section:</h2>\n<ul class=\"index\">";
-    $section = $sitemap[$section];
-    foreach ($section as $page) {
-        $page_stup = stub_name($page);
-        $index .= "<li><a href=\"$page_stub.php\"></a>$page</li>";
+    $nav_string = '<p class="text_nav">';
+    foreach ($sitemap as $section => $sub_items) {
+    	# skip any sections that are in the exclusions array
+    	if (!in_array($section, $exclusions)) {
+        	$stub = stub_name($sub_items[0]);
+        	$nav_string .= "<a href=\"$stub.php\">$section</a>";
+        	
+        	# add a separator unless it's the last item in the list        	
+            if ($sitemap[$section] != end($sitemap)) {
+                $nav_string .= ' | ';
+            }
+    	}
     }
-    $index .= '</ul>';
-    echo $index;
+    $nav_string .= '</p>';
+    echo $nav_string;
 }
 
 
-function render_sitemap($_page_name) {
+function render_section_index() {
+
+  global $section; 
+
+  $sitemap = define_sitemap();
+  $index = "<h2>In this section:</h2>\n<ul class=\"index\">";
+  $section = $sitemap[$section];
+  foreach ($section as $page) {
+     $page_stup = stub_name($page);
+     $index .= "<li><a href=\"$page_stub.php\"></a>$page</li>";
+  }
+  $index .= '</ul>';
+  echo $index;
+}
+
+
+function render_sitemap() {
     # renders the sitemap as nested links
+    
+    global $_page_name;  
+    
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap"><li><a href="index.php">Home</a></li>';
     foreach ($sitemap as $section => $sub_items) {
@@ -202,7 +187,7 @@ function render_sitemap($_page_name) {
         # $stub = stub_name($section);
         $stub = stub_name($sub_items[0]);
         $sitemap_string .= "<li><a href=\"$stub.php\">$section</a></li>";
-        if !(count($sub_items) == 1 && $section == $sub_items[0]) { #don't create nexted ul if only sub item is same page
+        if (count($sub_items) != 1 && $section != $sub_items[0]) { #don't create nexted ul if only sub item is same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
                 $sub_stub = stub_name($sub_name);

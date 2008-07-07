@@ -54,7 +54,7 @@ function define_sitemap() {
     #Items with no sub pages
     $emergency = array('Emergency Care');
     
-    $text_only = array('Site Map');
+    $sitemap = array('Site Map');
     
     
     # separate sections are merged to form master sitemap hash
@@ -64,15 +64,10 @@ function define_sitemap() {
         'Braces 101' => $braces,
         'Orthodontic Technologies' => $ortho_tech,
         'Emergency Care' => $emergency,
-        'Contact Us' => $contact
+        'Contact Us' => $contact,
+        'Site Map' => $sitemap
     );
     return $sitemap;
-}
-
-function main_nav_exclusions() {
-	# nav sections that don't appear as main tabs
-	$exc = array('Contact Us');
-	return $exc;
 }
 
 ?>

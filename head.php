@@ -13,6 +13,6 @@
 </head>
 
 <body>
-<?php main_navigation($_section) ?>
-<?php sub_navigation($_section, $_page_name) ?>
-<?php text_navigation() ?>
+<?php //main_navigation($_section, $exclusions = array('Contact Us','Site Map')) ?>
+<?php //sub_navigation($_section, $_page_name) ?>
+<?php //text_navigation() ?>
