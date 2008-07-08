@@ -18,7 +18,7 @@ include_once('head.php');
 
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the top level navigation links. It also adds an <code>id="active"</code> to the <code>&lt;li&gt;</code> of the current section. It will omit any sections listed in the given <code>$exclusions</code> parameter.</p>
 
-<h3 id="example_output">Example Output:</h3>
+<h3>Example Output:</h3>
 
 <?php main_navigation($exclusions = array('Contact Us','Site Map')) ?>
 
@@ -28,7 +28,7 @@ include_once('head.php');
 
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the current section&#8217;s sub-navigation links. It also adds an <code>id="subactive"</code> to the <code>&lt;li&gt;</code> of the current page.</p>
 
-<h3 id="example_output">Example Output:</h3>
+<h3>Example Output:</h3>
 
 <?php sub_navigation() ?>
 
@@ -38,7 +38,7 @@ include_once('head.php');
 
 <p>This function returns a <code>&lt;p&gt;</code> string listing the top level navigation items as links separated by 'pipe' characters.</p>
 
-<h3 id="example_output">Example Output:</h3>
+<h3>Example Output:</h3>
 
 <?php text_navigation() ?>
 
@@ -48,8 +48,16 @@ include_once('head.php');
 
 <p>This function parses <code>sitemap.php</code> and creates nested <code>&lt;ul&gt;</code>s of the site structure with links to each page.</p>
 
-<h3 id="example_output">Example Output:</h3>
+<h3>Example Output:</h3>
 
 <?php render_sitemap() ?>
+
+<h2>Breadcrumbs</h2>
+
+<pre><code>breadcrumbs()</code></pre>
+
+<h3>Example Output:</h3>
+
+<?php breadcrumbs() ?>
 
 <?php include_once('foot.php') ?>

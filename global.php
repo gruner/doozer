@@ -79,9 +79,9 @@ function main_navigation($exclusions=array()) {
         	if ($section == $_section) {
             	$nav_string .= " id=\"active\"";
         	}
-        	$stub = slug_name($sub_items[0]);
+        	$slug = slug_name($sub_items[0]);
         	$class = slug_name($section);
-        	$nav_string .= "><a href=\"$stub.php\" class=\"$class\">$section</a></li>\n";
+        	$nav_string .= "><a href=\"$slug.php\" class=\"$class\">$section</a></li>\n";
     	}
     }
     $nav_string .= "</ul>\n</div>";
@@ -106,8 +106,8 @@ function sub_navigation() {
             if ($sub_name == $sub_items[0]) {$sub_nav_string .= ' class="first"';} 
             elseif ($sub_name == end($sub_items)) {$sub_nav_string .= ' class="last"';}
             if ($sub_name == "$_page_name") { $sub_nav_string .= " id=\"sub_active\"";}
-            $stub = slug_name($sub_name);
-            $sub_nav_string .= "><a href=\"$stub.php\">$sub_name</a></li>\n";
+            $slug = slug_name($sub_name);
+            $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
         }
         $sub_nav_string .= "</ul>\n</div>";
         echo $sub_nav_string;
@@ -126,8 +126,8 @@ function text_navigation($exclusions=array()) {
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        	$stub = slug_name($sub_items[0]);
-        	$nav_string .= "<a href=\"$stub.php\">$section</a>";
+        	$slug = slug_name($sub_items[0]);
+        	$nav_string .= "<a href=\"$slug.php\">$section</a>";
         	
         	# add a separator unless it's the last item in the list        	
             if ($sitemap[$section] != end($sitemap)) {
@@ -167,9 +167,9 @@ function render_sitemap() {
         # Because all sections don't have their own content and are just 'index' pages
         # each section links to its first sub item.
         # To change this behavior, swap the following two lines.
-        # $stub = slug_name($section);
-        $stub = slug_name($sub_items[0]);
-        $sitemap_string .= "<li><a href=\"$stub.php\">$section</a></li>";
+        # $slug = slug_name($section);
+        $slug = slug_name($sub_items[0]);
+        $sitemap_string .= "<li><a href=\"$slug.php\">$section</a></li>";
         if (count($sub_items) != 1 && $section != $sub_items[0]) { #don't create nexted ul if only sub item is same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
@@ -186,6 +186,27 @@ function render_sitemap() {
     }
     $sitemap_string .= '</ul>';
     echo $sitemap_string;
+}
+
+
+function breadcrumbs($separator=' &#8250') {
+    # assembles a breadcrumbs string 
+    # The last array item is bolded, 
+    # the rest are linked
+    
+    global $_section, $_page_name;
+    
+    $bc_hash = array('Home' => 'index', $_section => slug_name($_section), $_page_name => slug_name($_page_name));
+    $bc = '<p class="breadcrumbs">';
+    foreach($bc_hash as $name => $url){
+      if ($name != end($bc_hash)){
+        $bc .= "<a href=\"$url.php\">$name</a>";
+        $bc .= " $separator ";
+      }else{
+        $bc .= "<strong>$name</strong><p>";
+      }
+    }
+    echo $bc;
 }
 
 ?>
