@@ -5,13 +5,13 @@ function sc_config(){
     $sc_config = array();
     
     # default meta keywords for every page
-    $sc_config['meta_keywords'] = '';
+    $sc_config['meta_keywords'] = 'key words';
     
     # default meta description for every page
-    $sc_config['meta_description'] = '';
+    $sc_config['meta_description'] = 'this is a web page';
     
     # default base page title for every page
-    $sc_config['page_title'] = '';
+    $sc_config['page_title'] = 'base page title';
     
     return $sc_config;
 }

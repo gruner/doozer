@@ -19,7 +19,7 @@ function define_sitemap() {
     );
 
     $ortho = array(
-        'Why Braces?',
+      'Why Braces?',
     	'For Children',
     	'For Adults',
     	'Two-Phase Treatment',
@@ -51,11 +51,9 @@ function define_sitemap() {
       'Appointment Request'
     );
     
-    #Items with no sub pages
     $emergency = array('Emergency Care');
     
     $sitemap = array('Site Map');
-    
     
     # separate sections are merged to form master sitemap hash
     $sitemap = array(

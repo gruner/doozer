@@ -2,9 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<meta name="keywords" content="<?php meta_keywords() ?>" />
-	<meta name="description" content="<?php meta_description() ?>" />
-	<title><?php page_title($_section, $_page_name) ?></title>
+    <?php meta_tags() ?>
+	<title><?php page_title() ?></title>
 	<script src="scripts/swfobject.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link href="images/favicon.ico" rel="shortcut icon" />
