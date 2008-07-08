@@ -7,7 +7,7 @@
 	<script src="scripts/swfobject.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link href="images/favicon.ico" rel="shortcut icon" />
-	<link href="stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="styles.css" media="screen" rel="stylesheet" type="text/css" />
 	<!--[if IE]><link rel="stylesheet" href="stylesheets/ie.css" type="text/css" media="screen, projection"><![endif]-->
 </head>
 

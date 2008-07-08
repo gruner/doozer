@@ -27,27 +27,23 @@ function slug_name($page_name) {
 
 
 function page_title() {
-  # outputs the page title
+  # outputs the page title in the form of:
+  # Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip 
   
   global $_section, $_page_name, $_page_title;
   $config = sc_config();
   
-  # use default page title unless localy defined
-  $page_title = '';
-  if(isset($_page_title) && !empty($_page_title)) {
-    $page_title = $_page_title;
-  } else {
-    $page_title = $config['page_title'];
+  if(!isset($_page_title) || empty($_page_title)) {
+    $_page_title = $config['page_title'];
+  } 
+  
+  if ($_page_name != 'Home' && $_section != 'Home') {
+    if(isset($_keyword) && !empty($_keyword)) { $_page_title = "$_keyword $_page_title"; } # prepend the keyword
+    if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; } #prepend the page_name
+    $_page_title = "$_section $_page_title"; #prepend the section
   }
 
-  # add section and page to the title
-  if ($_page_name == 'Home' && $_section == 'Home') {
-  	$page_title .= ''; # TODO home-specific title text
-  }
-  $page_title .= " | $_section";
-  if($_section != $_page_name) {$page_title .= " > $_page_name";}
-  
-  echo $page_title;
+  echo $_page_title;
 }
 
 
@@ -75,8 +71,7 @@ function main_navigation($exclusions=array()) {
     
     global $_section, $_page_name;
     $sitemap = define_sitemap();
-    
-    $nav_string = '<ul>';
+    $nav_string = "<div id=\"nav\"\n><ul>\n";
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
@@ -89,7 +84,7 @@ function main_navigation($exclusions=array()) {
         	$nav_string .= "><a href=\"$stub.php\" class=\"$class\">$section</a></li>\n";
     	}
     }
-    $nav_string .= '</ul>';
+    $nav_string .= "</ul>\n</div>";
     echo $nav_string;
 }
 

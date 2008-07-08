@@ -11,7 +11,7 @@ function sc_config(){
     $sc_config['meta_description'] = 'this is a web page';
     
     # default base page title for every page
-    $sc_config['page_title'] = 'base page title';
+    $sc_config['page_title'] = 'Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip';
     
     return $sc_config;
 }

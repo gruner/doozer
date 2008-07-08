@@ -8,14 +8,13 @@ include_once('head.php');
 
 <p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (I&#8217;ve named them <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamicly generated navigation elements.</p>
 
-<p>The examples on this page are set to <code>$_section='Braces 101'</code> and  <code>$_page_name='Life with Braces'</code>.</p>
-
 <p>These functions are defined in <code>global.php</code>. To enable this functionality simply include it on every page in addition to the header and footer includes. Then define the site structure as a hash in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
+
+<p>To illustrate these examples, this page is set to <code>$_section='Braces 101'</code> and  <code>$_page_name='Life with Braces'</code>.</p>
 
 <h2 id="main_navigation">Main Navigation</h2>
 
-<pre><code>main_navigation($exclusions = array('Contact Us','Site Map'))
-</code></pre>
+<pre><code>main_navigation($exclusions = array('Contact Us','Site Map'))</code></pre>
 
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the top level navigation links. It also adds an <code>id="active"</code> to the <code>&lt;li&gt;</code> of the current section. It will omit any sections listed in the given <code>$exclusions</code> parameter.</p>
 
@@ -25,8 +24,7 @@ include_once('head.php');
 
 <h2 id="sub_navigation">Sub Navigation</h2>
 
-<pre><code>sub_navigation()
-</code></pre>
+<pre><code>sub_navigation()</code></pre>
 
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the current section&#8217;s sub-navigation links. It also adds an <code>id="subactive"</code> to the <code>&lt;li&gt;</code> of the current page.</p>
 
