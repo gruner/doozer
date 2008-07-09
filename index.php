@@ -1,6 +1,8 @@
 <?php
 $_section = 'Braces 101';
 $_page_name = 'Life with Braces';
+$_keyword = 'Invisalign';
+$_page_title = 'title override';
 require_once('global.php');
 include_once('head.php');
 ?>

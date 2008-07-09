@@ -30,14 +30,14 @@ function page_title() {
   # outputs the page title in the form of:
   # Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip 
   
-  global $_section, $_page_name, $_page_title;
+  global $_section, $_page_name, $_keyword, $_page_title;
   $config = sc_config();
   
   if(!isset($_page_title) || empty($_page_title)) {
     $_page_title = $config['page_title'];
   } 
   
-  if ($_page_name != 'Home' && $_section != 'Home') {
+  if (!is_homepage()) {
     if(isset($_keyword) && !empty($_keyword)) { $_page_title = "$_keyword $_page_title"; } # prepend the keyword
     if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; } #prepend the page_name
     $_page_title = "$_section $_page_title"; #prepend the section
@@ -48,9 +48,12 @@ function page_title() {
 
 
 function meta_tags() {
-    global $_meta_keywords, $_meta_description;
+    global $_meta_keywords, $_meta_description, $_keyword;
     $config = sc_config();
-      
+    
+      # append page-specific keyword to 
+    if (isset($_keyword) && !empty($_keyword)){$_meta_keywords .= ", $_keyword";}
+    
     $meta = array('keywords' => $_meta_keywords, 'description' => $_meta_description);
     
     foreach ($meta as $key => $value){
@@ -198,13 +201,16 @@ function breadcrumbs($separator=' &#8250') {
     
     $bc_hash = array('Home' => 'index', $_section => slug_name($_section), $_page_name => slug_name($_page_name));
     $bc = '<p class="breadcrumbs">';
+    $i = 1;
+    $count = count($bc_hash);
     foreach($bc_hash as $name => $url){
-      if ($name != end($bc_hash)){
+      if ($i < $count){
         $bc .= "<a href=\"$url.php\">$name</a>";
         $bc .= " $separator ";
       }else{
         $bc .= "<strong>$name</strong><p>";
       }
+      $i++;
     }
     echo $bc;
 }

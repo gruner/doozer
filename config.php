@@ -5,10 +5,10 @@ function sc_config(){
     $sc_config = array();
     
     # default meta keywords for every page
-    $sc_config['meta_keywords'] = 'key words';
+    $sc_config['meta_keywords'] = 'key, words, separated, by, commas';
     
     # default meta description for every page
-    $sc_config['meta_description'] = 'this is a web page';
+    $sc_config['meta_description'] = 'paste the page description here';
     
     # default base page title for every page
     $sc_config['page_title'] = 'Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip';
