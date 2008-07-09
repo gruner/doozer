@@ -92,17 +92,22 @@ function main_navigation($exclusions=array()) {
 }
 
 
-function sub_navigation() {
+function sub_navigation($section='') {
     # Parse the sitemap hash for the current section's nav items.
     # Print them as separate list items.
     # Tag the current section with "active" id
     
     global $_section, $_page_name;
     
-    if($_section != 'Home' && $_page_name != 'Home'){
+    # Use the current section unless a specific section is given as a parameter
+    if (!$section){
+      $section = $_section;
+    }
+    
+    if(!is_homepage()){
         $sitemap = define_sitemap();
         $sub_nav_string = "<div id=\"subnav\"\n><ul>\n";
-        $sub_items = $sitemap[$_section];
+        $sub_items = $sitemap[$section];
         foreach ($sub_items as $sub_name) {
             $sub_nav_string .= '<li';
             # append '.first' and '.last' class names
@@ -143,23 +148,28 @@ function text_navigation($exclusions=array()) {
 }
 
 
-function render_section_index() {
+function section_index($section="") {
 
-  global $section; 
+  global $_section; 
 
   $sitemap = define_sitemap();
   $index = "<h2>In this section:</h2>\n<ul class=\"index\">";
+  
+  # Use the current section unless a specific section is given as a parameter
+  if (!$section){
+    $section = $_section;
+  }
   $section = $sitemap[$section];
   foreach ($section as $page) {
-     $page_stup = slug_name($page);
-     $index .= "<li><a href=\"$page_stub.php\"></a>$page</li>";
+     $slug = slug_name($page);
+     $index .= "<li><a href=\"$slug.php\">$page</a></li>";
   }
   $index .= '</ul>';
   echo $index;
 }
 
 
-function render_sitemap() {
+function sitemap() {
     # renders the sitemap as nested links
     
     global $_page_name;  
@@ -215,4 +225,21 @@ function breadcrumbs($separator=' &#8250') {
     echo $bc;
 }
 
+
+function place_image($file, $alt='', $title=''){
+  
+  global $_alt;
+  
+  if (!$alt){
+    $alt = $_alt;
+  }
+
+  list($w, $h) = getimagesize($file);
+  $img_tag = "<img src=\"$file\" width=\"$w\" height=\"$h\"";
+  if($alt){$img_tag .= " alt=\"$alt\"";}
+  if($title){$img_tag .= " title=\"$title\"";}
+  $img_tag .= " />";
+  
+  echo $img_tag;
+}
 ?>
