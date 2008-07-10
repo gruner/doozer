@@ -81,8 +81,9 @@ function meta_tags() {
  * Echo's a formatted list of the top-level navigation links.
  * Adds 'class="active"' to the current section
  * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
+ * @param bool $include_sub_nav optionaly include nested sub navigation
  */
-function main_navigation($exclusions=array()) {
+function main_navigation($exclusions=array(), include_sub_nav=false) {
     global $_section, $_page_name;
     $sitemap = define_sitemap();
     $nav_string = "<div id=\"nav\"\n><ul>\n";
@@ -96,6 +97,9 @@ function main_navigation($exclusions=array()) {
         	$slug = slug_name($sub_items[0]);
         	$class = slug_name($section);
         	$nav_string .= "><a href=\"$slug.php\" class=\"$class\">$section</a></li>\n";
+          if(include_sub_nav){
+            sub_navigation($section);
+          }
     	}
     }
     $nav_string .= "</ul>\n</div>";
@@ -141,6 +145,15 @@ function sub_navigation($section='') {
         $sub_nav_string .= "</ul>\n</div>";
         echo $sub_nav_string;
     }  
+}
+
+
+/**
+ * A wrapper for calling main_navigation() with included sub navigation
+ * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
+ */
+function full_navigation($exclusions=array()) {
+  main_navigation($exclustion, $include_sub_nav=true);
 }
 
 
