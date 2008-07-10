@@ -77,20 +77,24 @@ hr.space {background:#fff;color:#fff;}
 
 /* custom */
 #nav ul, #subnav ul {
-  border: 1px solid black;
   list-style-type: none;
   width: 200px;
 }
 
-#nav li, #subnav li {
-  padding: 5px;
+#nav li a, #subnav li a {
+	background-color: #B0CD8D;
+	color: white;
+	display: block;
+	margin: 5px;
+	padding: 5px;
+	text-decoration:none;
 }
 
-li#active, li#sub_active {
-  background: blue;
+#nav li.active a, #subnav li.active a {
+	background-color: #6097C2;
+	color:#F6B831;
+	font-weight:bold;
 }
-
-li#active a, li#sub_active a {color:white}
 
 ul.sitemap li {margin-bottom:2px;}
 ul.sitemap ul {margin-bottom:0;}

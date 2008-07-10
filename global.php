@@ -6,18 +6,21 @@ require_once('sitemap.php');
 # require_once('breadcrumbs.php');
 
 
+/**
+ * Checks $_section and $_page_name to see if the current page is the homepage
+ */
 function is_homepage() {
-  # checks to see if the current page is the homepage
   global $_section, $_page_name;
   if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
 }
 
 
+/**
+ * Creates a 'slug name' by stripping 
+ * special characters from the given page name
+ * and replacing spaces with dashes
+ */
 function slug_name($page_name) {
-	# Create a slug name by stripping 
-	# special characters from the given page name
-	# and replacing spaces with dashes
-  
 	# Define special characters that will be stripped from the name
 	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');
 	
@@ -26,10 +29,13 @@ function slug_name($page_name) {
 }
 
 
+/**
+ * Echo's a formatted title following the convention of:
+ * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
+ * Uses the value in config.php as the base text of the title unless $_page_title is defined locally
+ * @todo should this output the entire title tag?
+ */
 function page_title() {
-  # outputs the page title in the form of:
-  # Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip 
-  
   global $_section, $_page_name, $_keyword, $_page_title;
   $config = sc_config();
   
@@ -47,6 +53,11 @@ function page_title() {
 }
 
 
+/**
+ * Echo's formatted meta tags for description and keywords
+ * Looks for local $_meta_keywords and $_meta_description variables
+ * Defaults to the values defined in config.php
+ */
 function meta_tags() {
     global $_meta_keywords, $_meta_description, $_keyword;
     $config = sc_config();
@@ -66,21 +77,21 @@ function meta_tags() {
 }
 
 
+/**
+ * Echo's a formatted list of the top-level navigation links.
+ * Adds 'class="active"' to the current section
+ * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
+ */
 function main_navigation($exclusions=array()) {
-    # Parse the sitemap hash for the top level nav items.
-    # Print them as separate list items.
-    # Tag the given $_section with "active" id
-    # Takes an array of $exclusions that it will omit from the returned $nav_string
-    
     global $_section, $_page_name;
     $sitemap = define_sitemap();
     $nav_string = "<div id=\"nav\"\n><ul>\n";
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        	$nav_string .= '<li';
+        	$nav_string .= '<li id=\"slug_name($section)\"';
         	if ($section == $_section) {
-            	$nav_string .= " id=\"active\"";
+            	$nav_string .= " class=\"active\"";
         	}
         	$slug = slug_name($sub_items[0]);
         	$class = slug_name($section);
@@ -92,6 +103,11 @@ function main_navigation($exclusions=array()) {
 }
 
 
+/**
+ * Echo's a formatted list current section's sub links.
+ * Adds 'class="active"' to the current page
+ * @param string $section optionaly show sub_navigation links for any given section
+ */
 function sub_navigation($section='') {
     # Parse the sitemap hash for the current section's nav items.
     # Print them as separate list items.
@@ -109,12 +125,17 @@ function sub_navigation($section='') {
         $sub_nav_string = "<div id=\"subnav\"\n><ul>\n";
         $sub_items = $sitemap[$section];
         foreach ($sub_items as $sub_name) {
-            $sub_nav_string .= '<li';
-            # append '.first' and '.last' class names
-            if ($sub_name == $sub_items[0]) {$sub_nav_string .= ' class="first"';} 
-            elseif ($sub_name == end($sub_items)) {$sub_nav_string .= ' class="last"';}
-            if ($sub_name == "$_page_name") { $sub_nav_string .= " id=\"sub_active\"";}
             $slug = slug_name($sub_name);
+            $sub_nav_string .= "<li id=\"$slug\"";
+            
+            # determine '.first', '.last', and '.active' class names
+            $class = '';
+            if ($sub_name == $sub_items[0]) {$class .= 'first';} 
+            elseif ($sub_name == end($sub_items)) {$class .= 'last';}
+            if ($sub_name == "$_page_name") { $class .= ' active';}
+            
+            if ($class){$sub_nav_string .= " class=\"$class\"";} #TODO fix spacing by making an array
+            
             $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
         }
         $sub_nav_string .= "</ul>\n</div>";
@@ -123,24 +144,29 @@ function sub_navigation($section='') {
 }
 
 
-function text_navigation($exclusions=array()) {
-
-    # Parse the sitemap hash for the top level nav items.
-    # Print them as a string of links with a separator between items.
-    # Takes an array of $exclusions that it will omit from the returned $nav_string
-    
+/**
+ * Echo's a formatted list of the top-level navigation links
+ * @param integer $br optionaly force a '<br/>' after the nth text link
+ * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
+ */
+function text_navigation($br=0, $exclusions=array()) {
     $sitemap = define_sitemap();
     $nav_string = '<p class="text_nav">';
+    $i = 1;
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        	$slug = slug_name($sub_items[0]);
-        	$nav_string .= "<a href=\"$slug.php\">$section</a>";
-        	
-        	# add a separator unless it's the last item in the list        	
-            if ($sitemap[$section] != end($sitemap)) {
-                $nav_string .= ' | ';
-            }
+        if($br == $i){
+          $nav_string .= '<br />'
+        }
+        $slug = slug_name($sub_items[0]);
+        $nav_string .= "<a href=\"$slug.php\">$section</a>";
+        
+        # add a separator unless it's the last item in the list        	
+        if ($sitemap[$section] != end($sitemap) && ($br-1 != $i)) {
+          $nav_string .= ' | ';
+        }
+        $i++;
     	}
     }
     $nav_string .= '</p>';
@@ -148,6 +174,11 @@ function text_navigation($exclusions=array()) {
 }
 
 
+/**
+ * Echo's a formatted list of the current section's links with a header that reads
+ * 'In this section:'
+ * @param string $section optionaly show the index for any given section
+ */
 function section_index($section="") {
 
   global $_section; 
@@ -169,8 +200,10 @@ function section_index($section="") {
 }
 
 
+/**
+ * Echo's a formatted sitemap in the form of nested lists with links to each page
+ */
 function sitemap() {
-    # renders the sitemap as nested links
     
     global $_page_name;  
     
@@ -201,11 +234,12 @@ function sitemap() {
     echo $sitemap_string;
 }
 
-
-function breadcrumbs($separator=' &#8250') {
-    # assembles a breadcrumbs string 
-    # The last array item is bolded, 
-    # the rest are linked
+/**
+ * Echo's a formatted string with links to the current page's parent(s)
+ * The current page is bolded and unlinked
+ * @param string $separator the text or html character that will separate each breadcrumb (optional)
+ */
+function breadcrumbs($separator='&#8250') {
     
     global $_section, $_page_name;
     
@@ -226,6 +260,12 @@ function breadcrumbs($separator=' &#8250') {
 }
 
 
+/**
+ * Echo's a formatted image tag with calculated width and height attributes.
+ * @param string $file text for image's 'src' attribute (relative path to the file, not just the name)
+ * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
+ * @param string $title text for image's title attribute (optional, omits attribute if not set)
+ */
 function place_image($file, $alt='', $title=''){
   
   global $_alt;
