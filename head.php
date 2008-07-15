@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     <?php meta_tags() ?>
-	<title><?php page_title() ?></title>
+	<?php page_title() ?>
 	<script src="scripts/swfobject.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link href="images/favicon.ico" rel="shortcut icon" />

@@ -2,8 +2,6 @@
 
 require_once('config.php');
 require_once('sitemap.php');
-# require any other modules
-# require_once('breadcrumbs.php');
 
 
 /**
@@ -33,7 +31,6 @@ function slug_name($page_name) {
  * Echo's a formatted title following the convention of:
  * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
  * Uses the value in config.php as the base text of the title unless $_page_title is defined locally
- * @todo should this output the entire title tag?
  */
 function page_title() {
   global $_section, $_page_name, $_keyword, $_page_title;
@@ -49,12 +46,12 @@ function page_title() {
     $_page_title = "$_section $_page_title"; #prepend the section
   }
 
-  echo $_page_title;
+  echo "<title>$_page_title</title>";
 }
 
 
 /**
- * Echo's formatted meta tags for description and keywords
+ * Echo's formatted meta description and meta keyword tags
  * Looks for local $_meta_keywords and $_meta_description variables
  * Defaults to the values defined in config.php
  */
@@ -79,6 +76,7 @@ function meta_tags() {
 
 /**
  * Echo's a formatted list of the top-level navigation links.
+ * Adds the slug name as the id of each <li>
  * Adds 'class="active"' to the current section
  * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
  * @param bool $include_sub_nav optionaly include nested sub navigation
@@ -98,7 +96,7 @@ function main_navigation($exclusions=array(), include_sub_nav=false) {
         	$class = slug_name($section);
         	$nav_string .= "><a href=\"$slug.php\" class=\"$class\">$section</a></li>\n";
           if(include_sub_nav){
-            sub_navigation($section);
+            $nav_string .= sub_nav_ul($section);
           }
     	}
     }
@@ -108,15 +106,26 @@ function main_navigation($exclusions=array(), include_sub_nav=false) {
 
 
 /**
- * Echo's a formatted list current section's sub links.
+ * Echo's a formatted div of the current section's sub links.
  * Adds 'class="active"' to the current page
  * @param string $section optionaly show sub_navigation links for any given section
  */
-function sub_navigation($section='') {
-    # Parse the sitemap hash for the current section's nav items.
-    # Print them as separate list items.
-    # Tag the current section with "active" id
-    
+function sub_navigation($section='') {    
+  $sub_nav = sub_nav_ul($section);
+  echo "<div id=\"subnav\">\n";
+  echo "$sub_nav\n";
+  echo "</div>\n";
+}
+
+
+/**
+ * Echo's a formatted list of the current section's sub links.
+ * Adds 'class="active"' to the current page
+ * @param string $section optionaly show sub_navigation links for any given section
+ * @return the subnav as a <ul>
+ */
+function sub_nav_ul($section='') {
+   
     global $_section, $_page_name;
     
     # Use the current section unless a specific section is given as a parameter
@@ -126,7 +135,7 @@ function sub_navigation($section='') {
     
     if(!is_homepage()){
         $sitemap = define_sitemap();
-        $sub_nav_string = "<div id=\"subnav\"\n><ul>\n";
+        $sub_nav_string = "<ul>\n";
         $sub_items = $sitemap[$section];
         foreach ($sub_items as $sub_name) {
             $slug = slug_name($sub_name);
@@ -142,11 +151,10 @@ function sub_navigation($section='') {
             
             $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
         }
-        $sub_nav_string .= "</ul>\n</div>";
-        echo $sub_nav_string;
+        $sub_nav_string .= "</ul>\n";
+        return $sub_nav_string;
     }  
 }
-
 
 /**
  * A wrapper for calling main_navigation() with included sub navigation
