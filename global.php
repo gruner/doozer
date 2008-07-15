@@ -81,23 +81,22 @@ function meta_tags() {
  * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
  * @param bool $include_sub_nav optionaly include nested sub navigation
  */
-function main_navigation($exclusions=array(), include_sub_nav=false) {
+function main_navigation($exclusions=array(), $include_sub_nav=false) {
     global $_section, $_page_name;
     $sitemap = define_sitemap();
-    $nav_string = "<div id=\"nav\"\n><ul>\n";
+    $nav_string = "<div id=\"nav\">\n<ul>\n";
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        	$nav_string .= '<li id=\"slug_name($section)\"';
-        	if ($section == $_section) {
-            	$nav_string .= " class=\"active\"";
-        	}
+          $slug = slug_name($section);
+        	$nav_string .= "<li";
+          $nav_string .= get_li_attributes($_section, $section, $sitemap);
         	$slug = slug_name($sub_items[0]);
-        	$class = slug_name($section);
-        	$nav_string .= "><a href=\"$slug.php\" class=\"$class\">$section</a></li>\n";
-          if(include_sub_nav){
+        	$nav_string .= "><a href=\"$slug.php\">$section</a>\n";
+          if($include_sub_nav && $sub_items[0] != $section){
             $nav_string .= sub_nav_ul($section);
           }
+          $nav_string .= "</li>\n";
     	}
     }
     $nav_string .= "</ul>\n</div>";
@@ -107,7 +106,7 @@ function main_navigation($exclusions=array(), include_sub_nav=false) {
 
 /**
  * Echo's a formatted div of the current section's sub links.
- * Adds 'class="active"' to the current page
+ * Wraps the current section's sub links in a div
  * @param string $section optionaly show sub_navigation links for any given section
  */
 function sub_navigation($section='') {    
@@ -119,7 +118,7 @@ function sub_navigation($section='') {
 
 
 /**
- * Echo's a formatted list of the current section's sub links.
+ * Creates a formatted <ul> of the current section's sub links.
  * Adds 'class="active"' to the current page
  * @param string $section optionaly show sub_navigation links for any given section
  * @return the subnav as a <ul>
@@ -135,20 +134,13 @@ function sub_nav_ul($section='') {
     
     if(!is_homepage()){
         $sitemap = define_sitemap();
-        $sub_nav_string = "<ul>\n";
+        #$slug = slug_name($section);
+        $sub_nav_string = "<ul>\n"; # class=\"$slug\"
         $sub_items = $sitemap[$section];
         foreach ($sub_items as $sub_name) {
             $slug = slug_name($sub_name);
-            $sub_nav_string .= "<li id=\"$slug\"";
-            
-            # determine '.first', '.last', and '.active' class names
-            $class = '';
-            if ($sub_name == $sub_items[0]) {$class .= 'first';} 
-            elseif ($sub_name == end($sub_items)) {$class .= 'last';}
-            if ($sub_name == "$_page_name") { $class .= ' active';}
-            
-            if ($class){$sub_nav_string .= " class=\"$class\"";} #TODO fix spacing by making an array
-            
+            $sub_nav_string .= "<li";
+            $sub_nav_string .= get_li_attributes($_page_name, $sub_name, $sub_items);
             $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
         }
         $sub_nav_string .= "</ul>\n";
@@ -156,12 +148,38 @@ function sub_nav_ul($section='') {
     }  
 }
 
+
+/**
+ * Sets id and class names for a list item
+ * Adds id='slug-name'
+ * Adds 'first' and 'last' classes to appropriate list items
+ * Adds 'active' class to the current section or page
+ * @param string $current_item the current page or section for setting the 'active' class
+ * @param string $child can be a page_name or section as contained in the array $children
+ * @param array $children the array that contains $child
+ * @return the formatted attributes as a string
+ */
+function get_li_attributes($current_item, $child, $children){
+  $class = array();
+  if($child == $children[0]){$class[] = 'first';}
+  elseif($child == end($children)){$class[] = 'last';}
+  if($child == $current_item){$class[] = 'active';}
+  $slug = slug_name($child);
+  $attr = " id=\"$slug\"";
+  if($class){
+    $classes = implode(' ', $class);
+    $attr .= " class=\"$classes\"";
+  }
+  return $attr;
+}
+
+
 /**
  * A wrapper for calling main_navigation() with included sub navigation
- * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
+ * @param array $exclusions optionaly omits any given sections from the echoed $nav_string
  */
 function full_navigation($exclusions=array()) {
-  main_navigation($exclustion, $include_sub_nav=true);
+  main_navigation($exclusions, $include_sub_nav=true);
 }
 
 
@@ -177,14 +195,16 @@ function text_navigation($br=0, $exclusions=array()) {
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        if($br == $i){
-          $nav_string .= '<br />'
-        }
         $slug = slug_name($sub_items[0]);
         $nav_string .= "<a href=\"$slug.php\">$section</a>";
         
+        # add a <br/> tag if given as a param
+        if($br == $i){
+          $nav_string .= '<br />';
+        }
+        
         # add a separator unless it's the last item in the list        	
-        if ($sitemap[$section] != end($sitemap) && ($br-1 != $i)) {
+        if ($sitemap[$section] != end($sitemap) && ($br != $i)) {
           $nav_string .= ' | ';
         }
         $i++;
@@ -237,7 +257,7 @@ function sitemap() {
         # $slug = slug_name($section);
         $slug = slug_name($sub_items[0]);
         $sitemap_string .= "<li><a href=\"$slug.php\">$section</a></li>";
-        if (count($sub_items) != 1 && $section != $sub_items[0]) { #don't create nexted ul if only sub item is same page
+        if (count($sub_items) != 1 && $section != $sub_items[0]) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
                 $sub_stub = slug_name($sub_name);

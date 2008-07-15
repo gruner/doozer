@@ -78,7 +78,6 @@ hr.space {background:#fff;color:#fff;}
 /* custom */
 #nav ul, #subnav ul {
   list-style-type: none;
-  width: 200px;
 }
 
 #nav li a, #subnav li a {
@@ -90,11 +89,63 @@ hr.space {background:#fff;color:#fff;}
 	text-decoration:none;
 }
 
-#nav li.active a, #subnav li.active a {
+#nav li a:hover, #subnav li a:hover {text-decoration:underline;}
+
+#nav li.active a, #subnav li.active a, .full_nav #nav li.active:hover {
 	background-color: #6097C2;
 	color:#F6B831;
 	font-weight:bold;
 }
 
+
+
 ul.sitemap li {margin-bottom:2px;}
 ul.sitemap ul {margin-bottom:0;}
+
+
+.full_nav #nav li a {
+	display: block;
+}
+
+.full_nav #nav li {display: inline;}
+#about-our-office, #about-orthodontics, #braces-101, #orthodontic-technologies, #emergency-care {float: left;}
+
+.full_nav #nav li ul a {
+	background-color: #B0CD8D;
+	color: white;
+}
+
+.full_nav #nav li a, .full_nav #nav li.active a:hover {
+	width: 150px; 
+	text-indent: 0; 
+	text-decoration: none;
+	margin: 1px;
+}
+
+.full_nav #nav li a:hover,
+.full_nav #nav li:hover{text-decoration:underline; color:#fff}
+
+.full_nav #nav li ul a:hover {
+	background-color: #6097C2;
+	color:#F6B831;
+	text-decoration:none;
+}
+
+/* drop down */
+.full_nav #nav li ul {
+	left: -9999px; 
+	position: absolute; 
+	z-index: 3; 
+	background: #888; 
+	border: solid 1px #fff; 
+	border-width: 0 1px 1px 1px; 
+	padding: 1px;
+}
+
+.full_nav #nav li:hover ul,
+.full_nav #nav li.sfhover ul {
+	left: auto; margin: 0;
+}
+
+
+
