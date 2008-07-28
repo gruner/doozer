@@ -1,11 +1,35 @@
 <?php
+/**
+ * This file contains several php function for easily creating dynamic navigation by utilizing the site stucture defined in {@link sitemap.php}.
+ *
+ * It also contains several utility functions for quickly generating other common html elements.
+ *
+ * Using our existing approach of defining '$page' and '$section' variables for each page (this file uses the convention '$_page_name', and '$_section' to indicate that they are local to each page), we can call the following functions from any page and get dynamicly generated navigation elements.
+ *
+ * To enable this functionality simply include this file on every page, similar to how we're already including the header and footer files. Then define the site structure in {@link sitemap.php}, also kept in the includes folder. (Note: The root level 'Site Map' page should be named 'site-map.php' to avoid conflicting names.)
+ 
+ @package scFramework
+ */
 
+
+/**
+ * Include the configuration file for the site which stores site-specific settings
+ * such as page title and meta information. This allows for making site-specific changes
+ * without having to edit global.php.
+ */
 require_once('config.php');
+
+/**
+ * Include the sitemap for the site, which we parse in order to generate the navigation.
+ */
 require_once('sitemap.php');
 
 
 /**
  * Checks $_section and $_page_name to see if the current page is the homepage
+ * @global string $_section
+ * @global string $_page_name
+ * @return bool
  */
 function is_homepage() {
   global $_section, $_page_name;
@@ -16,12 +40,15 @@ function is_homepage() {
 /**
  * Creates a 'slug name' by stripping 
  * special characters from the given page name
- * and replacing spaces with dashes
+ * and replacing spaces with dashes.
+ * This function is used to set unique id's for <<li>> elements
+ * in navigation as well as linking to files that follow the proper naming scheme.
+ * @param string $page_name the name of the page to convert
+ * @return string processed string
  */
 function slug_name($page_name) {
 	# Define special characters that will be stripped from the name
-	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');
-	
+	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
 	$slug_name = strtolower(str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))));
 	return $slug_name;
 }
@@ -30,7 +57,7 @@ function slug_name($page_name) {
 /**
  * Echo's a formatted title following the convention of:
  * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
- * Uses the value in config.php as the base text of the title unless $_page_title is defined locally
+ * Looks for local $_page_title variable but defaults to the value definged in config.php
  */
 function page_title() {
   global $_section, $_page_name, $_keyword, $_page_title;
@@ -38,7 +65,7 @@ function page_title() {
   
   if(!isset($_page_title) || empty($_page_title)) {
     $_page_title = $config['page_title'];
-  } 
+  }
   
   if (!is_homepage()) {
     if(isset($_keyword) && !empty($_keyword)) { $_page_title = "$_keyword $_page_title"; } # prepend the keyword
@@ -51,15 +78,15 @@ function page_title() {
 
 
 /**
- * Echo's formatted meta description and meta keyword tags
- * Looks for local $_meta_keywords and $_meta_description variables
- * Defaults to the values defined in config.php
+ * Echo's formatted meta description and meta keyword tags. 
+ * Looks for local $_meta_keywords and $_meta_description variables but
+ * defaults to the values defined in config.php.
  */
 function meta_tags() {
     global $_meta_keywords, $_meta_description, $_keyword;
     $config = sc_config();
     
-      # append page-specific keyword to 
+    # append page-specific keyword to 
     if (isset($_keyword) && !empty($_keyword)){$_meta_keywords .= ", $_keyword";}
     
     $meta = array('keywords' => $_meta_keywords, 'description' => $_meta_description);
@@ -75,11 +102,11 @@ function meta_tags() {
 
 
 /**
- * Echo's a formatted list of the top-level navigation links.
- * Adds the slug name as the id of each <li>
- * Adds 'class="active"' to the current section
- * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
- * @param bool $include_sub_nav optionaly include nested sub navigation
+ * Echos a formatted list of the top-level navigation links.
+ * Adds the slug name as the id of each <<li>>. 
+ * Adds 'class="active"' to the current section.
+ * @param array $exclusions optionally omits any given sections from the echoed $nav_string
+ * @param bool $include_sub_nav optionally include nested sub navigation
  */
 function main_navigation($exclusions=array(), $include_sub_nav=false) {
     global $_section, $_page_name;
@@ -90,7 +117,7 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
     	if (!in_array($section, $exclusions)) {
           $slug = slug_name($section);
         	$nav_string .= "<li";
-          $nav_string .= get_li_attributes($_section, $section, $sitemap);
+          $nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
         	$slug = slug_name($sub_items[0]);
         	$nav_string .= "><a href=\"$slug.php\">$section</a>\n";
           if($include_sub_nav && $sub_items[0] != $section){
@@ -105,11 +132,12 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
 
 
 /**
- * Echo's a formatted div of the current section's sub links.
- * Wraps the current section's sub links in a div
- * @param string $section optionaly show sub_navigation links for any given section
+ * Echo's a formatted <<div>> of the current section's sub links by taking the output of 
+ * sub_nav_ul() and wrapping it in a <<div>>.
+ * @param string $section optionally show sub_navigation links for any given section
+ * @see sub_nav_ul()
  */
-function sub_navigation($section='') {    
+function sub_navigation($section='') {
   $sub_nav = sub_nav_ul($section);
   echo "<div id=\"subnav\">\n";
   echo "$sub_nav\n";
@@ -118,10 +146,11 @@ function sub_navigation($section='') {
 
 
 /**
- * Creates a formatted <ul> of the current section's sub links.
- * Adds 'class="active"' to the current page
- * @param string $section optionaly show sub_navigation links for any given section
- * @return the subnav as a <ul>
+ * Creates a formatted <<ul>> of the current section's sub links.
+ * Adds 'class="active"' to the current page and gives each <<li>> a unique id based on the 'slug name'.
+ * @param string $section optionally show sub_navigation links for any given section
+ * @return the subnav as a <<ul>>
+ * @see slug_name()
  */
 function sub_nav_ul($section='') {
    
@@ -134,8 +163,7 @@ function sub_nav_ul($section='') {
     
     if(!is_homepage()){
         $sitemap = define_sitemap();
-        #$slug = slug_name($section);
-        $sub_nav_string = "<ul>\n"; # class=\"$slug\"
+        $sub_nav_string = "<ul>\n";
         $sub_items = $sitemap[$section];
         foreach ($sub_items as $sub_name) {
             $slug = slug_name($sub_name);
@@ -150,10 +178,10 @@ function sub_nav_ul($section='') {
 
 
 /**
- * Sets id and class names for a list item
- * Adds id='slug-name'
- * Adds 'first' and 'last' classes to appropriate list items
- * Adds 'active' class to the current section or page
+ * Sets id and class names for a list item. 
+ * Adds id='slug-name' and 
+ * adds 'first' and 'last' classes to appropriate list items. 
+ * Also adds 'active' class to the current section or page.
  * @param string $current_item the current page or section for setting the 'active' class
  * @param string $child can be a page_name or section as contained in the array $children
  * @param array $children the array that contains $child
@@ -175,8 +203,9 @@ function get_li_attributes($current_item, $child, $children){
 
 
 /**
- * A wrapper for calling main_navigation() with included sub navigation
- * @param array $exclusions optionaly omits any given sections from the echoed $nav_string
+ * A wrapper for calling main_navigation() with included sub navigation.
+ * @param array $exclusions optionally omits any given sections from the echoed $nav_string
+ * @see main_navigation()
  */
 function full_navigation($exclusions=array()) {
   main_navigation($exclusions, $include_sub_nav=true);
@@ -184,9 +213,9 @@ function full_navigation($exclusions=array()) {
 
 
 /**
- * Echo's a formatted list of the top-level navigation links
- * @param integer $br optionaly force a '<br/>' after the nth text link
- * @param array $exclustions optionaly omits any given sections from the echoed $nav_string
+ * Echo's a formatted list of the top-level navigation links.
+ * @param integer $br optionally force a break tag after the nth text link
+ * @param array $exclustions optionally omits any given sections from the echoed $nav_string
  */
 function text_navigation($br=0, $exclusions=array()) {
     $sitemap = define_sitemap();
@@ -216,9 +245,9 @@ function text_navigation($br=0, $exclusions=array()) {
 
 
 /**
- * Echo's a formatted list of the current section's links with a header that reads
+ * Echo's a formatted list of the current section's links with a header that reads 
  * 'In this section:'
- * @param string $section optionaly show the index for any given section
+ * @param string $section optionally show the index for any given section
  */
 function section_index($section="") {
 
@@ -242,7 +271,8 @@ function section_index($section="") {
 
 
 /**
- * Echo's a formatted sitemap in the form of nested lists with links to each page
+ * Echo's a formatted sitemap in the form of nested lists with links to each page.
+ * @see sitemap.php
  */
 function sitemap() {
     
@@ -276,11 +306,12 @@ function sitemap() {
 }
 
 /**
- * Echo's a formatted string with links to the current page's parent(s)
- * The current page is bolded and unlinked
+ * Echo's a formatted string with links to the current page's parent(s).
+ * The $separator string defaults to the &#8250; character but can be overridden with any string.
+ * The current page is bolded and unlinked.
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
  */
-function breadcrumbs($separator='&#8250') {
+function breadcrumbs($separator='&#8250;') {
     
     global $_section, $_page_name;
     

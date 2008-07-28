@@ -1,13 +1,23 @@
 <?php
+/**
+ * This file defines a sitemap that is used to generate navigation and breadcrumbs.
+ *
+ * Each site section is composed of a separate hash of page titles 
+ * corresponding to files that follow Sesame's naming convention.
+ *
+ * After changing this file be sure to locally run {@link sitemapXMLGenerator.php} 
+ * to create an updated 'sitemap.xml' file at the root level of the site.
+ *
+ * @package scFramework
+ */
 
-# This is a sitemap used to generate navigation and breadcrumbs.
-# Each site section is composed of a separate hash of page titles
-# corresponding to files that follow our naming convention.
-
-# After changing this file be sure to locally run 'sitemapXMLGenerator.php'
-# to create an updated 'sitemap.xml' file at the root level of the site.
-
+/**
+ * This function defines an array for each section of the site and combines them to form a single multi-dimensional array used to generate the navigation for the site.
+ * @return array $sitemap
+ */
 function define_sitemap() {
+    
+    # create an array for every section of the site 
     
     $about = array(
     	'Meet The Orthodontist',
@@ -55,7 +65,7 @@ function define_sitemap() {
     
     $sitemap = array('Site Map');
     
-    # separate sections are merged to form master sitemap hash
+    # separate sections are merged to form the master sitemap hash
     $sitemap = array(
         'About Our Office' => $about,
         'About Orthodontics' => $ortho,
