@@ -1,6 +1,6 @@
 <?php
 /**
- * This file defines a sitemap that is used to generate navigation and breadcrumbs.
+ * This file defines a sitemap that is used to generate structural content (i.e. navigation, breadcrumbs, etc...)
  *
  * Each site section is composed of a separate hash of page titles 
  * corresponding to files that follow Sesame's naming convention.
@@ -12,7 +12,7 @@
  */
 
 /**
- * This function defines an array for each section of the site and combines them to form a single multi-dimensional array used to generate the navigation for the site.
+ * defines an array for each section of the site and combines them to form a single multi-dimensional array used to generate the navigation for the site
  * @return array $sitemap
  */
 function define_sitemap() {

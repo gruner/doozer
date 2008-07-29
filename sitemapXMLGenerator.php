@@ -30,7 +30,7 @@ function sitemap_url_block($page, $freq = 'monthly', $priority = '') {
     # with no priority set, search crawlers auto-assign it as '0.5'
     
     $block = "    <url>\n";
-    $block .= "        <loc>http://www.plexera.com/$page</loc>\n";
+    $block .= "        <loc>$page</loc>\n";
     $block .= "        <changefreq>$freq</changefreq>\n";
     if ($priority != ''){
         $block .= "        <priority>$priority</priority>\n";

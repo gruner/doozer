@@ -39,21 +39,7 @@ function is_homepage() {
 
 
 /**
- * checks $_section and $_page_name to see if the current page is the homepage
- * 
- * @global string $_section
- * @global string $_page_name
- * @return bool
- */
-function has_sub_items() {
-  global $_section, $_page_name;
-  $sub_items[0] != $section;
-  if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
-}
-
-
-/**
- * determines if the current section has sub-navigation
+ * determines if the current section has sub-pages
  * 
  * optionally check any section given as a parameter
  * @global string $_section
@@ -94,7 +80,7 @@ function slug_name($page_name) {
  
  * Follows the convention of: <br/>
  * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip <br/>
- * Looks for local $_page_title variable but defaults to the value definded in config.php
+ * Looks for local $_page_title variable but defaults to the value definded in {@link config.php}
  */
 function page_title() {
   global $_section, $_page_name, $_keyword, $_page_title;
@@ -142,7 +128,7 @@ function meta_tags() {
 /**
  * echoes a formatted list of the top-level navigation links wrapped in a div tag
  * 
- * * adds the slug name as the id of each <<li>></br/>
+ * * adds the slug name as the id of each <<li>><br/>
  * * adds 'class="active"' to the current section<br/>
  * * optionally includes the subnav items as a nested <<ul>>
  * 
@@ -176,13 +162,14 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
 
 
 /**
- * echoes a formatted <<div>> of the current section's sub links by taking the output of 
- * sub_nav_ul() and wrapping it in a <<div>>
+ * echoes a <<ul>> wrapped in a <<div>> of the subnav links for the current section
+ *
+ * optionally get the subnav links for any section given as a parameter
  *
  * Example: <br/>
  * {@example sub_navigation.php}
  *
- * @param string $section optionally show sub_navigation links for any given section
+ * @param string $section optionally show subnav links for specific section
  * @see sub_nav_ul()
  */
 function sub_navigation($section='') {
@@ -198,9 +185,10 @@ function sub_navigation($section='') {
  *
  * adds 'class="active"' to the current page and gives each <<li>> a unique id based on the 'slug name'
  *
- * @param string $section optionally show sub_navigation links for any given section
- * @return the subnav as a <<ul>>
+ * @param string $section optionally show subnav links for specific section
+ * @return string the subnav as a <<ul>>
  * @see slug_name()
+ * @see sub_navigation() wraps this function in a <<div>>
  */
 function sub_nav_ul($section='') {
    
@@ -231,13 +219,13 @@ function sub_nav_ul($section='') {
  * gets id and class names for each <<li>> in the navigation
  *
  * * adds id='slug-name'<br/>
- * * adds 'first' and 'last' classes to appropriate list items<br/>
+ * * adds 'first' and 'last' classes to the first and last items in the list<br/>
  * * adds 'active' class to the current section or page<br/>
  *
  * @param string $current_item the current page or section for setting the 'active' class
  * @param string $child can be a page_name or section as contained in the array $children
  * @param array $children the array that contains $child
- * @return the formatted attributes as a string
+ * @return string the formatted attributes for the <<li>>
  */
 function get_li_attributes($current_item, $child, $children){
   $class = array();
@@ -266,13 +254,13 @@ function full_navigation($exclusions=array()) {
 
 
 /**
- * echoes a formatted list of the top-level navigation links
+ * echoes a formatted list of the top-level navigation links for placement as the text navigation
  *
  * Examples:
  * {@example text_navigation.php}
  *
- * @param integer $br optionally force a line break tag after the nth text link
- * @param array $exclustions optionally omits any given sections from the echoed $nav_string
+ * @param integer $br optionally force a line break after the nth text link
+ * @param array $exclusions optionally omit specific sections from the echoed $nav_string
  */
 function text_navigation($br=0, $exclusions=array()) {
     $sitemap = define_sitemap();
@@ -281,7 +269,7 @@ function text_navigation($br=0, $exclusions=array()) {
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        $slug = slug_name($sub_items[0]);
+        $slug = slug_name($section);
         $nav_string .= "<a href=\"$slug.php\">$section</a>";
         
         # add a <br/> tag if given as a param
@@ -315,7 +303,7 @@ function section_index($section="") {
 
   $sitemap = define_sitemap();
   $index = "<h2>In this section:</h2>\n<ul class=\"index\">";
-  $index = sub_nav_ul();
+  $index .= sub_nav_ul();
   echo $index;
 }
 
@@ -331,11 +319,7 @@ function sitemap() {
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap"><li><a href="index.php">Home</a>';
     foreach ($sitemap as $section => $sub_items) {
-        # Because all sections don't have their own content and are just 'index' pages
-        # each section links to its first sub item.
-        # To change this behavior, swap the following two lines.
-        # $slug = slug_name($section);
-        $slug = slug_name($sub_items[0]);
+        $slug = slug_name($section);
         $sitemap_string .= "<li><a href=\"$slug.php\">$section</a></li>";
         if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
