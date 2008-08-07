@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains several php function for easily creating dynamic navigation by utilizing the site stucture defined in {@link sitemap.php}.
+ * This file contains several php functions for easily creating dynamic navigation by utilizing the site stucture defined in {@link sitemap.php}.
  *
  * It also contains several utility functions for quickly generating other common html elements.
  *
@@ -13,14 +13,15 @@
 
 
 /**
- * Include the configuration file for the site which stores site-specific settings
- * such as page title and meta information. This allows for making site-specific changes
- * without having to edit global.php.
+ * the configuration file for the site which stores site-specific settings
+ * such as page title and meta information
+ *
+ * allows for making site-specific changes without having to edit {@link global.php}
  */
 require_once('config.php');
 
 /**
- * Include the sitemap for the site, which we parse in order to generate the navigation.
+ * the sitemap for the site, which we use for generating our various navigation elements
  */
 require_once('sitemap.php');
 
@@ -39,11 +40,13 @@ function is_homepage() {
 
 
 /**
- * determines if the current section has sub-pages
+ * determines if the given section has sub-pages
+ *
+ * defaults to checking the current section
  * 
- * optionally check any section given as a parameter
  * @global string $_section
- * @return bool
+ * @param string check specific section for sub-pages
+ * @return bool if the current section has sub-pages
  */
 function has_sub_items($section='') {
     global $_section;
@@ -343,7 +346,7 @@ function sitemap() {
 /**
  * echoes a formatted string with links to the current page's parent(s).
  *
- * * $separator string defaults to the &#8250; character but can be overridden with any string.
+ * * $separator string defaults to the &#8250; character but can be overridden with any string<br/>
  * * current page is bolded and unlinked.
  *
  * @param string $separator the text or html character that will separate each breadcrumb (optional)

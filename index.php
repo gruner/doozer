@@ -57,6 +57,7 @@ text_navigation(4); # break the line after the forth link</code></pre>
 <?php breadcrumbs(); ?>
 
 <h2>Place Image</h2>
+<p>This function generates and image tag with calculated width and height attributes as well as an alt tag read from an '_alt' variable at the top of the page.</p>
 <pre><code>place_image("images/filename.jpg", ["alt text", "title"]);</code></pre>
 <h3>Example Output:</h3>
 <?php place_image("alf.jpg", "", "alf likes to eat cats"); ?>
