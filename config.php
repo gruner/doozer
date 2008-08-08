@@ -20,14 +20,14 @@ function sc_config(){
     $sc_config = array();
     
     # default meta keywords for every page
-    $sc_config['meta_keywords'] = 'key, words, separated, by, commas';
-    
+    $sc_config['meta_keywords'] = 'scott brustein, scott b brustein dds, staten island, new york, orthodontics, orthodontist, braces, adult orthodontics, child orthodontics, 10308';
+
     # default meta description for every page
-    $sc_config['meta_description'] = 'paste the page description here';
-    
+    $sc_config['meta_description'] = 'Orthodontics for Children and Adults – Your Staten Island Orthodontist - Premium Orthodontics in Staten Island, New York 10308. Dr. Scott Brustein is the trusted Staten Island orthodontist providing orthodontic care for children and adults.';
+
     # default base page title for every page
-    $sc_config['page_title'] = 'Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip';
-    
+    $sc_config['page_title'] = 'Braces Orthodontics - Staten Island NY - Orthodontist Scott Brustein - New York 10308';
+
     return $sc_config;
 }
 

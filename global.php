@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains several php functions for easily creating dynamic navigation by utilizing the site stucture defined in {@link sitemap.php}.
+ * This file contains several php function for easily creating dynamic navigation by utilizing the site stucture defined in {@link sitemap.php}.
  *
  * It also contains several utility functions for quickly generating other common html elements.
  *
@@ -13,15 +13,14 @@
 
 
 /**
- * the configuration file for the site which stores site-specific settings
- * such as page title and meta information
- *
- * allows for making site-specific changes without having to edit {@link global.php}
+ * Include the configuration file for the site which stores site-specific settings
+ * such as page title and meta information. This allows for making site-specific changes
+ * without having to edit global.php.
  */
 require_once('config.php');
 
 /**
- * the sitemap for the site, which we use for generating our various navigation elements
+ * Include the sitemap for the site, which we parse in order to generate the navigation.
  */
 require_once('sitemap.php');
 
@@ -40,13 +39,11 @@ function is_homepage() {
 
 
 /**
- * determines if the given section has sub-pages
- *
- * defaults to checking the current section
+ * determines if the current section has sub-pages
  * 
+ * optionally check any section given as a parameter
  * @global string $_section
- * @param string check specific section for sub-pages
- * @return bool if the current section has sub-pages
+ * @return bool
  */
 function has_sub_items($section='') {
     global $_section;
@@ -73,7 +70,8 @@ function has_sub_items($section='') {
 function slug_name($page_name) {
 	# Define special characters that will be stripped from the name
 	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
-	$slug_name = strtolower(str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))));
+	$slug_name = strtolower(str_replace('/', '-', str_replace('&', "and", str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))))));
+  
 	return $slug_name;
 }
 
@@ -93,10 +91,14 @@ function page_title() {
     $_page_title = $config['page_title'];
   }
   
+  # prepend the keyword
+  if(isset($_keyword) && !empty($_keyword)) { $_page_title = "$_keyword $_page_title"; } 
+  
   if (!is_homepage()) {
-    if(isset($_keyword) && !empty($_keyword)) { $_page_title = "$_keyword $_page_title"; } # prepend the keyword
-    if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; } #prepend the page_name
-    $_page_title = "$_section $_page_title"; #prepend the section
+    #prepend the page_name
+    if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; }
+    #prepend the section
+    $_page_title = "$_section $_page_title";
   }
 
   echo "<title>$_page_title</title>";
@@ -189,11 +191,12 @@ function sub_navigation($section='') {
  * adds 'class="active"' to the current page and gives each <<li>> a unique id based on the 'slug name'
  *
  * @param string $section optionally show subnav links for specific section
+ * @param bool $include_attr optionally omit class and id attributes set for each <<li>>
  * @return string the subnav as a <<ul>>
  * @see slug_name()
  * @see sub_navigation() wraps this function in a <<div>>
  */
-function sub_nav_ul($section='') {
+function sub_nav_ul($section='', $include_attr=true) {
    
     global $_section, $_page_name;
     
@@ -202,19 +205,19 @@ function sub_nav_ul($section='') {
       $section = $_section;
     }
     
-    if(!is_homepage()){
-        $sitemap = define_sitemap();
-        $sub_nav_string = "<ul>\n";
-        $sub_items = $sitemap[$section];
-        foreach ($sub_items as $sub_name) {
-            $slug = slug_name($sub_name);
-            $sub_nav_string .= "<li";
-            $sub_nav_string .= get_li_attributes($_page_name, $sub_name, $sub_items);
-            $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
-        }
-        $sub_nav_string .= "</ul>\n";
-        return $sub_nav_string;
-    }  
+    $sitemap = define_sitemap();
+    $sub_nav_string = "<ul>\n";
+    $sub_items = $sitemap[$section];
+    foreach ($sub_items as $sub_name) {
+      $slug = slug_name($sub_name);
+      $sub_nav_string .= "<li";
+      if ($include_attr){
+        $sub_nav_string .= get_li_attributes($_page_name, $sub_name, $sub_items);
+      }
+      $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
+    }
+    $sub_nav_string .= "</ul>\n";
+    return $sub_nav_string;
 }
 
 
@@ -305,8 +308,8 @@ function section_index($section="") {
   global $_section; 
 
   $sitemap = define_sitemap();
-  $index = "<h2>In this section:</h2>\n<ul class=\"index\">";
-  $index .= sub_nav_ul();
+  $index = "<h2>In this section:</h2>";
+  $index .= sub_nav_ul($_section, false);
   echo $index;
 }
 
@@ -320,7 +323,7 @@ function sitemap() {
     global $_page_name;  
     
     $sitemap = define_sitemap();
-    $sitemap_string = '<ul class="sitemap"><li><a href="index.php">Home</a>';
+    $sitemap_string = '<ul class="sitemap">';
     foreach ($sitemap as $section => $sub_items) {
         $slug = slug_name($section);
         $sitemap_string .= "<li><a href=\"$slug.php\">$section</a></li>";
@@ -346,7 +349,7 @@ function sitemap() {
 /**
  * echoes a formatted string with links to the current page's parent(s).
  *
- * * $separator string defaults to the &#8250; character but can be overridden with any string<br/>
+ * * $separator string defaults to the &#8250; character but can be overridden with any string.
  * * current page is bolded and unlinked.
  *
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
@@ -379,16 +382,21 @@ function breadcrumbs($separator='&#8250;') {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $title text for image's title attribute (optional, omits attribute if not set)
  */
-function place_image($file, $alt='', $title=''){
+function place_image($file='', $alt='', $title=''){
   
-  global $_alt;
+  global $_alt, $_page_name;
   
   if (!$alt){
     $alt = $_alt;
   }
+  
+  if ($file == ''){
+    $file = slug_name($_page_name);
+    $file .= ".jpg";
+  }
 
-  list($w, $h) = getimagesize($file);
-  $img_tag = "<img src=\"$file\" width=\"$w\" height=\"$h\"";
+  list($w, $h) = getimagesize("images/$file");
+  $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
   if($alt){$img_tag .= " alt=\"$alt\"";}
   if($title){$img_tag .= " title=\"$title\"";}
   $img_tag .= " />";

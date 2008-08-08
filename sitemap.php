@@ -22,36 +22,38 @@ function define_sitemap() {
     $about = array(
     	'Meet The Orthodontist',
     	'Meet the Team',
-    	'Office Tour',
-    	'Office Policies',
-    	'What Sets Us Apart',
-    	'Community Photographs'
+    	'Office Tour'
     );
 
     $ortho = array(
-      'Why Braces?',
     	'For Children',
     	'For Adults',
     	'Two-Phase Treatment',
-    	'Orthodontic Treatments',
+    	'TMJ/TMD',
     	'Ortho Dictionary',
-    	'Ask the Orthodontist',
+    	'FAQ',
     	'Resources'
     );
 
     $braces = array(
-        'Life with Braces',
     	'Types of Braces',
     	'Types of Appliances',
+      'Palatal Expander',
     	'Braces Diagram',
-    	'Oral Care Video',
+    	'Patient Care Video',
     	'Retainers'
     );
     
-    $ortho_tech = array(
+    $treatment = array(
+      'Orthodontic Treatments',
       'Invisalign&reg;',
-      'Damon&trade; System',
       'Surgical Orthodontics'
+    );
+    
+    $games = array(
+      'The Game Room',
+      'Brace Painter',
+      'Color Your Retainer'
     );
 
     $contact = array(
@@ -61,19 +63,21 @@ function define_sitemap() {
       'Appointment Request'
     );
     
-    $emergency = array('Emergency Care');
-    
-    $sitemap = array('Site Map');
+    # define empty array for items with no sub nav
+    $no_sub = array();
     
     # separate sections are merged to form the master sitemap hash
     $sitemap = array(
-        'About Our Office' => $about,
+        'Home' => $no_sub,
+        'Our Office' => $about,
+        'Your First Visit' => $no_sub,
         'About Orthodontics' => $ortho,
         'Braces 101' => $braces,
-        'Orthodontic Technologies' => $ortho_tech,
-        'Emergency Care' => $emergency,
+        'Treatment Options' => $treatment,
+        'Emergency Care' => $no_sub,
+        'Fun & Games' => $games,
         'Contact Us' => $contact,
-        'Site Map' => $sitemap
+        'Site Map' => ''
     );
     return $sitemap;
 }
