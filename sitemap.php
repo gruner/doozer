@@ -63,7 +63,7 @@ function define_sitemap() {
       'Appointment Request'
     );
     
-    # define empty array for items with no sub nav
+    # define an empty array for items with no sub nav
     $no_sub = array();
     
     # separate sections are merged to form the master sitemap hash

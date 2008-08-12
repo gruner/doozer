@@ -57,14 +57,17 @@ function has_sub_items($section='') {
 }
 
 
-//section_link($section)
-
 /**
  * determines the link to the current section
+ *
+ * if the section's sub items are an array
+ * the 'slug name' is used for the link
+ *
+ * if the section's sub item is a string, the string is used for the link
  * 
  * optionally check any section given as a parameter
  * @global string $_section
- * @return bool
+ * @return string
  */
 function section_link($section='') {
     global $_section;
@@ -75,7 +78,6 @@ function section_link($section='') {
     $sitemap = define_sitemap();
     $link = '';
     $sub = $sitemap[$section];
-    
     if (is_array($sub)){
       $link = slug_name($section);
       $link .= '.php';
@@ -363,7 +365,7 @@ function sitemap() {
             foreach ($sub_items as $sub_name) {
                 $sub_stub = slug_name($sub_name);
                 # Mark the current page, don't create a self referencing link
-                if ($sub_name == $_page_name) {
+                if ($sub_name == $_page_name) { #TODO this line isn't working
                     $sitemap_string .= "<li>$sub_name (This Page)</li>";
                 } else {
                     $sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
