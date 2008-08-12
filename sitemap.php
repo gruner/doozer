@@ -68,16 +68,18 @@ function define_sitemap() {
     
     # separate sections are merged to form the master sitemap hash
     $sitemap = array(
-        'Home' => $no_sub,
+        'Home' => 'index.php',
+        'Patient Login' => 'http://www2.orthosesame.com/*****/sesame/',
+        'Doctor Login' => 'http://www.sesameinteractive.com/*****/',
         'Our Office' => $about,
         'Your First Visit' => $no_sub,
         'About Orthodontics' => $ortho,
         'Braces 101' => $braces,
         'Treatment Options' => $treatment,
         'Emergency Care' => $no_sub,
-        'Fun & Games' => $games,
+        'Fun &amp; Games' => $games,
         'Contact Us' => $contact,
-        'Site Map' => ''
+        'Site Map' => $no_sub
     );
     return $sitemap;
 }

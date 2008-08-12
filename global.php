@@ -53,7 +53,37 @@ function has_sub_items($section='') {
     }
     $sitemap = define_sitemap();
     $sub_items = $sitemap[$section];
-    if(count($sub_items) > 1){return true;} else {return false;}
+    if(is_array($sub_items) && count($sub_items) > 1){return true;} else {return false;}
+}
+
+
+//section_link($section)
+
+/**
+ * determines the link to the current section
+ * 
+ * optionally check any section given as a parameter
+ * @global string $_section
+ * @return bool
+ */
+function section_link($section='') {
+    global $_section;
+    # Use the current section unless a specific section is given as a parameter
+    if (!$section){
+      $section = $_section;
+    }
+    $sitemap = define_sitemap();
+    $link = '';
+    $sub = $sitemap[$section];
+    
+    if (is_array($sub)){
+      $link = slug_name($section);
+      $link .= '.php';
+    } elseif (is_string($sub)){
+      $link = $sub;
+    }
+    
+    return $link;
 }
 
 /**
@@ -153,8 +183,8 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
           $slug = slug_name($section);
         	$nav_string .= "<li";
           $nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-        	$slug = slug_name($section);  # use $sub_items[0] to skip 'index' page
-        	$nav_string .= "><a href=\"$slug.php\">$section</a>\n";
+        	$link = section_link($section);
+        	$nav_string .= "><a href=\"$link\">$section</a>\n";
           if($include_sub_nav && has_sub_items($section)){
             $nav_string .= sub_nav_ul($section);
           }
@@ -267,6 +297,7 @@ function full_navigation($exclusions=array()) {
  *
  * @param integer $br optionally force a line break after the nth text link
  * @param array $exclusions optionally omit specific sections from the echoed $nav_string
+ * @todo allow multiple <br/>s
  */
 function text_navigation($br=0, $exclusions=array()) {
     $sitemap = define_sitemap();
@@ -275,16 +306,16 @@ function text_navigation($br=0, $exclusions=array()) {
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
-        $slug = slug_name($section);
-        $nav_string .= "<a href=\"$slug.php\">$section</a>";
+        $link = section_link($section);
+        $nav_string .= "<a href=\"$link\">$section</a>";
         
         # add a <br/> tag if given as a param
         if($br == $i){
           $nav_string .= '<br />';
         }
         
-        # add a separator unless it's the last item in the list        	
-        if ($sitemap[$section] != end($sitemap) && ($br != $i)) {
+        # add a separator unless it's the last item in the list or at a break
+        if (count($sitemap) != $i && $br != $i) {
           $nav_string .= ' | ';
         }
         $i++;
@@ -325,8 +356,8 @@ function sitemap() {
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap">';
     foreach ($sitemap as $section => $sub_items) {
-        $slug = slug_name($section);
-        $sitemap_string .= "<li><a href=\"$slug.php\">$section</a></li>";
+        $link = section_link($section);
+        $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
         if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
