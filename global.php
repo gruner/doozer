@@ -34,7 +34,7 @@ require_once('sitemap.php');
  */
 function is_homepage() {
   global $_section, $_page_name;
-  if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
+  if($_section == 'Home' && $_page_name == 'Your search for a Spectacular Huntington orthodontist ends here'){return true;} else {return false;}
 }
 
 
@@ -116,16 +116,23 @@ function slug_name($page_name) {
  * Looks for local $_page_title variable but defaults to the value definded in {@link config.php}
  */
 function page_title() {
-  global $_section, $_page_name, $_keyword, $_page_title;
+  global $_section, $_page_name, $_keyword, $_default_keywords, $_page_title;
   $config = sc_config();
   
   if(!isset($_page_title) || empty($_page_title)) {
     $_page_title = $config['page_title'];
   }
+  if(!isset($_default_keywords)) {
+  	$_default_keywords = $config['default_keywords'];
+  }
   
   # prepend the keyword
-  if(isset($_keyword) && !empty($_keyword)) { $_page_title = "$_keyword $_page_title"; } 
-  
+  if(isset($_keyword) && !empty($_keyword)) { 
+  		$_page_title = "$_keyword $_page_title"; 
+	} else {
+  		$_page_title = "$_default_keywords $_page_title";
+  }
+	  
   if (!is_homepage()) {
     #prepend the page_name
     if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; }
@@ -186,7 +193,7 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
         	$nav_string .= "<li";
           $nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
         	$link = section_link($section);
-        	$nav_string .= "><a href=\"$link\">$section</a>\n";
+        	$nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
           if($include_sub_nav && has_sub_items($section)){
             $nav_string .= sub_nav_ul($section);
           }
@@ -195,6 +202,29 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
     }
     $nav_string .= "</ul>\n</div>";
     echo $nav_string;
+}
+
+//sample top nav function
+function aux_navigation($exclusions=array(), $include_sub_nav=true) {
+    global $_section, $_page_name;
+    $sitemap = define_sitemap();
+    $aux_nav_string = "<ul id=\"utility\" >\n";
+    foreach ($sitemap as $section => $sub_items) {
+    	# skip any sections that are in the exclusions array
+    	if (!in_array($section, $exclusions)) {
+          $slug = slug_name($section);
+        	$aux_nav_string .= "<li";
+          $aux_nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
+        	$link = section_link($section);
+        	$aux_nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
+          if($include_sub_nav && has_sub_items($section)){
+            $aux_nav_string .= sub_nav_ul($section);
+          }
+          $aux_nav_string .= "</li>\n";
+    	}
+    }
+    $aux_nav_string .= "</ul>\n";
+    echo $aux_nav_string;
 }
 
 
@@ -270,8 +300,6 @@ function get_li_attributes($current_item, $child, $children){
   if($child == $children[0]){$class[] = 'first';}
   elseif($child == end($children)){$class[] = 'last';}
   if($child == $current_item){$class[] = 'active';}
-  $slug = slug_name($child);
-  $attr = " id=\"$slug\"";
   if($class){
     $classes = implode(' ', $class);
     $attr .= " class=\"$classes\"";
@@ -303,7 +331,7 @@ function full_navigation($exclusions=array()) {
  */
 function text_navigation($br=0, $exclusions=array()) {
     $sitemap = define_sitemap();
-    $nav_string = '<p class="text_nav">';
+    $nav_string = '<p class="text-nav">';
     $i = 1;
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
@@ -415,7 +443,7 @@ function breadcrumbs($separator='&#8250;') {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $title text for image's title attribute (optional, omits attribute if not set)
  */
-function place_image($file='', $alt='', $title=''){
+function place_image($file='', $alt='', $img_class='img-left'){
   
   global $_alt, $_page_name;
   
@@ -430,8 +458,7 @@ function place_image($file='', $alt='', $title=''){
 
   list($w, $h) = getimagesize("images/$file");
   $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
-  if($alt){$img_tag .= " alt=\"$alt\"";}
-  if($title){$img_tag .= " title=\"$title\"";}
+  if($alt){$img_tag .= " class=\"$img_class\" alt=\"$alt\"";}
   $img_tag .= " />";
   
   echo $img_tag;
