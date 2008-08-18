@@ -34,7 +34,7 @@ require_once('sitemap.php');
  */
 function is_homepage() {
   global $_section, $_page_name;
-  if($_section == 'Home' && $_page_name == 'Your search for a Spectacular Huntington orthodontist ends here'){return true;} else {return false;}
+  if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
 }
 
 
@@ -286,7 +286,6 @@ function sub_nav_ul($section='', $include_attr=true) {
 /**
  * gets id and class names for each <<li>> in the navigation
  *
- * * adds id='slug-name'<br/>
  * * adds 'first' and 'last' classes to the first and last items in the list<br/>
  * * adds 'active' class to the current section or page<br/>
  *
@@ -443,7 +442,7 @@ function breadcrumbs($separator='&#8250;') {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $title text for image's title attribute (optional, omits attribute if not set)
  */
-function place_image($file='', $alt='', $img_class='img-left'){
+function place_image($file='', $alt='', $class=''){
   
   global $_alt, $_page_name;
   
@@ -458,9 +457,16 @@ function place_image($file='', $alt='', $img_class='img-left'){
 
   list($w, $h) = getimagesize("images/$file");
   $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
-  if($alt){$img_tag .= " class=\"$img_class\" alt=\"$alt\"";}
+  if($class){$img_tag .= " class=\"$class\"";}
+  if($alt){$img_tag .= " alt=\"$alt\"";}
   $img_tag .= " />";
   
   echo $img_tag;
+}
+
+
+function place_image_if_alt(){
+  global $_alt;
+  if ($_alt){place_image();}
 }
 ?>
