@@ -385,14 +385,18 @@ function sitemap() {
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap">';
     foreach ($sitemap as $section => $sub_items) {
-        $link = section_link($section);
-        $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
+        if ($section == $_page_name) {
+          $sitemap_string .= "<li>$section (This Page)</li>";
+        } else {
+          $link = section_link($section);
+          $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
+        }
         if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
                 $sub_stub = slug_name($sub_name);
                 # Mark the current page, don't create a self referencing link
-                if ($sub_name == $_page_name) { #TODO this line isn't working
+                if ($sub_name == $_page_name) {
                     $sitemap_string .= "<li>$sub_name (This Page)</li>";
                 } else {
                     $sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
@@ -467,6 +471,6 @@ function place_image($file='', $alt='', $class=''){
 
 function place_image_if_alt(){
   global $_alt;
-  if ($_alt){place_image();}
+  if ($_alt){place_image($file='', $alt='', $class='right auto');}
 }
 ?>
