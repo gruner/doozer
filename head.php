@@ -12,6 +12,7 @@
 </head>
 
 <body class="<?php echo slug_name($_page_name); ?>">
+
 <?php //full_navigation($exclusions = array('Contact Us','Site Map')); ?>
 <?php //sub_navigation(); ?>
 <?php //text_navigation(); ?>
