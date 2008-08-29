@@ -181,11 +181,12 @@ function meta_tags() {
  * 
  * @param array $exclusions optionally omits any given sections from the echoed $nav_string
  * @param bool $include_sub_nav optionally include nested sub navigation
+ * @param string $div_id optionally define the id of the generated div
  */
-function main_navigation($exclusions=array(), $include_sub_nav=false) {
+function main_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
     global $_section, $_page_name;
     $sitemap = define_sitemap();
-    $nav_string = "<div id=\"nav\">\n<ul>\n";
+    $nav_string = "<div id=\"$div_id\">\n<ul>\n";
     foreach ($sitemap as $section => $sub_items) {
     	# skip any sections that are in the exclusions array
     	if (!in_array($section, $exclusions)) {
@@ -204,27 +205,15 @@ function main_navigation($exclusions=array(), $include_sub_nav=false) {
     echo $nav_string;
 }
 
-//sample top nav function
-function aux_navigation($exclusions=array(), $include_sub_nav=true) {
-    global $_section, $_page_name;
-    $sitemap = define_sitemap();
-    $aux_nav_string = "<ul id=\"utility\" >\n";
-    foreach ($sitemap as $section => $sub_items) {
-    	# skip any sections that are in the exclusions array
-    	if (!in_array($section, $exclusions)) {
-          $slug = slug_name($section);
-        	$aux_nav_string .= "<li";
-          $aux_nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-        	$link = section_link($section);
-        	$aux_nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
-          if($include_sub_nav && has_sub_items($section)){
-            $aux_nav_string .= sub_nav_ul($section);
-          }
-          $aux_nav_string .= "</li>\n";
-    	}
-    }
-    $aux_nav_string .= "</ul>\n";
-    echo $aux_nav_string;
+
+/**
+ * a wrapper for calling main_navigation() with included sub navigation
+ * 
+ * @param array $exclusions optionally omits any given sections from the echoed $nav_string
+ * @see main_navigation()
+ */
+function full_navigation($exclusions=array()) {
+  main_navigation($exclusions, $include_sub_nav=true);
 }
 
 
@@ -284,6 +273,44 @@ function sub_nav_ul($section='', $include_attr=true) {
 
 
 /**
+ * creates a formatted <<p>> of the current section's sub links with ' | ' between each link
+ *
+ * adds 'class="active"' to the current link
+ *
+ * @param string $section optionally show subnav links for specific section
+ * @param bool $include_attr optionally omit class names set for each link
+ */
+function sub_nav_p($section='', $include_attr=true) {
+   
+    global $_section, $_page_name;
+    
+    # Use the current section unless a specific section is given as a parameter
+    if (!$section){
+      $section = $_section;
+    }
+    
+    $formatted_list = '<p class="sub_nav">';
+    
+    $link_array = array();
+    $sitemap = define_sitemap();
+    $sub_items = $sitemap[$section];
+    foreach ($sub_items as $sub_name) {
+      $slug = slug_name($sub_name);
+      $link = "<a href=\"$slug.php\"";
+      if ($include_attr){
+        $link .= get_li_attributes($_page_name, $sub_name, $sub_items);
+      }
+      $link .= ">$sub_name</a>";
+      $link_array[] = $link;
+    }
+    
+    $formatted_list .= format_list_with_separator($link_array);
+    $formatted_list .= '</p>';
+    echo $formatted_list;
+}
+
+
+/**
  * gets id and class names for each <<li>> in the navigation
  *
  * * adds 'first' and 'last' classes to the first and last items in the list<br/>
@@ -293,6 +320,7 @@ function sub_nav_ul($section='', $include_attr=true) {
  * @param string $child can be a page_name or section as contained in the array $children
  * @param array $children the array that contains $child
  * @return string the formatted attributes for the <<li>>
+ * @todo rename because it's not just formatting li's anymore
  */
 function get_li_attributes($current_item, $child, $children){
   $class = array();
@@ -304,17 +332,6 @@ function get_li_attributes($current_item, $child, $children){
     $attr .= " class=\"$classes\"";
   }
   return $attr;
-}
-
-
-/**
- * a wrapper for calling main_navigation() with included sub navigation
- * 
- * @param array $exclusions optionally omits any given sections from the echoed $nav_string
- * @see main_navigation()
- */
-function full_navigation($exclusions=array()) {
-  main_navigation($exclusions, $include_sub_nav=true);
 }
 
 
@@ -385,14 +402,18 @@ function sitemap() {
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap">';
     foreach ($sitemap as $section => $sub_items) {
-        $link = section_link($section);
-        $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
+        if ($section == $_page_name) {
+          $sitemap_string .= "<li>$section (This Page)</li>";
+        } else {
+          $link = section_link($section);
+          $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
+        }
         if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
                 $sub_stub = slug_name($sub_name);
                 # Mark the current page, don't create a self referencing link
-                if ($sub_name == $_page_name) { #TODO this line isn't working
+                if ($sub_name == $_page_name) {
                     $sitemap_string .= "<li>$sub_name (This Page)</li>";
                 } else {
                     $sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
@@ -413,6 +434,7 @@ function sitemap() {
  * * current page is bolded and unlinked.
  *
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
+ * @todo refactor to use format_list_with_separator
  */
 function breadcrumbs($separator='&#8250;') {
     
@@ -434,6 +456,17 @@ function breadcrumbs($separator='&#8250;') {
     echo $bc;
 }
 
+
+/**
+ * formats an array into a single string by inserting the given separator string between items
+ *
+ * @param array $list 
+ * @param string $separator the string inserted between items
+ */
+function format_list_with_separator($list, $separator=' | ') {
+    $formatted_list = implode("$separator", $list);
+    return $formatted_list;
+}
 
 /**
  * echoes a formatted image tag with calculated width and height attributes
@@ -474,4 +507,3 @@ function place_image_if_alt(){
   global $_alt;
   if ($_alt){place_image();}
 }
-?>
