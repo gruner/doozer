@@ -385,18 +385,14 @@ function sitemap() {
     $sitemap = define_sitemap();
     $sitemap_string = '<ul class="sitemap">';
     foreach ($sitemap as $section => $sub_items) {
-        if ($section == $_page_name) {
-          $sitemap_string .= "<li>$section (This Page)</li>";
-        } else {
-          $link = section_link($section);
-          $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
-        }
+        $link = section_link($section);
+        $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
         if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
             foreach ($sub_items as $sub_name) {
                 $sub_stub = slug_name($sub_name);
                 # Mark the current page, don't create a self referencing link
-                if ($sub_name == $_page_name) {
+                if ($sub_name == $_page_name) { #TODO this line isn't working
                     $sitemap_string .= "<li>$sub_name (This Page)</li>";
                 } else {
                     $sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
@@ -442,9 +438,11 @@ function breadcrumbs($separator='&#8250;') {
 /**
  * echoes a formatted image tag with calculated width and height attributes
  *
- * @param string $file text for image's 'src' attribute (relative path to the file, not just the name)
+ * if $file isn't specified, looks for a .jpg named after the $_page_name
+ *
+ * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
- * @param string $title text for image's title attribute (optional, omits attribute if not set)
+ * @param string $class text for image's class attribute (optional, omits attribute if not set)
  */
 function place_image($file='', $alt='', $class=''){
   
@@ -454,7 +452,7 @@ function place_image($file='', $alt='', $class=''){
     $alt = $_alt;
   }
   
-  if ($file == ''){
+  if (!$file){
     $file = slug_name($_page_name);
     $file .= ".jpg";
   }
@@ -469,8 +467,11 @@ function place_image($file='', $alt='', $class=''){
 }
 
 
+/**
+ * calls place_image() if the $_alt variable is set for the page
+ */
 function place_image_if_alt(){
   global $_alt;
-  if ($_alt){place_image($file='', $alt='', $class='right auto');}
+  if ($_alt){place_image();}
 }
 ?>
