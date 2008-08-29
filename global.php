@@ -183,7 +183,7 @@ function meta_tags() {
  * @param bool $include_sub_nav optionally include nested sub navigation
  * @param string $div_id optionally define the id of the generated div
  */
-function main_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
+function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
     global $_section, $_page_name;
     $sitemap = define_sitemap();
     $nav_string = "<div id=\"$div_id\">\n<ul>\n";
@@ -207,13 +207,24 @@ function main_navigation($exclusions=array(), $include_sub_nav=false, $div_id='n
 
 
 /**
- * a wrapper for calling main_navigation() with included sub navigation
+ * a wrapper for calling navigation() with included sub navigation
  * 
  * @param array $exclusions optionally omits any given sections from the echoed $nav_string
- * @see main_navigation()
+ * @see navigation()
  */
 function full_navigation($exclusions=array()) {
-  main_navigation($exclusions, $include_sub_nav=true);
+  navigation($exclusions, $include_sub_nav=true);
+}
+
+
+/**
+ * depricated, use navigation() instead
+ * 
+ * @param array $exclusions optionally omits any given sections from the echoed $nav_string
+ * @see navigation()
+ */
+function main_navigation($exclusions) {
+  navigation($exclusions, $include_sub_nav=false);
 }
 
 
@@ -288,6 +299,9 @@ function sub_nav_p($section='', $include_attr=true) {
     if (!$section){
       $section = $_section;
     }
+    
+    # don't do output anything further if there are no sub items
+    if (!has_sub_items($section)) {return;}
     
     $formatted_list = '<p class="sub_nav">';
     
