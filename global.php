@@ -240,10 +240,12 @@ function main_navigation($exclusions) {
  * @see sub_nav_ul()
  */
 function sub_navigation($section='') {
-  $sub_nav = sub_nav_ul($section);
-  echo "<div id=\"subnav\">\n";
-  echo "$sub_nav\n";
-  echo "</div>\n";
+  if (has_sub_items($section)) {
+    $sub_nav = sub_nav_ul($section);
+    echo "<div id=\"subnav\">\n";
+    echo "$sub_nav\n";
+    echo "</div>\n";
+  }
 }
 
 
