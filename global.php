@@ -69,7 +69,7 @@ function has_sub_items($section='') {
  * @global string $_section
  * @return string
  */
-function section_link($section='') {
+function section_link($section='', $index_pages=true) {
     global $_section;
     # Use the current section unless a specific section is given as a parameter
     if (!$section){
@@ -79,7 +79,11 @@ function section_link($section='') {
     $link = '';
     $sub = $sitemap[$section];
     if (is_array($sub)){
-      $link = slug_name($section);
+      if ($index_pages || !has_sub_items($section)){
+        $link = slug_name($section);
+      } else {
+        $link = slug_name($sub[0]);
+      }
       $link .= '.php';
     } elseif (is_string($sub)){
       $link = $sub;
@@ -100,11 +104,11 @@ function section_link($section='') {
  * @return string processed string
  */
 function slug_name($page_name) {
-	# Define special characters that will be stripped from the name
-	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
-	$slug_name = strtolower(str_replace('/', '-', str_replace('&', "and", str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))))));
+  # Define special characters that will be stripped from the name
+  $special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
+  $slug_name = strtolower(str_replace('/', '-', str_replace('&', "and", str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))))));
   
-	return $slug_name;
+  return $slug_name;
 }
 
 
@@ -123,16 +127,16 @@ function page_title() {
     $_page_title = $config['page_title'];
   }
   if(!isset($_default_keywords)) {
-  	$_default_keywords = $config['default_keywords'];
+    $_default_keywords = $config['default_keywords'];
   }
   
   # prepend the keyword
   if(isset($_keyword) && !empty($_keyword)) { 
-  		$_page_title = "$_keyword $_page_title"; 
-	} else {
-  		$_page_title = "$_default_keywords $_page_title";
+      $_page_title = "$_keyword $_page_title"; 
+  } else {
+    $_page_title = "$_default_keywords $_page_title";
   }
-	  
+
   if (!is_homepage()) {
     #prepend the page_name
     if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; }
@@ -188,18 +192,18 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') 
     $sitemap = define_sitemap();
     $nav_string = "<div id=\"$div_id\">\n<ul>\n";
     foreach ($sitemap as $section => $sub_items) {
-    	# skip any sections that are in the exclusions array
-    	if (!in_array($section, $exclusions)) {
+      # skip any sections that are in the exclusions array
+      if (!in_array($section, $exclusions)) {
           $slug = slug_name($section);
-        	$nav_string .= "<li";
+          $nav_string .= "<li";
           $nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-        	$link = section_link($section);
-        	$nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
+          $link = section_link($section, $index_pages=false);
+          $nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
           if($include_sub_nav && has_sub_items($section)){
             $nav_string .= sub_nav_ul($section);
           }
           $nav_string .= "</li>\n";
-    	}
+      }
     }
     $nav_string .= "</ul>\n</div>";
     echo $nav_string;
@@ -239,13 +243,39 @@ function main_navigation($exclusions) {
  * @param string $section optionally show subnav links for specific section
  * @see sub_nav_ul()
  */
-function sub_navigation($section='') {
+function sub_navigation($section='', $pre_text='') {
   if (has_sub_items($section)) {
     $sub_nav = sub_nav_ul($section);
     echo "<div id=\"subnav\">\n";
+    if ($pre_text) { echo "$pre_text"; }
     echo "$sub_nav\n";
     echo "</div>\n";
   }
+}
+
+
+/**
+ * @see sub_navigation()
+ */
+function sub_navigation_with_heading($section='', $link=false) {
+
+    global $_section;
+    
+    # Use the current section unless a specific section is given as a parameter
+    if (!$section){
+      $section = $_section;
+    }
+  
+  $heading = "<h3>"; 
+  if ($link) {
+    $heading_link = section_link($section, $index_pages=false);
+    $heading .= "<a href=\"$heading_link\">"; 
+  }
+  $heading .= $section;
+  if ($link) { $heading .= "</a>"; }
+  $heading .= "</h3>"; 
+  
+  sub_navigation($section, $heading);
 }
 
 
@@ -366,8 +396,8 @@ function text_navigation($br=0, $exclusions=array()) {
     $nav_string = '<p class="text-nav">';
     $i = 1;
     foreach ($sitemap as $section => $sub_items) {
-    	# skip any sections that are in the exclusions array
-    	if (!in_array($section, $exclusions)) {
+      # skip any sections that are in the exclusions array
+      if (!in_array($section, $exclusions)) {
         $link = section_link($section);
         $nav_string .= "<a href=\"$link\">$section</a>";
         
@@ -381,7 +411,7 @@ function text_navigation($br=0, $exclusions=array()) {
           $nav_string .= ' | ';
         }
         $i++;
-    	}
+      }
     }
     $nav_string .= '</p>';
     echo $nav_string;
