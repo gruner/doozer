@@ -197,7 +197,7 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') 
           $slug = slug_name($section);
           $nav_string .= "<li";
           $nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-          $link = section_link($section, $index_pages=false);
+          $link = section_link($section, $index_pages=true);
           $nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
           if($include_sub_nav && has_sub_items($section)){
             $nav_string .= sub_nav_ul($section);
@@ -551,5 +551,17 @@ function place_image($file='', $alt='', $class=''){
  */
 function place_image_if_alt(){
   global $_alt;
-  if ($_alt){place_image();}
+  if ($_alt){place_image('','','head');}
+}
+
+function email_link($name, $domain){
+  $js = "<script type=\"text/javascript\">\n";
+  $js .= "<!--\n";
+  $js .= "var name = \"$name\";\n";
+  $js .= "var domain = \"$domain\";\n";
+  $js .= "document.write('<a href=\\\"mailto:' + name + '@' + domain + '\\\">');\n";
+  $js .= "document.write(name + '@' + domain + '</a>');\n";
+  $js .= "// -->\n";
+  $js .= "</script>\n";
+  echo $js;
 }
