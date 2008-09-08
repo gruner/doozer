@@ -37,6 +37,26 @@ function is_homepage() {
   if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
 }
 
+/**
+ * checks config.php for 'index_pages' option
+ *
+ * If true, section links go to a section 'index page' (i.e. "In this section...)
+ * Otherwise the section link points to the first subpage.
+ *
+ * No config setting is necessary to use the default behavior of omitting index pages.
+ * 
+ * @return bool
+ * @see config.php
+ */
+function index_pages() {
+  $config = sc_config();
+  if($config['index_pages'] == true ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 /**
  * determines if the current section has sub-pages
@@ -69,7 +89,7 @@ function has_sub_items($section='') {
  * @global string $_section
  * @return string
  */
-function section_link($section='', $index_pages=true) {
+function section_link($section='') {
     global $_section;
     # Use the current section unless a specific section is given as a parameter
     if (!$section){
@@ -79,7 +99,7 @@ function section_link($section='', $index_pages=true) {
     $link = '';
     $sub = $sitemap[$section];
     if (is_array($sub)){
-      if ($index_pages || !has_sub_items($section)){
+      if (index_pages() || !has_sub_items($section)){
         $link = slug_name($section);
       } else {
         $link = slug_name($sub[0]);
@@ -197,7 +217,7 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') 
           $slug = slug_name($section);
           $nav_string .= "<li";
           $nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-          $link = section_link($section, $index_pages=true);
+          $link = section_link($section);
           $nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
           if($include_sub_nav && has_sub_items($section)){
             $nav_string .= sub_nav_ul($section);
@@ -268,7 +288,7 @@ function sub_navigation_with_heading($section='', $link=false) {
   
   $heading = "<h3>"; 
   if ($link) {
-    $heading_link = section_link($section, $index_pages=false);
+    $heading_link = section_link($section);
     $heading .= "<a href=\"$heading_link\">"; 
   }
   $heading .= $section;
@@ -514,14 +534,18 @@ function format_list_with_separator($list, $separator=' | ') {
     return $formatted_list;
 }
 
+
 /**
  * echoes a formatted image tag with calculated width and height attributes
  *
  * if $file isn't specified, looks for a .jpg named after the $_page_name
  *
+ * if $alst isn't specified, looks for page variable $_alt
+ *
  * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
+ * @todo add a final hash parameter for additional attributes such as title
  */
 function place_image($file='', $alt='', $class=''){
   
@@ -551,9 +575,13 @@ function place_image($file='', $alt='', $class=''){
  */
 function place_image_if_alt(){
   global $_alt;
-  if ($_alt){place_image('','','head');}
+  if ($_alt){place_image('','','auto');}
 }
 
+
+/**
+ * echoes the script tag for creating a spam-friendly email link
+ */
 function email_link($name, $domain){
   $js = "<script type=\"text/javascript\">\n";
   $js .= "<!--\n";
