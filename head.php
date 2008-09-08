@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<?php meta_tags() ?>
+	<?php meta_tags(); ?>
 	<script src="scripts/jquery.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link rel="shortcut icon" href="favicon.ico" />
-	<link href="stylesheets/main.css" media="screen" rel="stylesheet" type="text/css" />
-	<!--[if IE]><link rel="stylesheet" href="stylesheets/ie.css" type="text/css" media="screen, projection"><![endif]-->
-	<?php page_title() ?>
+	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
+	<!--[if lt IE 7]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection"><![endif]-->
+	<?php page_title(); ?>
 </head>
 
 <body class="<?php echo slug_name($_page_name); ?>">
