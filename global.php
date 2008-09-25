@@ -469,10 +469,10 @@ function sitemap() {
     $sitemap_string = '<ul class="sitemap">';
     foreach ($sitemap as $section => $sub_items) {
         if ($section == $_page_name) {
-          $sitemap_string .= "<li>$section (This Page)</li>";
+          $sitemap_string .= "<li>$section (This Page)"; #leave <li> open
         } else {
           $link = section_link($section);
-          $sitemap_string .= "<li><a href=\"$link\">$section</a></li>";
+          $sitemap_string .= "<li><a href=\"$link\">$section</a>"; #leave <li> open
         }
         if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
             $sitemap_string .= '<ul>';
@@ -487,7 +487,7 @@ function sitemap() {
             }
             $sitemap_string .= '</ul>';
         }
-        # $sitemap_string .= '</li>';
+        $sitemap_string .= '</li>'; # close section <li>
     }
     $sitemap_string .= '</ul>';
     echo $sitemap_string;
