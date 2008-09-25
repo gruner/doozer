@@ -487,7 +487,7 @@ function sitemap() {
             }
             $sitemap_string .= '</ul>';
         }
-        $sitemap_string .= '</li>';
+        # $sitemap_string .= '</li>';
     }
     $sitemap_string .= '</ul>';
     echo $sitemap_string;
