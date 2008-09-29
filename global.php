@@ -593,3 +593,15 @@ function email_link($name, $domain){
   $js .= "</script>\n";
   echo $js;
 }
+
+
+
+/**
+ * echoes a div tag for embedding flash media with a standard notice if flash is not available.
+ */
+function flash_div($div_name){
+  $div = "<div id=\"$div_name\"\n";
+  $div .= "<p>The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
+  $div .= "</div>\n";
+  echo $div;
+}
