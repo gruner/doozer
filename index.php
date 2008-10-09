@@ -13,10 +13,10 @@ include_once('head.php');
 <p>To illustrate these examples, this page is set to <code>$_section='Braces 101'</code> and  <code>$_page_name='Life with Braces'</code>.</p>
 
 <h2>Main Navigation</h2>
-<pre><code>main_navigation($exclusions = array('Contact Us','Site Map'));</code></pre>
+<pre><code>navigation($exclusions = array('Contact Us','Site Map'));</code></pre>
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the top level navigation links. It also adds an <code>class="active"</code> to the <code>&lt;li&gt;</code> of the current section. It will omit any sections listed in the given <code>$exclusions</code> parameter.</p>
 <h3>Example Output:</h3>
-<?php main_navigation($exclusions = array('Contact Us','Site Map')); ?>
+<?php navigation($exclusions = array('Contact Us','Site Map')); ?>
 
 <h2>Sub Navigation</h2>
 <pre><code>sub_navigation();</code></pre>
