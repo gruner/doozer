@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php meta_tags(); ?>
-	<script src="scripts/jquery.js" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
     <script src="scripts/jquery.flash.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link rel="shortcut icon" href="favicon.ico" />
