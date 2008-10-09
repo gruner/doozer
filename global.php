@@ -322,13 +322,22 @@ function sub_nav_ul($section='', $include_attr=true) {
     $sitemap = define_sitemap();
     $sub_nav_string = "<ul>\n";
     $sub_items = $sitemap[$section];
-    foreach ($sub_items as $sub_name) {
-      $slug = slug_name($sub_name);
+    foreach ($sub_items as $key => $value) {
+      
+      if (is_string($key)){
+        $sub_name = $key;
+        $sub_link = $value;
+      }else{
+        $sub_name = $value;
+        $sub_link = slug_name($value);
+        $sub_link .= '.php';
+      }
+      
       $sub_nav_string .= "<li";
       if ($include_attr){
         $sub_nav_string .= get_li_attributes($_page_name, $sub_name, $sub_items);
       }
-      $sub_nav_string .= "><a href=\"$slug.php\">$sub_name</a></li>\n";
+      $sub_nav_string .= "><a href=\"$sub_link\">$sub_name</a></li>\n";
     }
     $sub_nav_string .= "</ul>\n";
     return $sub_nav_string;

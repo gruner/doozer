@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php meta_tags(); ?>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
-    <script src="scripts/jquery.flash.js" type="text/javascript"></script>
+		<script src="scripts/jquery.flash.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
@@ -15,7 +15,9 @@
 <body class="<?php echo slug_name($_page_name); ?>">
 
 <div id="container">
-	<div id="hd"></div><!--end hd-->
+	<div id="hd">
+		<h1 id="logo"><a href="index.php">Practice Name</a></h1>
+	</div><!--end hd-->
 	<div id="bd">
 		<div id="content">
 			<?php place_image_if_alt(); ?>
@@ -28,5 +30,5 @@
 		<p><a href="http://www.sesamecommunications.com">Orthodontic Web Site by Sesame Design&trade;</a></p>
 	</div><!--end ft-->
 	<div id="util"></div><!--end util-->
-	<?php full_navigation($exclusions = array('Contact Us','Site Map', $include_sub=true)); ?><!--end nav-->
+	<?php navigation($exclusions = array('Contact Us','Site Map', $include_sub=true)); ?><!--end nav-->
 </div><!--end container-->
