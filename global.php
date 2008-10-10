@@ -132,6 +132,17 @@ function slug_name($page_name) {
 }
 
 
+#only for the page titles to remove special chars and keep active nav highlighted
+#added by JC
+# todo reduce redundancy with above
+function slug_page_name($page_name) {
+	# Define special characters that will be stripped from the name
+	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
+	$slug_page_name = str_replace('/', '-', str_replace('&', "and", str_replace('&amp;', "and", str_replace($special_chars,'',$page_name))));
+  
+	return $slug_page_name;
+}
+
 /**
  * echoes the complete title tag of the page
  
@@ -147,21 +158,28 @@ function page_title() {
     $_page_title = $config['page_title'];
   }
   if(!isset($_default_keywords)) {
-    $_default_keywords = $config['default_keywords'];
+  	$_default_keywords = $config['default_keywords'];
   }
   
   # prepend the keyword
   if(isset($_keyword) && !empty($_keyword)) { 
-    $_page_title = "$_keyword $_page_title";
-  } else {
-    $_page_title = "$_default_keywords $_page_title";
+  		$_page_title = "$_keyword $_page_title"; 
+	} else {
+  		$_page_title = "$_default_keywords $_page_title";
   }
-
+	  
   if (!is_homepage()) {
     #prepend the page_name
-    if($_section != $_page_name) { $_page_title = "> $_page_name - $_page_title"; }
-    #prepend the section
-    $_page_title = "$_section $_page_title";
+    if($_section != $_page_name) { 
+		//remove special chars from page name
+		$page_name = $_page_name;
+		$page_name = slug_page_name($page_name);
+		$_page_title = "$_section > $page_name - $_page_title"; 
+	} else {
+		
+	    #prepend the section
+    	$_page_title = "$_section - $_page_title";
+	} 
   }
 
   echo "<title>$_page_title</title>";
