@@ -178,12 +178,12 @@ function page_title() {
     $_page_title = $config['page_title'];
   }
   
-  # prepend the page keyword if it exists, else use the default from config.php
-  if(isset($_keyword) && !empty($_keyword)) { 
-    $_page_title = "$_keyword - $_page_title"; 
-	} else {
-  	$_page_title = "$config['title_keywords'] - $_page_title";
+  if(!isset($_keyword) || empty($_keyword)) {
+    $_keyword = $config['title_keywords'];
   }
+  
+  # prepend the keyword to the title
+  $_page_title = "$_keyword - $_page_title"; 
   
   if (!is_homepage()) {
     if($_section != $_page_name) { 
