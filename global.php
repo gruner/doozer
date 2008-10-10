@@ -208,13 +208,23 @@ function page_title() {
  * defaults to the values defined in {@link config.php}.
  */
 function meta_tags() {
-    global $_meta_keywords, $_meta_description, $_keyword;
+    global $_keyword, $_description;
+    
     $config = sc_config();
     
-    # append page-specific keyword to 
-    if (isset($_keyword) && !empty($_keyword)){$_meta_keywords .= ", $_keyword";}
+    $meta_keywords = $config['meta_keywords'];
+    $meta_description = $config['meta_description'];
     
-    $meta = array('keywords' => $_meta_keywords, 'description' => $_meta_description);
+    if (isset($_keyword) && !empty($_keyword)){
+    # append page-specific keyword to global keywords string
+      $keyword = strtolower($_keyword);
+      $meta_keywords .= ", $keyword";
+    }
+    
+    # replace global description with local description if it exists
+    if (isset($_description) && !empty($_description)){$meta_description = $_description;}
+    
+    $meta = array('keywords' => $meta_keywords, 'description' => $meta_description);
     
     foreach ($meta as $key => $value){
       if (!isset($value) || empty($value)) {
