@@ -26,9 +26,9 @@ function sc_config(){
     $sc_config['meta_description'] = 'paste the site description text here';
 
     # default base page title for every page
-    $sc_config['page_title'] = 'Braces Orthodontics - City ST - Orthodontist name - State zip';
+    $sc_config['page_title'] = 'City ST - Orthodontist name - State zip';
     
-    $sc_config['default_keywords'] = 'Invisalign Braces Orthodontics';
+    $sc_config['title_keywords'] = 'Braces Orthodontics';
 
     return $sc_config;
 }

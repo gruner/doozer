@@ -123,24 +123,44 @@ function section_link($section='') {
  * @param string $page_name the name of the page to convert
  * @return string processed string
  */
-function slug_name($page_name) {
-  # Define special characters that will be stripped from the name
-  $special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
-  $slug_name = strtolower(str_replace('/', '-', str_replace('&', "and", str_replace('&amp;', "and", str_replace(' ', '-', str_replace($special_chars,'',$page_name))))));
-  
+function slug_name($string) {
+  $slug_name = replace_chars(strip_special_chars($string));
   return $slug_name;
 }
 
 
-#only for the page titles to remove special chars and keep active nav highlighted
-#added by JC
-# todo reduce redundancy with above
-function slug_page_name($page_name) {
-	# Define special characters that will be stripped from the name
-	$special_chars = array('.',',','?','/','!','|',':','"','*','&#39;','&copy;','&reg;','&trade;');	
-	$slug_page_name = str_replace('/', '-', str_replace('&', "and", str_replace('&amp;', "and", str_replace($special_chars,'',$page_name))));
-  
-	return $slug_page_name;
+/**
+ * Strips special characters from a string.
+ */
+function strip_special_chars($string) {
+  # Define special characters that will be stripped from the name
+  $special_chars = array('.',',','?','/','!','|',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
+  $processed_string = str_replace($special_chars, '', $string);
+  return $processed_string;
+}
+
+
+/**
+ * Loops through a hash of replacements
+ * and replaces the key with its value in the given string.
+ *
+ * $replacements array has default values which can be overridden when called
+ */
+function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and',' ' => '-','/' => '-')) {
+  foreach ($replacements as $find => $replace) {
+    str_replace($find, $replace, $string);
+  }
+  return $string;
+}
+
+/**
+ * Converts a string to make it suitable for use in a title tag.
+ * Similar to slug_name, but keeps spaces.
+ */
+function titleize($string) {
+	$titleized_name = strip_special_chars($string);
+  $titleized_name = replace_chars($titleized_name, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
+	return $titleized_name;
 }
 
 /**
@@ -151,36 +171,31 @@ function slug_page_name($page_name) {
  * Looks for local $_page_title variable but defaults to the value definded in {@link config.php}
  */
 function page_title() {
-  global $_section, $_page_name, $_keyword, $_default_keywords, $_page_title;
+  global $_section, $_page_name, $_keyword, $_page_title;
   $config = sc_config();
   
   if(!isset($_page_title) || empty($_page_title)) {
     $_page_title = $config['page_title'];
   }
-  if(!isset($_default_keywords)) {
-  	$_default_keywords = $config['default_keywords'];
+  
+  # prepend the page keyword if it exists, else use the default from config.php
+  if(isset($_keyword) && !empty($_keyword)) { 
+    $_page_title = "$_keyword - $_page_title"; 
+	} else {
+  	$_page_title = "$config['title_keywords'] - $_page_title";
   }
   
-  # prepend the keyword
-  if(isset($_keyword) && !empty($_keyword)) { 
-  		$_page_title = "$_keyword $_page_title"; 
-	} else {
-  		$_page_title = "$_default_keywords $_page_title";
-  }
-	  
   if (!is_homepage()) {
-    #prepend the page_name
     if($_section != $_page_name) { 
-		//remove special chars from page name
-		$page_name = $_page_name;
-		$page_name = slug_page_name($page_name);
-		$_page_title = "$_section > $page_name - $_page_title"; 
-	} else {
-		
-	    #prepend the section
-    	$_page_title = "$_section - $_page_title";
-	} 
+      $_page_title = "$_section > $_page_name - $_page_title";
+    } else {
+      #prepend the section
+      $_page_title = "$_section - $_page_title";
+    } 
   }
+  
+  # remove special chars from page name
+  $_page_title = titleize($_page_title);
 
   echo "<title>$_page_title</title>";
 }

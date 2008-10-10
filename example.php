@@ -5,8 +5,17 @@ $_keyword = 'Invisalign';
 $_page_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
 require_once('global.php');
-include_once('head.php');
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<?php meta_tags(); ?>
+	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
+	<?php page_title(); ?>
+</head>
+<body class="<?php echo slug_name($_page_name); ?>">
+
 <p>This is an example page illustrating the available php functions that utilize the site stucture defined in <code>sitemap.php</code>.</p>
 <p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (I&#8217;ve named them <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamicly generated navigation elements.</p>
 <p>These functions are defined in <code>global.php</code>. To enable this functionality simply include it on every page in addition to the header and footer includes. Then define the site structure as a hash in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
@@ -72,4 +81,5 @@ text_navigation(4); # break the line after the forth link</code></pre>
 <h3>Example Output:</h3>
 <?php place_image("alf.jpg", "", "alf likes to eat cats"); ?>
 
-<?php include_once('foot.php'); ?>
+</body>
+</html>
