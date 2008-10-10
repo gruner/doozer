@@ -152,7 +152,7 @@ function page_title() {
   
   # prepend the keyword
   if(isset($_keyword) && !empty($_keyword)) { 
-      $_page_title = "$_keyword $_page_title"; 
+    $_page_title = "$_keyword $_page_title";
   } else {
     $_page_title = "$_default_keywords $_page_title";
   }
