@@ -382,10 +382,13 @@ function sub_nav_ul($section='', $include_attr=true) {
  *
  * adds 'class="active"' to the current link
  *
+ * @param array $breaks optionally add breaks at specific points in the list
+ * @param string $separator optionally specify text that will be inserted between each link
+ * @param string $class_name optionally specify the class name of the generated <<p>> tag
  * @param string $section optionally show subnav links for specific section
  * @param bool $include_attr optionally omit class names set for each link
  */
-function sub_nav_p($section='', $include_attr=true) {
+function sub_nav_p($breaks=array(), $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true) {
    
     global $_section, $_page_name;
     
@@ -397,7 +400,7 @@ function sub_nav_p($section='', $include_attr=true) {
     # don't do output anything further if there are no sub items
     if (!has_sub_items($section)) {return;}
     
-    $formatted_list = '<p class="sub_nav">';
+    $formatted_list = "<p class=\"$class_name\">";
     
     $link_array = array();
     $sitemap = define_sitemap();
@@ -412,7 +415,38 @@ function sub_nav_p($section='', $include_attr=true) {
       $link_array[] = $link;
     }
     
-    $formatted_list .= format_list_with_separator($link_array);
+    
+    # separate the list of links into separate arrays for adding breaks
+    if ($breaks) {
+      $link_blocks = array();
+      $break_count = sizeof($breaks);
+      for($j = 0; $j <= $break_count; $j++){
+        switch ($j) {
+        case 0: #first
+          $offset = 0;
+          $length = $breaks[$j];
+          break;
+        case $break_count: #last
+          $offset = $breaks[$j-1];
+          $length = sizeof($link_array) - $offset;
+          break;
+        default:
+          $offset = $breaks[$j-1];
+          $length = $breaks[$j] - $breaks[$j-1];
+        }
+        $link_blocks[$j] = array_slice($link_array, $offset, $length);
+      }
+      # loop through newly created blocks and insert the
+      for($j = 0; $j < sizeof($link_blocks); $j++){
+        $link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
+      }
+      # add breaks between each block of links
+      $formatted_list .= format_list_with_separator($link_blocks, '<br />');
+    } else {
+      # if no breaks, add the separator to the raw list
+      $formatted_list .= format_list_with_separator($link_array, $separator);
+    }
+    
     $formatted_list .= '</p>';
     echo $formatted_list;
 }
@@ -588,6 +622,7 @@ function format_list_with_separator($list, $separator=' | ') {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
  * @todo add a final hash parameter for additional attributes such as title
+ * @todo check if image file exists
  */
 function place_image($file='', $alt='', $class=''){
   
@@ -643,7 +678,7 @@ function email_link($name, $domain){
  */
 function flash_div($div_name){
   $div = "<div id=\"$div_name\"\n";
-  $div .= "<p>The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
+  $div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
   $div .= "</div>\n";
   echo $div;
 }

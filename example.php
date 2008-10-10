@@ -43,6 +43,16 @@ require_once('global.php');
 <h3>Example Output:</h3>
 <?php sub_navigation(); ?>
 
+<h2>Sub Navigation as a Paragraph</h2>
+<pre><code>sub_nav_p();</code></pre>
+<pre><code>sub_nav_p(array(3,5));</code></pre>
+<p>This function returns a <code>&lt;ul&gt;</code> with list items of the current section&#8217;s sub-navigation links. It also adds an <code>class="active"</code> to the <code>&lt;li&gt;</code> of the current page.</p>
+<h3>Example Output:</h3>
+<?php sub_nav_p(); ?>
+<?php sub_nav_p(array(3,6)); ?>
+<?php sub_nav_p(''); ?>
+<?php sub_nav_p(array(5),' &bull; '); ?>
+
 <h2>Full Navigation</h2>
 <pre><code>full_navigation();</code></pre>
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the current section&#8217;s sub-navigation links. It also adds an <code>id="subactive"</code> to the <code>&lt;li&gt;</code> of the current page.</p>
