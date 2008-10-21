@@ -257,7 +257,12 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') 
 					$nav_string .= "<li";
 					$nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
 					$link = section_link($section);
-					$nav_string .= "><a href=\"$link\" id=\"$slug\">$section</a>\n";
+					$nav_string .= "><a href=\"$link\" id=\"$slug\"";
+          # add class name 'head' to items with sub navigation for accordian styling
+          if(has_sub_items($section)){
+            $nav_string .= ' class="head"';
+          }
+          $nav_string .= ">$section</a>\n";
 					if($include_sub_nav && has_sub_items($section)){
 						$nav_string .= sub_nav_ul($section);
 					}
@@ -363,20 +368,22 @@ function sub_nav_ul($section='', $include_attr=true) {
 		$sub_items = $sitemap[$section];
 		foreach ($sub_items as $key => $value) {
 			
+      $slug = slug_name($value)
+      
 			if (is_string($key)){
 				$sub_name = $key;
 				$sub_link = $value;
 			}else{
 				$sub_name = $value;
 				$sub_link = slug_name($value);
-				$sub_link .= '.php';
+				$sub_link .= "$slug.php";
 			}
 			
 			$sub_nav_string .= "<li";
 			if ($include_attr){
 				$sub_nav_string .= get_li_attributes($_page_name, $sub_name, $sub_items);
 			}
-			$sub_nav_string .= "><a href=\"$sub_link\">$sub_name</a></li>\n";
+			$sub_nav_string .= "><a href=\"$sub_link\" id=\"$slug\">$sub_name</a></li>\n";
 		}
 		$sub_nav_string .= "</ul>\n";
 		return $sub_nav_string;

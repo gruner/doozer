@@ -4,7 +4,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php meta_tags(); ?>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
-		<script src="scripts/jquery.flash.js" type="text/javascript"></script>
+	<script src="http://2.scripts.sesamehost.com/scripts/jquery.flash.js" type="text/javascript"></script>
+	<script src="http://3.scripts.sesamehost.com/scripts/jquery.sifr.min.js" type="text/javascript" ></script>
+	<script src="http://4.scripts.sesamehost.com/scripts/jquery.pngFix.js" type="text/javascript"></script>
+	<script src="http://5.scripts.sesamehost.com/scripts/jquery.nospam.js" type="text/javascript"></script>
+	<script src="http://6.scripts.sesamehost.com/scripts/jquery.fancybox.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
@@ -21,6 +25,7 @@
 	<div id="bd">
 		<div id="content">
 			<?php place_image_if_alt(); ?>
+			<?php if($_top_link){echo '<p class="bottom"><a href="#hd">Back to top</a></p>'; } ?>
 		</div><!--end content-->
 		<div id="sidebar"></div><!--end sidebar-->
 	</div><!--end bd-->

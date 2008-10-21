@@ -1,10 +1,10 @@
 <?php
 $_section = 'Braces 101';
-$_page_name = 'Life with Braces';
+$_page_name = 'Life with Braces&reg;';
 $_keyword = 'Invisalign';
 $_page_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
-require_once('global.php');
+require_once('jflo.global.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -23,6 +23,8 @@ require_once('global.php');
 
 <h2>Naming Conventions</h2>
 <p>Slug Name - based on blogging software that creates permalinks based on converting the blog title into a permalink.</p>
+<?php echo slug_name($_page_name); ?>
+
 <h2>Navigation</h2>
 <pre><code>navigation($exclusions = array('Contact Us','Site Map') $include_sub_nav=true, $div_id='nav');</code></pre>
 <p>This function returns a <code>&lt;ul&gt;</code> with list items of the top level navigation links.</p>
