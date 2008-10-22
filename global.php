@@ -368,15 +368,14 @@ function sub_nav_ul($section='', $include_attr=true) {
 		$sub_items = $sitemap[$section];
 		foreach ($sub_items as $key => $value) {
 			
-      $slug = slug_name($value)
+      $slug = slug_name($value);
       
 			if (is_string($key)){
 				$sub_name = $key;
 				$sub_link = $value;
 			}else{
 				$sub_name = $value;
-				$sub_link = slug_name($value);
-				$sub_link .= "$slug.php";
+				$sub_link = "$slug.php";
 			}
 			
 			$sub_nav_string .= "<li";

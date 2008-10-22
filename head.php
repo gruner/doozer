@@ -35,5 +35,5 @@
 		<p><a href="http://www.sesamecommunications.com">Orthodontic Web Site by Sesame Design&trade;</a></p>
 	</div><!--end ft-->
 	<div id="util"></div><!--end util-->
-	<?php navigation($exclusions = array('Contact Us','Site Map', $include_sub=true)); ?><!--end nav-->
+	<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--end nav-->
 </div><!--end container-->
