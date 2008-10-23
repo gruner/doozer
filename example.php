@@ -11,7 +11,7 @@ require_once('global.php');
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php meta_tags(); ?>
-	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="example.css" media="screen" rel="stylesheet" type="text/css" />
 	<?php page_title(); ?>
 </head>
 <body class="<?php echo slug_name($_page_name); ?>">
