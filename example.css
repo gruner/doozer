@@ -9,12 +9,12 @@ blockquote, q {quotes:"" "";}
 a img {border:none;}
 
 /* typography */
-body {font-size:75%;color:#222;background:#fff;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;}
+body {font-size:75%;color:#222;background:#fff;font-family:Arial, Helvetica, sans-serif;}
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
-h1 {font-size:3em;line-height:1;margin-bottom:0.5em;}
-h2 {font-size:2em;margin-bottom:0.75em;}
-h3 {font-size:1.5em;line-height:1;margin-bottom:1em;}
-h4 {font-size:1.2em;line-height:1.25;margin-bottom:1.25em;height:1.25em;}
+h1 {font-size:2em;line-height:1;margin-bottom:0.5em;}
+h2 {font-size:1.5em;margin-bottom:0.75em;}
+h3, dt {font-size:1.2em;line-height:1;margin-bottom:1em;}
+h4 {font-size:1em;line-height:1.25;margin-bottom:1.25em;height:1.25em;}
 h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
 h6 {font-size:1em;font-weight:bold;}
 h1 img, h2 img, h3 img, h4 img, h5 img, h6 img {margin:0;}
@@ -33,7 +33,6 @@ address {margin:0 0 1.5em;font-style:italic;}
 del {color:#666;}
 pre, code {margin:1.5em 0;white-space:pre;}
 pre, code, tt {font:1em 'andale mono', 'lucida console', monospace;line-height:1.5;}
-pre {background-color:#eee ;border:1px solid #ccc;padding:5px;}
 li ul, li ol {margin:0 1.5em;}
 ul, ol {margin:0 1.5em 1.5em 1.5em;}
 ul {list-style-type:disc;}
@@ -62,7 +61,7 @@ caption {background:#eee;}
 
 /* grid */
 .container {width:950px;margin:0 auto;}
-body {margin:1.5em;}
+body {margin:1.5em 2em;}
 div.column {float:left;margin-right:10px;}
 div.last {margin-right:0;}
 div.border {padding-right:4px;margin-right:5px;border-right:1px solid #eee;}
@@ -75,77 +74,72 @@ hr.space {background:#fff;color:#fff;}
 .clearfix, .container {display:block;}
 .clear {clear:both;}
 
+
+/* forms */
+label {font-weight:bold;}
+fieldset {padding:1.4em;margin:0 0 1.5em 0;border:1px solid #ccc;}
+legend {font-weight:bold;font-size:1.2em;}
+input.text, input.title, textarea, select {margin:0.5em 0;border:1px solid #bbb;}
+input.text:focus, input.title:focus, textarea:focus, select:focus {border:1px solid #666;}
+input.text, input.title {width:300px;padding:5px;}
+input.title {font-size:1.5em;}
+textarea {width:390px;height:120px;padding:5px;}
+.error, .notice, .success {padding:.8em;margin-bottom:1em;border:2px solid #ddd;}
+.error {background:#FBE3E4;color:#8a1f11;border-color:#FBC2C4;}
+.notice {background:#FFF6BF;color:#514721;border-color:#FFD324;}
+.success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
+.error a {color:#8a1f11;}
+.notice a {color:#514721;}
+.success a {color:#264409;}
+
 /* custom */
-#nav ul, #subnav ul {
-  list-style-type: none;
+pre {
+background: #EEE;
+border: 1px solid #CCC;
+padding: 15px 15px 5px 15px;
 }
 
-#nav li a, #subnav li a {
-	background-color: #B0CD8D;
-	color: white;
+/* navigation */
+#nav {}
+
+#navX ul {
+	list-style: none;
+	width: 190px;
+	margin: 0;}
+
+#navX a {
 	display: block;
-	margin: 5px;
-	padding: 5px;
-	text-decoration:none;
+	height: 35px; /* h */
+	width: 190px; /* w */
 }
 
-#nav li a:hover, #subnav li a:hover {text-decoration:underline;}
+#nav li.active a, #nav-with-sub li.active a {background:yellow;}
 
-#nav li.active a, #subnav li.active a, .full_nav #nav li.active:hover {
-	background-color: #6097C2;
-	color:#F6B831;
-	font-weight:bold;
-}
+#nav-with-sub li.active ul a {background:none;}
 
-
-
-ul.sitemap li {margin-bottom:2px;}
-ul.sitemap ul {margin-bottom:0;}
+/* vertical nav */
+#nav a:hover, #nav li:hover a, #nav li.sfhover a, #util a:hover {}
+#nav li.active a:hover, #nav li.active:hover a {}
 
 
-.full_nav #nav li a {
-	display: block;
-}
+/* horizontal nav */
+#nav a:hover, #nav li:hover a, #nav li.sfhover a, #util a:hover {}
+#nav li.active a {}
 
-.full_nav #nav li {display: inline;}
-#about-our-office, #about-orthodontics, #braces-101, #orthodontic-technologies, #emergency-care {float: left;}
 
-.full_nav #nav li ul a {
-	background-color: #B0CD8D;
-	color: white;
-}
-
-.full_nav #nav li a, .full_nav #nav li.active a:hover {
-	width: 150px; 
-	text-indent: 0; 
+/* subnav-flyout */
+#nav li ul {
+	left: -9999px;
+	position: absolute;
+	width: XXpx;
+	z-index: 10; }
+#nav li ul a {
+	height: XXpx;
 	text-decoration: none;
-	margin: 1px;
-}
+	text-indent:0;
+	width: XXpx;}
+#nav li ul a:hover {background:#ffeeb5; color:#51526a;}
+#nav li:hover ul,
+#nav li.sfhover ul {left: auto; margin: -0px 0 0 0px;} /* margin: -h 0 0 w */
 
-.full_nav #nav li a:hover,
-.full_nav #nav li:hover{text-decoration:underline; color:#fff}
-
-.full_nav #nav li ul a:hover {
-	background-color: #6097C2;
-	color:#F6B831;
-	text-decoration:none;
-}
-
-/* drop down */
-.full_nav #nav li ul {
-	left: -9999px; 
-	position: absolute; 
-	z-index: 3; 
-	background: #888; 
-	border: solid 1px #fff; 
-	border-width: 0 1px 1px 1px; 
-	padding: 1px;
-}
-
-.full_nav #nav li:hover ul,
-.full_nav #nav li.sfhover ul {
-	left: auto; margin: 0;
-}
-
-
-
+	

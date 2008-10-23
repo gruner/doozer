@@ -53,7 +53,7 @@ function define_sitemap() {
   
   $sitemap = array(
   'Home' => 'index.php',
-  'Patient Login' => 'http://google.com',
+  'Patient Login' => 'http://orthosesame.com',
   'About Our Office' => $about_our_office,
   'About Orthodontics' => $about_orthodontics,
   'Braces 101' => $braces_101,
