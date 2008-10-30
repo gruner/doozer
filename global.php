@@ -271,8 +271,7 @@ function parse_sitemap() {
           }
           $sub[$sub_name] = $sub_link;
         }
-      # section has no sub items and links
-      # to page with same name
+      # section has no sub items and links to page with same name
       } else {
         $sub = array("$section_slug.php");
       }
