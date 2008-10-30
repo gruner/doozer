@@ -729,9 +729,9 @@ function render_image_tag($file='', $alt='', $class='') {
 /**
  * echoes a formatted image tag with calculated width and height attributes
  *
- * if $file isn't specified, looks for a .jpg named after the $_page_name
+ * if $file isn't specified, looks for any image named after the $_page_name
  *
- * if $alst isn't specified, looks for page variable $_alt
+ * if $alt isn't specified, looks for page variable $_alt
  *
  * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
@@ -748,7 +748,6 @@ function place_image($file='', $alt='', $class='') {
 	
 	if (!$file){
 		$file = slug_name($_page_name);
-		#$file .= ".jpg";
 	}
 	
 	if (file_exists("images/$file")){
