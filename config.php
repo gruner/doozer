@@ -29,6 +29,8 @@ function sc_config(){
     $sc_config['page_title'] = 'City ST - Orthodontist name - State zip';
     
     $sc_config['title_keywords'] = 'Braces Orthodontics';
+    
+    $sc_config['practice_name'] = 'Practice Name';
 
     return $sc_config;
 }

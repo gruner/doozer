@@ -25,7 +25,7 @@ function define_sitemap() {
   );
 
   $braces_101 = array(
-  'Life with Braces',
+  'Life with Braces&reg;',
   'Types of Braces',
   'Types of Appliances',
   'Braces Diagram',

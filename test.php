@@ -1,6 +1,6 @@
 <?php
 $_section = 'Braces 101';
-$_page_name = 'Life with Braces';
+$_page_name = 'Life with Braces&reg;';
 $_keyword = 'Invisalign';
 $_page_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
@@ -27,6 +27,9 @@ foreach ($slug_tests as $test){
 }
 ?>
 </p>
+
+<h2>get_practice_name()</h2>
+<p><?php echo get_practice_name(); ?></p>
 
 <h2>navigation()</h2>
 <?php navigation($exclusions = array('Contact Us','Site Map')); ?>
@@ -74,5 +77,8 @@ foreach ($slug_tests as $test){
 
 <h2>place_image('test-jpg')</h2>
 <?php place_image("test-jpg"); ?>
+
+<h2>place_image('no-exist')</h2>
+<?php place_image("no-exist"); ?>
 </body>
 </html>

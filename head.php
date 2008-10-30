@@ -20,7 +20,7 @@
 
 <div id="container">
 	<div id="hd">
-		<h1 id="logo"><a href="index.php">Practice Name</a></h1>
+		<h1 id="logo"><a href="index.php"><?php echo get_practice_name(); ?></a></h1>
 	</div><!--end hd-->
 	<div id="bd">
 		<div id="content">

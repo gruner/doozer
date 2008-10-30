@@ -60,6 +60,18 @@ function index_pages() {
 
 
 /**
+ * returns the practice name if set in config.php
+ */
+function get_practice_name(){
+  $config = sc_config();
+  $practice_name = $config['practice_name'];
+  if(isset($practice_name) || !empty($practice_name)) {
+		return $practice_name;
+	}
+}
+
+
+/**
  * determines if the current section has sub-pages
  * 
  * optionally check any section given as a parameter

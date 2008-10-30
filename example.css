@@ -113,7 +113,7 @@ padding: 15px 15px 5px 15px;
 	width: 190px; /* w */
 }
 
-#nav li.active a, #nav-with-sub li.active a {background:yellow;}
+#nav li.active a, #nav-with-sub li.active a, #subnav li.active a {background:yellow;}
 
 #nav-with-sub li.active ul a {background:none;}
 
