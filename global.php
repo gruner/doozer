@@ -562,7 +562,6 @@ function get_li_attributes($current_item, $child, $children){
 	if($child == $children[0]){$class[] = 'first';}
 	elseif($child == end($children)){$class[] = 'last';}
 	if($child == $current_item){$class[] = 'active';}
-  $class[] = slug_name($current_item);
 	if($class){
 		$classes = implode(' ', $class);
 		$attr .= " class=\"$classes\"";
@@ -705,6 +704,16 @@ function format_list_with_separator($list, $separator=' | ') {
 }
 
 
+function render_image_tag($file='', $alt='', $class='') {
+  list($w, $h) = getimagesize("images/$file");
+	$img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
+	if($class){$img_tag .= " class=\"$class\"";}
+	if($alt){$img_tag .= " alt=\"$alt\"";}
+	$img_tag .= " />";
+	
+	echo $img_tag;
+}
+
 /**
  * echoes a formatted image tag with calculated width and height attributes
  *
@@ -716,9 +725,8 @@ function format_list_with_separator($list, $separator=' | ') {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
  * @todo add a final hash parameter for additional attributes such as title
- * @todo check if image file exists
  */
-function place_image($file='', $alt='', $class=''){
+function place_image($file='', $alt='', $class='') {
 	
 	global $_alt, $_page_name;
 	
@@ -728,16 +736,22 @@ function place_image($file='', $alt='', $class=''){
 	
 	if (!$file){
 		$file = slug_name($_page_name);
-		$file .= ".jpg";
+		#$file .= ".jpg";
 	}
-
-	list($w, $h) = getimagesize("images/$file");
-	$img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
-	if($class){$img_tag .= " class=\"$class\"";}
-	if($alt){$img_tag .= " alt=\"$alt\"";}
-	$img_tag .= " />";
 	
-	echo $img_tag;
+	if (file_exists("images/$file")){
+		render_image_tag($file, $alt, $class);
+	} else {
+	  # look for missing extensions
+	  $extensions = array('.jpg', '.gif', '.png');
+	  foreach($extensions as $ext){
+	    $try_file = $file.$ext;
+	    if(file_exists("images/$try_file")){
+	      render_image_tag($try_file, $alt, $class);
+	      break;
+	    }
+	  }
+	}
 }
 
 
@@ -771,7 +785,7 @@ function email_link($name, $domain){
  * echoes a div tag for embedding flash media with a standard notice if flash is not available.
  */
 function flash_div($div_name){
-	$div = "<div id=\"$div_name\"\n";
+	$div = "<div id=\"$div_name\">\n";
 	$div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
 	$div .= "</div>\n";
 	echo $div;
