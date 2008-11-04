@@ -19,20 +19,19 @@
 <body class="<?php echo slug_name($_page_name); ?>">
 
 <div id="container">
-	<div id="hd">
+	<div id="hd" class="container">
 		<h1 id="logo"><a href="index.php"><?php echo get_practice_name(); ?></a></h1>
 	</div><!--end hd-->
-	<div id="bd">
+	<div id="bd" class="container">
+	  <div id="sidebar" class="column"></div><!--end sidebar-->
 		<div id="content">
 			<?php place_image_if_alt(); ?>
-			<?php if($_top_link){echo '<p class="bottom"><a href="#hd">Back to top</a></p>'; } ?>
 		</div><!--end content-->
-		<div id="sidebar"></div><!--end sidebar-->
 	</div><!--end bd-->
-	<div id="ft">
+	<div id="ft" class="container">
 		<p>footer text</p>
 		<?php text_navigation(); ?>
-		<p><a href="http://www.sesamecommunications.com">Orthodontic Web Site by Sesame Design&trade;</a></p>
+		<p class="small"><strong><a href="http://www.sesamewebdesign.com">Orthodontic Web Site by Sesame Design&trade;</a></strong></p>
 	</div><!--end ft-->
 	<div id="util"></div><!--end util-->
 	<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--end nav-->
