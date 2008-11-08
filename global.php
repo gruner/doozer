@@ -24,8 +24,6 @@ require_once('config.php');
  */
 require_once('sitemap.php');
 
-if (!$sitemap){$sitemap = parse_sitemap();}
-
 /**
  * checks $_section and $_page_name to see if the current page is the homepage
  * 
@@ -245,50 +243,6 @@ function meta_tags() {
 }
 
 
-function parse_sitemap() {
-  $original_sitemap = define_sitemap();
-  $sitemap = array();
-  foreach ($original_sitemap as $section => $sub_items) {
-    $section_slug = slug_name($section);
-    # section has an array of sub items
-    if(is_array($sub_items)){
-      # parse sub items if array is greater than 1
-      if(count($sub_items) > 1){
-        $sub = array();
-        
-        # add the index page if index_pages is set to true
-        if(index_pages()){$sub[] = "$section_slug.php";}
-        
-        foreach ($sub_items as $key => $value) {
-          # page has string override for the link
-          if (is_string($key)){
-            $sub_name = $key;
-            $sub_link = $value;
-          } else {
-            $sub_name = $value;
-            $sub_slug = slug_name($value);
-            $sub_link = "$sub_slug.php";
-          }
-          $sub[$sub_name] = $sub_link;
-        }
-      # section has no sub items and links
-      # to page with same name
-      } else {
-        $sub = array("$section_slug.php");
-      }
-    } else {
-      # section has a string override for the link
-      if (is_string($sub_items)){
-        $sub = array($sub_items);
-      }
-    }
-    
-    $sitemap[$section] = $sub;
-    
-  }
-  return $sitemap;
-}
-
 
 /**
  * echoes a formatted list of the top-level navigation links wrapped in a div tag
@@ -305,36 +259,6 @@ function parse_sitemap() {
  * @param string $div_id optionally define the id of the generated div
  */
 function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
-		global $_section, $_page_name, $sitemap;
-		# $sitemap = parse_sitemap();
-		$nav_string = "<div id=\"$div_id\">\n<ul>\n";
-		foreach ($sitemap as $section => $sub_items) {
-			# skip any sections that are in the exclusions array
-			if (!in_array($section, $exclusions)) {
-					$slug = slug_name($section);
-					$nav_string .= "<li";
-					$nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-					$section_link = $sub_items[0]; #TODO this doesn't get the first sub item - it needs the hash key
-					$nav_string .= "><a href=\"$section_link\" id=\"$slug\"";
-          
-          # add class name 'head' to items with sub navigation for accordian styling
-          if(has_sub_items($section)){
-            $nav_string .= ' class="head"';
-          }
-          
-          $nav_string .= ">$section</a>\n";
-					
-          if($include_sub_nav && count($sub_items) > 1){
-						$nav_string .= sub_nav_ul($section);
-					}
-					$nav_string .= "</li>\n";
-			}
-		}
-		$nav_string .= "</ul>\n</div>";
-		echo $nav_string;
-}
-
-function navigation_bak($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
 		global $_section, $_page_name;
 		$sitemap = define_sitemap();
 		$nav_string = "<div id=\"$div_id\">\n<ul>\n";
