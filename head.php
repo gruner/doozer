@@ -21,18 +21,18 @@
 <div id="container">
 	<div id="hd" class="container">
 		<h1 id="logo"><a href="index.php"><?php echo get_practice_name(); ?></a></h1>
-	</div><!--end hd-->
+	</div><!--/hd-->
 	<div id="bd" class="container">
-	  <div id="sidebar" class="column"></div><!--end sidebar-->
+	  <div id="sidebar" class="column"></div><!--/sidebar-->
 		<div id="content">
 			<?php place_image_if_alt(); ?>
-		</div><!--end content-->
-	</div><!--end bd-->
+		</div><!--/content-->
+	</div><!--/bd-->
 	<div id="ft" class="container">
 		<p>footer text</p>
 		<?php text_navigation(); ?>
 		<p class="small"><strong><a href="http://www.sesamewebdesign.com">Orthodontic Web Site by Sesame Design&trade;</a></strong></p>
-	</div><!--end ft-->
-	<div id="util"></div><!--end util-->
-	<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--end nav-->
-</div><!--end container-->
+	</div><!--/ft-->
+	<div id="util"></div><!--/util-->
+	<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--/nav-->
+</div><!--/container-->
