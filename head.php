@@ -24,7 +24,7 @@
 	</div><!--/hd-->
 	<div id="bd" class="container">
 	  <div id="sidebar" class="column"></div><!--/sidebar-->
-		<div id="content">
+		<div id="content" class="column">
 			<?php place_image_if_alt(); ?>
 		</div><!--/content-->
 	</div><!--/bd-->

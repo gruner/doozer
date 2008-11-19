@@ -532,7 +532,7 @@ function text_navigation($br=0, $exclusions=array()) {
 				}
 				
 				# add a separator unless it's the last item in the list or at a break
-				if (count($sitemap) != $i && $br != $i) {
+				if ((count($sitemap) - count($exclusions)) != $i && $br != $i) {
 					$nav_string .= ' | ';
 				}
 				$i++;
@@ -566,37 +566,40 @@ function section_index($section="") {
  * echoes a formatted sitemap in the form of nested lists with links to each page
  * @see sitemap.php
  */
-function sitemap() {
+}
+		echo $sitemap_string;
+		$sitemap_string .= '</ul>';
+		}
+			}
+				$sitemap_string .= '</li>'; # close section <li>
+				}
+						$sitemap_string .= '</ul>';
+						}
+								}
+										$sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
+								} else {
+										$sitemap_string .= "<li>$sub_name (This Page)</li>";
+								if ($sub_name == $_page_name) {
+								# Mark the current page, don't create a self referencing link
+								$sub_stub = slug_name($sub_name);
+						$sitemap_string .= '<ul>';
+						foreach ($sub_items as $sub_name) {
+				if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
+				}
+					$sitemap_string .= "<li><a href=\"$link\">$section</a>"; #leave <li> open
+					$link = section_link($section);
+				} else {
+					$sitemap_string .= "<li>$section (This Page)"; #leave <li> open
+				if ($section == $_page_name) {
+			if (!in_array($section, $exclusions)) {
+		  # skip any sections that are in the exclusions array
+		foreach ($sitemap as $section => $sub_items) {
+		$sitemap_string = '<ul class="sitemap">';
+		$sitemap = define_sitemap();
 		
 		global $_page_name;  
 		
-		$sitemap = define_sitemap();
-		$sitemap_string = '<ul class="sitemap">';
-		foreach ($sitemap as $section => $sub_items) {
-				if ($section == $_page_name) {
-					$sitemap_string .= "<li>$section (This Page)"; #leave <li> open
-				} else {
-					$link = section_link($section);
-					$sitemap_string .= "<li><a href=\"$link\">$section</a>"; #leave <li> open
-				}
-				if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
-						$sitemap_string .= '<ul>';
-						foreach ($sub_items as $sub_name) {
-								$sub_stub = slug_name($sub_name);
-								# Mark the current page, don't create a self referencing link
-								if ($sub_name == $_page_name) {
-										$sitemap_string .= "<li>$sub_name (This Page)</li>";
-								} else {
-										$sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
-								}
-						}
-						$sitemap_string .= '</ul>';
-				}
-				$sitemap_string .= '</li>'; # close section <li>
-		}
-		$sitemap_string .= '</ul>';
-		echo $sitemap_string;
-}
+function sitemap($exclusions=array()) {
 
 /**
  * echoes a formatted string with links to the current page's parent(s).
