@@ -566,40 +566,47 @@ function section_index($section="") {
  * echoes a formatted sitemap in the form of nested lists with links to each page
  * @see sitemap.php
  */
-}
-		echo $sitemap_string;
-		$sitemap_string .= '</ul>';
-		}
-			}
-				$sitemap_string .= '</li>'; # close section <li>
-				}
-						$sitemap_string .= '</ul>';
-						}
-								}
-										$sitemap_string .= "<li><a href=\"$sub_stub.php\">$sub_name</a></li>";
-								} else {
-										$sitemap_string .= "<li>$sub_name (This Page)</li>";
-								if ($sub_name == $_page_name) {
-								# Mark the current page, don't create a self referencing link
-								$sub_stub = slug_name($sub_name);
-						$sitemap_string .= '<ul>';
-						foreach ($sub_items as $sub_name) {
-				if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
-				}
-					$sitemap_string .= "<li><a href=\"$link\">$section</a>"; #leave <li> open
-					$link = section_link($section);
-				} else {
-					$sitemap_string .= "<li>$section (This Page)"; #leave <li> open
-				if ($section == $_page_name) {
-			if (!in_array($section, $exclusions)) {
-		  # skip any sections that are in the exclusions array
-		foreach ($sitemap as $section => $sub_items) {
-		$sitemap_string = '<ul class="sitemap">';
-		$sitemap = define_sitemap();
+function sitemap() {
 		
 		global $_page_name;  
 		
-function sitemap($exclusions=array()) {
+		$sitemap = define_sitemap();
+		$sitemap_string = '<ul class="sitemap">';
+		foreach ($sitemap as $section => $sub_items) {
+				if ($section == $_page_name) {
+					$sitemap_string .= "<li>$section (This Page)"; #leave <li> open
+				} else {
+					$link = section_link($section);
+					$sitemap_string .= "<li><a href=\"$link\">$section</a>"; #leave <li> open
+				}
+				if (has_sub_items($section)) { #don't create nested ul if the only sub item is the same page
+						$sitemap_string .= '<ul>';
+						foreach ($sub_items as $key => $value) {
+							$slug = slug_name($value);
+								
+							if (is_string($key)){
+								$sub_name = $key;
+								$sub_link = $value;
+							} else {
+								$sub_name = $value;
+								$sub_link = "$slug.php";
+							}
+								
+								# Mark the current page, don't create a self referencing link
+								if ($sub_name == $_page_name) {
+										$sitemap_string .= "<li>$sub_name (This Page)</li>";
+								} else {
+										$sitemap_string .= "<li><a href=\"$sub_link\">$sub_name</a></li>";
+								}
+						}
+						$sitemap_string .= '</ul>';
+				}
+				$sitemap_string .= '</li>'; # close section <li>
+		}
+		$sitemap_string .= '</ul>';
+		echo $sitemap_string;
+}
+
 
 /**
  * echoes a formatted string with links to the current page's parent(s).
