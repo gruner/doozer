@@ -49,10 +49,16 @@ foreach ($slug_tests as $test){
 <h2 class="clear">text_navigation()</h2>
 <?php text_navigation(); ?>
 <?php text_navigation(4); ?>
+<?php text_navigation(0, array('Contact Us')); ?>
+<?php text_navigation(3, array('The Game Room')); ?>
 
 <hr />
 <h2>sitemap()</h2>
 <?php sitemap(); ?>
+
+<hr />
+<h2>sitemap(array('About Orthodontics'))</h2>
+<?php sitemap(array('Contact Us', 'About Orthodontics')); ?>
 
 <hr />
 <h2>section_index()</h2>

@@ -24,8 +24,6 @@ require_once('config.php');
  */
 require_once('sitemap.php');
 
-if (!$sitemap){$sitemap = parse_sitemap();}
-
 /**
  * checks $_section and $_page_name to see if the current page is the homepage
  * 
@@ -304,36 +302,6 @@ function parse_sitemap() {
  * @param string $div_id optionally define the id of the generated div
  */
 function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
-		global $_section, $_page_name, $sitemap;
-		# $sitemap = parse_sitemap();
-		$nav_string = "<div id=\"$div_id\">\n<ul>\n";
-		foreach ($sitemap as $section => $sub_items) {
-			# skip any sections that are in the exclusions array
-			if (!in_array($section, $exclusions)) {
-					$slug = slug_name($section);
-					$nav_string .= "<li";
-					$nav_string .= get_li_attributes($_section, $section, $sitemap); # set id and class names for the list item
-					$section_link = $sub_items[0]; #TODO this doesn't get the first sub item - it needs the hash key
-					$nav_string .= "><a href=\"$section_link\" id=\"$slug\"";
-          
-          # add class name 'head' to items with sub navigation for accordian styling
-          if(has_sub_items($section)){
-            $nav_string .= ' class="head"';
-          }
-          
-          $nav_string .= ">$section</a>\n";
-					
-          if($include_sub_nav && count($sub_items) > 1){
-						$nav_string .= sub_nav_ul($section);
-					}
-					$nav_string .= "</li>\n";
-			}
-		}
-		$nav_string .= "</ul>\n</div>";
-		echo $nav_string;
-}
-
-function navigation_bak($exclusions=array(), $include_sub_nav=false, $div_id='nav') {
 		global $_section, $_page_name;
 		$sitemap = define_sitemap();
 		$nav_string = "<div id=\"$div_id\">\n<ul>\n";
@@ -607,7 +575,7 @@ function text_navigation($br=0, $exclusions=array()) {
 				}
 				
 				# add a separator unless it's the last item in the list or at a break
-				if (count($sitemap) != $i && $br != $i) {
+				if ((count($sitemap) - count($exclusions)) != $i && $br != $i) {
 					$nav_string .= ' | ';
 				}
 				$i++;
@@ -641,13 +609,15 @@ function section_index($section="") {
  * echoes a formatted sitemap in the form of nested lists with links to each page
  * @see sitemap.php
  */
-function sitemap() {
+function sitemap($exclusions=array()) {
 		
 		global $_page_name;  
 		
 		$sitemap = define_sitemap();
 		$sitemap_string = '<ul class="sitemap">';
 		foreach ($sitemap as $section => $sub_items) {
+		  # skip any sections that are in the exclusions array
+			if (!in_array($section, $exclusions)) {
 				if ($section == $_page_name) {
 					$sitemap_string .= "<li>$section (This Page)"; #leave <li> open
 				} else {
@@ -668,10 +638,12 @@ function sitemap() {
 						$sitemap_string .= '</ul>';
 				}
 				$sitemap_string .= '</li>'; # close section <li>
+			}
 		}
 		$sitemap_string .= '</ul>';
 		echo $sitemap_string;
 }
+
 
 /**
  * echoes a formatted string with links to the current page's parent(s).
