@@ -41,6 +41,20 @@ function define_sitemap() {
   'Refer a Friend',
   'Appointment Request'
   );
+  
+  $tertiary = array(
+  	'tertiary 1',
+  	'tertiary 2',
+  	'tertiary 3',
+  	'tertiary 4'
+  );
+  
+  $secondary = array(
+  	'secondary 1',
+  	'secondary 2',
+  	'secondary 3',
+  	'secondary 4' => $tertiary
+  );
 
   # Define an empty array for sections that contain no sub items.
   $no_sub = array();
@@ -59,7 +73,8 @@ function define_sitemap() {
   'Braces 101' => $braces_101,
   'Emergency Care' => $no_sub, # if the array is empty the link will become 'emergency-care.php'
   'The Game Room' => $no_sub,
-  'Contact Us' => $contact_us
+  'Contact Us' => $contact_us,
+  'Secondary' => $secondary
   );
   
   return $sitemap;
