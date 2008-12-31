@@ -47,7 +47,7 @@ function is_homepage() {
  * @return bool
  * @see config.php
  */
-function index_pages() {
+function has_index_pages() {
 	$config = sc_config();
 	if($config['index_pages'] == true ) {
 		return true;
@@ -110,7 +110,7 @@ function section_link($section='') {
 		$link = '';
 		$sub = $sitemap[$section];
 		if (is_array($sub)){
-			if (index_pages() || !has_sub_items($section)){
+			if (has_index_pages() || !has_sub_items($section)){
 				$link = slug_name($section);
 			} else {
 				$link = slug_name($sub[0]);
@@ -687,11 +687,12 @@ function format_list_with_separator($list, $separator=' | ') {
 }
 
 
-function render_image_tag($file='', $alt='', $class='') {
+function render_image_tag($file='', $alt='', $class='', $title) {
   list($w, $h) = getimagesize("images/$file");
 	$img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
 	if($class){$img_tag .= " class=\"$class\"";}
 	if($alt){$img_tag .= " alt=\"$alt\"";}
+	if($title){$img_tag .= " alt=\"$title\"";}
 	$img_tag .= " />";
 	
 	echo $img_tag;
@@ -707,9 +708,8 @@ function render_image_tag($file='', $alt='', $class='') {
  * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
- * @todo add a final hash parameter for additional attributes such as title
  */
-function place_image($file='', $alt='', $class='') {
+function place_image($file='', $alt='', $class='', $title) {
 	
 	global $_alt, $_page_name;
 	
@@ -722,14 +722,14 @@ function place_image($file='', $alt='', $class='') {
 	}
 	
 	if (file_exists("images/$file")){
-		render_image_tag($file, $alt, $class);
+		render_image_tag($file, $alt, $class, $title);
 	} else {
 	  # look for missing extensions
 	  $extensions = array('.jpg', '.gif', '.png');
 	  foreach($extensions as $ext){
 	    $try_file = $file.$ext;
 	    if(file_exists("images/$try_file")){
-	      render_image_tag($try_file, $alt, $class);
+	      render_image_tag($try_file, $alt, $class, $title);
 	      break;
 	    }
 	  }
