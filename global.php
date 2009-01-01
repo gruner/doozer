@@ -42,10 +42,7 @@ function is_homepage() {
  * If true, section links go to a section 'index page' (i.e. "In this section...)
  * Otherwise the section link points to the first subpage.
  *
- * No config setting is necessary to use the default behavior of omitting index pages.
- * 
- * @return bool
- * @see config.php
+ * The default behavior is to OMIT section index pages and requires no configuration.
  */
 function has_index_pages() {
 	$config = sc_config();
@@ -70,11 +67,8 @@ function get_practice_name(){
 
 
 /**
- * determines if the current section has sub-pages
- * 
+ * determines if the current section has sub-pages,
  * optionally check any section given as a parameter
- * @global string $_section
- * @return bool
  */
 function has_sub_items($section='') {
 		global $_section;
@@ -129,10 +123,7 @@ function section_link($section='') {
  * and replacing spaces with dashes.
  * 
  * Used for setting unique id's on <<li>> elements
- * in navigation as well as linking to files that follow Sesame's naming convention.
- * 
- * @param string $page_name the name of the page to convert
- * @return string processed string
+ * in navigation as well as linking to files that follow our naming convention.
  */
 function slug_name($string) {
 	return replace_chars(strtolower(strip_special_chars($string)));
@@ -173,9 +164,9 @@ function titleize($string) {
 /**
  * echoes the complete title tag of the page
  
- * Follows the convention of: <br/>
- * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip <br/>
- * Looks for local $_page_title variable but defaults to the value definded in {@link config.php}
+ * Follows the convention of:
+ * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
+ * Looks for local $_page_title variable but defaults to the value definded in config.php
  */
 function page_title() {
 	global $_section, $_page_name, $_keyword, $_page_title;
@@ -212,7 +203,7 @@ function page_title() {
  * echoes completed meta description and meta keyword tags
  * 
  * looks for local $_meta_keywords and $_meta_description variables but 
- * defaults to the values defined in {@link config.php}.
+ * defaults to the values defined in config.php.
  */
 function meta_tags() {
 		global $_keyword, $_description;
@@ -243,10 +234,10 @@ function meta_tags() {
 }
 
 
-function parse_sitemap() {
-  $original_sitemap = define_sitemap();
+function parse_sitemapX() {
+  $defined_sitemap = define_sitemap();
   $sitemap = array();
-  foreach ($original_sitemap as $section => $sub_items) {
+  foreach ($defined_sitemap as $section => $sub_items) {
     $section_slug = slug_name($section);
     # section has an array of sub items
     if(is_array($sub_items)){
@@ -282,6 +273,53 @@ function parse_sitemap() {
     
     $sitemap[$section] = $sub;
     
+  }
+  return $sitemap;
+}
+
+
+function parse_sitemap() {
+	$defined_sitemap = define_sitemap();
+  $sitemap = array();
+  foreach ($defined_sitemap as $section) {
+  	$sitemap[$section] = parse_section($section);
+  }
+  return $sitemap;
+}
+
+
+function parse_section($section){
+	
+	foreach ($section as $key => $value) {
+		if (is_numeric($key)){
+      # make link from page name
+      $name = $value;
+      $sub = slug_name($name).'.php';
+      
+    } elseif (is_string($key)) {
+    	$name = $key;
+			if (!is_array($value)) {
+				$sub = $value;
+			} else {
+				$sub = array();
+				# recusivley call this function for each section that has a sub-section
+				foreach ($value as $sub_link) {
+					$sub[$sub_link] = parse_section($sub_link);
+				}
+			}
+    }
+  }
+  return $sub;
+}
+
+
+function render_sitemap() {
+  $sitemap = parse_sitemap();
+  $rendered_sitemap = '';
+  foreach ($sitemap as $page => $links) {
+  	if(!is_array($links)){
+  		echo '<a href="'.$links.'">'.$page.'</a><br/>';
+  	}
   }
   return $sitemap;
 }
@@ -613,13 +651,13 @@ function sitemap($exclusions=array()) {
 		
 		global $_page_name;  
 		
-		$sitemap = define_sitemap();
+		$sitemap = parse_sitemap();
 		$sitemap_string = '<ul class="sitemap">';
-		foreach ($sitemap as $section => $sub_items) {
+		foreach ($sitemap as $page => $links) {
 		  # skip any sections that are in the exclusions array
-			if (!in_array($section, $exclusions)) {
-				if ($section == $_page_name) {
-					$sitemap_string .= "<li>$section (This Page)"; #leave <li> open
+			if (!in_array($page, $exclusions)) {
+				if ($page == $_page_name) {
+					$sitemap_string .= "<li>$page (This Page)"; #leave <li> open
 				} else {
 					$link = section_link($section);
 					$sitemap_string .= "<li><a href=\"$link\">$section</a>"; #leave <li> open
