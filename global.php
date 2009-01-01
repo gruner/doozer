@@ -163,7 +163,7 @@ function titleize($string) {
 
 /**
  * echoes the complete title tag of the page
- 
+ *
  * Follows the convention of:
  * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
  * Looks for local $_page_title variable but defaults to the value definded in config.php
@@ -234,82 +234,50 @@ function meta_tags() {
 }
 
 
-function parse_sitemapX() {
-  $defined_sitemap = define_sitemap();
-  $sitemap = array();
-  foreach ($defined_sitemap as $section => $sub_items) {
-    $section_slug = slug_name($section);
-    # section has an array of sub items
-    if(is_array($sub_items)){
-      # parse sub items if array is greater than 1
-      if(count($sub_items) > 1){
-        $sub = array();
-        
-        # add the index page if index_pages is set to true
-        if(index_pages()){$sub[] = "$section_slug.php";}
-        
-        foreach ($sub_items as $key => $value) {
-          # page has string override for the link
-          if (is_string($key)){
-            $sub_name = $key;
-            $sub_link = $value;
-          } else {
-            $sub_name = $value;
-            $sub_slug = slug_name($value);
-            $sub_link = "$sub_slug.php";
-          }
-          $sub[$sub_name] = $sub_link;
-        }
-      # section has no sub items and links to page with same name
-      } else {
-        $sub = array("$section_slug.php");
-      }
-    } else {
-      # section has a string override for the link
-      if (is_string($sub_items)){
-        $sub = array($sub_items);
-      }
-    }
-    
-    $sitemap[$section] = $sub;
-    
-  }
-  return $sitemap;
-}
-
-
 function parse_sitemap() {
 	$defined_sitemap = define_sitemap();
   $sitemap = array();
-  foreach ($defined_sitemap as $section) {
-  	$sitemap[$section] = parse_section($section);
+  foreach ($defined_sitemap as $section => $sub_section) {
+		$sitemap = parse_section($sitemap, $section, $sub_section);
   }
   return $sitemap;
 }
 
 
-function parse_section($section){
-	
-	foreach ($section as $key => $value) {
-		if (is_numeric($key)){
-      # make link from page name
-      $name = $value;
-      $sub = slug_name($name).'.php';
-      
-    } elseif (is_string($key)) {
-    	$name = $key;
-			if (!is_array($value)) {
-				$sub = $value;
-			} else {
-				$sub = array();
-				# recusivley call this function for each section that has a sub-section
-				foreach ($value as $sub_link) {
-					$sub[$sub_link] = parse_section($sub_link);
-				}
+function parse_section($sitemap, $section, $sub_section) {
+	if (is_string($section)) {
+		$sitemap[$section] = parse_sub_section($section, $sub_section);
+	} else {
+		$sitemap[$sub_section] = parse_sub_section($section, $sub_section);
+	}
+	return $sitemap;
+}
+
+
+function parse_sub_section($section, $sub_section) {
+	if (is_numeric($section)) {
+		# make link from page name
+		$sub = slug_name($sub_section).'.php';
+	} else {	
+		if (is_string($sub_section)) {
+			return $sub_section;
+		}	elseif (is_array($sub_section)) {
+			$sub = array();
+			# recusivly call this function for each section that has a sub-section
+			foreach ($sub_section as $sub_key => $sub_value) {
+				$sub = parse_section($sub, $sub_key, $sub_value);
 			}
-    }
-  }
-  return $sub;
+	  }	else {
+			$sub = 'error parsing sitemap';
+		}
+	}
+	return $sub;
+}
+
+
+function test_sitemap(){
+	$sitemap = parse_sitemap();
+	print_r($sitemap);
 }
 
 
