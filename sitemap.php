@@ -46,7 +46,8 @@ function define_sitemap() {
   	'tertiary 1',
   	'tertiary 2',
   	'tertiary 3',
-  	'tertiary 4'
+  	'tertiary 4',
+		'tertiary 5'
   );
   
   $secondary = array(
@@ -71,8 +72,8 @@ function define_sitemap() {
   'About Our Office' => $about_our_office,
   'About Orthodontics' => $about_orthodontics,
   'Braces 101' => $braces_101,
-  'Emergency Care' => $no_sub, # if the array is empty the link will become 'emergency-care.php'
-  'The Game Room' => $no_sub,
+  'Emergency Care', # if the array is empty the link will become 'emergency-care.php'
+  'The Game Room',
   'Contact Us' => $contact_us,
   'Secondary' => $secondary
   );

@@ -53,8 +53,8 @@ foreach ($slug_tests as $test){
 <?php text_navigation(3, array('The Game Room')); ?>
 
 <hr />
-<h2>render_sitemap()</h2>
-<?php render_sitemap(); ?>
+<h2>test_sitemap()</h2>
+<?php test_sitemap(); ?>
 
 <hr />
 <h2>sitemap(array('About Orthodontics'))</h2>
