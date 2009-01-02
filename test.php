@@ -54,7 +54,12 @@ foreach ($slug_tests as $test){
 
 <hr />
 <h2>test_sitemap()</h2>
-<?php test_sitemap(); ?>
+<?php $sitemap = parse_sitemap();
+	print_r($sitemap); ?>
+
+<hr />
+<h2>format_sitemap($sitemap)</h2>
+<?php test_callback(); ?>
 
 <hr />
 <h2>sitemap(array('About Orthodontics'))</h2>

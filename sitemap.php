@@ -47,18 +47,15 @@ function define_sitemap() {
   	'tertiary 2',
   	'tertiary 3',
   	'tertiary 4',
-		'tertiary 5'
+		'tertiary 5' => $contact_us
   );
   
   $secondary = array(
   	'secondary 1',
   	'secondary 2',
   	'secondary 3',
-  	'secondary 4' => $tertiary
+  	'Tertiary' => $tertiary
   );
-
-  # Define an empty array for sections that contain no sub items.
-  $no_sub = array();
 
   # Separate sections are merged to form the master sitemap hash.
   # These are the top level links.
@@ -74,8 +71,8 @@ function define_sitemap() {
   'Braces 101' => $braces_101,
   'Emergency Care', # if the array is empty the link will become 'emergency-care.php'
   'The Game Room',
-  'Contact Us' => $contact_us,
-  'Secondary' => $secondary
+  'Nested' => $secondary,
+  'Contact Us' => $contact_us
   );
   
   return $sitemap;

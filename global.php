@@ -57,11 +57,11 @@ function has_index_pages() {
 /**
  * returns the practice name if set in config.php
  */
-function get_practice_name(){
+function get_site_name(){
   $config = sc_config();
-  $practice_name = $config['practice_name'];
-  if(isset($practice_name) || !empty($practice_name)) {
-		return $practice_name;
+  $site_name = $config['site_name'];
+  if(isset($site_name) || !empty($site_name)) {
+		return $site_name;
 	}
 }
 
@@ -70,13 +70,15 @@ function get_practice_name(){
  * determines if the current section has sub-pages,
  * optionally check any section given as a parameter
  */
-function has_sub_items($section='') {
+function has_sub_items($section='')
+{
 		global $_section;
 		# Use the current section unless a specific section is given as a parameter
-		if (!$section){
+		if (!$section)
+		{
 			$section = $_section;
 		}
-		$sitemap = define_sitemap();
+		$sitemap = parse_sitemap();
 		$sub_items = $sitemap[$section];
 		if(is_array($sub_items) && count($sub_items) > 1){return true;} else {return false;}
 }
@@ -91,26 +93,33 @@ function has_sub_items($section='') {
  * if the section's sub item is a string, the string is used for the link
  * 
  * optionally check any section given as a parameter
- * @global string $_section
- * @return string
  */
-function section_link($section='') {
+function section_link($section='')
+{
 		global $_section;
 		# Use the current section unless a specific section is given as a parameter
-		if (!$section){
+		if (!$section)
+		{
 			$section = $_section;
 		}
-		$sitemap = define_sitemap();
+		$sitemap = parse_sitemap();
 		$link = '';
 		$sub = $sitemap[$section];
-		if (is_array($sub)){
-			if (has_index_pages() || !has_sub_items($section)){
+		if (is_array($sub))
+		{
+			if (has_index_pages() || !has_sub_items($section))
+			{
 				$link = slug_name($section);
-			} else {
+			}
+			
+			else
+			{
 				$link = slug_name($sub[0]);
 			}
 			$link .= '.php';
-		} elseif (is_string($sub)){
+		}
+		elseif (is_string($sub))
+		{
 			$link = $sub;
 		}
 		
@@ -257,8 +266,8 @@ function parse_section($sitemap, $section, $sub_section) {
 function parse_sub_section($section, $sub_section) {
 	if (is_numeric($section)) {
 		# make link from page name
-		$sub = slug_name($sub_section).'.php';
-	} else {	
+		$sub = slug_name($sub_section);
+	} else {
 		if (is_string($sub_section)) {
 			return $sub_section;
 		}	elseif (is_array($sub_section)) {
@@ -275,23 +284,55 @@ function parse_sub_section($section, $sub_section) {
 }
 
 
-function test_sitemap(){
-	$sitemap = parse_sitemap();
-	print_r($sitemap);
-}
-
-
-function render_sitemap() {
-  $sitemap = parse_sitemap();
-  $rendered_sitemap = '';
-  foreach ($sitemap as $page => $links) {
-  	if(!is_array($links)){
-  		echo '<a href="'.$links.'">'.$page.'</a><br/>';
-  	}
+function filter_sitemap($input, $callback = null)
+{
+  foreach ($input as $key => $value)
+  {
+    if (is_array($value))
+    {
+      $value = filter_sitemap($value, $callback);
+    }
   }
-  return $sitemap;
+  return array_filter($input, $callback);
 }
 
+
+function format_sitemap($input){
+	$formatted = '<ul>';
+  foreach ($input as $key => $value)
+  {
+  	$formatted .= '<li>';
+    if (is_array($value))
+    {
+    	//$link = section_link($key);
+    	$link = $value['Meet the Orthodontist'];
+    	$formatted .= "<a href=\"$link\">$key</a>";
+      $formatted .= format_sitemap($value);
+    }
+    
+    else
+    {
+    	$formatted .= "<a href=\"$value\">$key</a></li>";
+    }
+    
+  }
+  $formatted .= '</ul>';
+  return $formatted;
+}
+
+
+function sitemap_link($page, $link)
+{
+	return "<li><a href=\"$link\">$page</a></li>";
+}
+
+
+function test_callback()
+{
+	$sitemap = parse_sitemap();
+	$sitemap =format_sitemap($sitemap);
+	echo $sitemap;
+}
 
 /**
  * echoes a formatted list of the top-level navigation links wrapped in a div tag
