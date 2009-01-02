@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<?php meta_tags(); ?>
+	<?php print_meta_tags(); ?>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
 	<script src="http://2.scripts.sesamehost.com/scripts/jquery.flash.js" type="text/javascript"></script>
 	<script src="http://3.scripts.sesamehost.com/scripts/jquery.sifr.min.js" type="text/javascript" ></script>
@@ -13,14 +13,14 @@
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
 	<!--[if lt IE 7]><link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen, projection"><![endif]-->
-	<?php page_title(); ?>
+	<?php print_page_title(); ?>
 </head>
 
 <body class="<?php echo slug_name($_page_name); ?>">
 
 <div id="container">
 	<div id="hd" class="container">
-		<h1 id="logo"><a href="index.php"><?php echo get_practice_name(); ?></a></h1>
+		<h1 id="logo"><a href="index.php"><?php echo get_site_name(); ?></a></h1>
 	</div><!--/hd-->
 	<div id="bd" class="container">
 	  <div id="sidebar" class="column"></div><!--/sidebar-->

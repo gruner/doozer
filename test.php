@@ -10,9 +10,9 @@ require_once('global.php');
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<?php meta_tags(); ?>
+	<?php print_meta_tags(); ?>
 	<link href="example.css" media="screen" rel="stylesheet" type="text/css" />
-	<?php page_title(); ?>
+	<?php print_page_title(); ?>
 </head>
 <body class="<?php echo slug_name($_page_name); ?>">
 
@@ -28,8 +28,8 @@ foreach ($slug_tests as $test){
 ?>
 </p>
 
-<h2>get_practice_name()</h2>
-<p><?php echo get_practice_name(); ?></p>
+<h2>get_site_name()</h2>
+<p><?php echo get_site_name(); ?></p>
 
 <h2>navigation()</h2>
 <?php navigation($exclusions = array('Contact Us','Site Map')); ?>

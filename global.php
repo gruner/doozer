@@ -177,7 +177,7 @@ function titleize($string) {
  * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
  * Looks for local $_page_title variable but defaults to the value definded in config.php
  */
-function page_title() {
+function print_page_title() {
 	global $_section, $_page_name, $_keyword, $_page_title;
 	$config = sc_config();
 	
@@ -214,7 +214,7 @@ function page_title() {
  * looks for local $_meta_keywords and $_meta_description variables but 
  * defaults to the values defined in config.php.
  */
-function meta_tags() {
+function print_meta_tags() {
 		global $_keyword, $_description;
 		
 		$config = sc_config();
