@@ -297,42 +297,57 @@ function filter_sitemap($input, $callback = null)
 }
 
 
-function format_sitemap($input){
+function format_sitemap($input, $exclusions=array()){
 	$formatted = '<ul>';
   foreach ($input as $key => $value)
   {
-  	$formatted .= '<li>';
-    if (is_array($value))
+    if (!in_array($key, $exclusions))
     {
-    	//$link = section_link($key);
-    	$link = $value['Meet the Orthodontist'];
-    	$formatted .= "<a href=\"$link\">$key</a>";
-      $formatted .= format_sitemap($value);
+      if (is_array($value))
+      {
+        $link = reset($value);
+        #$formatted .= "<li><a href=\"$link.php\">$key</a>";
+        $formatted .= '<li>'.get_sitemap_link($key, $link);
+        $formatted .= format_sitemap($value);
+        $formatted .= '</li>';
+      }
+      
+      else
+      {
+        #$formatted .= "<li><a href=\"$value.php\">$key</a></li>";
+        $formatted .= '<li>'.get_sitemap_link($key, $value).'</li>';
+        #$formatted .= '</li>';
+      }
     }
-    
-    else
-    {
-    	$formatted .= "<a href=\"$value\">$key</a></li>";
-    }
-    
   }
   $formatted .= '</ul>';
   return $formatted;
 }
 
 
-function sitemap_link($page, $link)
-{
-	return "<li><a href=\"$link\">$page</a></li>";
-}
-
-
-function test_callback()
+function print_sitemap($exclusions=array())
 {
 	$sitemap = parse_sitemap();
-	$sitemap =format_sitemap($sitemap);
-	echo $sitemap;
+	echo format_sitemap($sitemap, $exclusions);
 }
+
+
+function get_sitemap_link($page, $link)
+{
+  global $_page_name;
+  if ($page == $_page_name)
+  {
+    return "$page (You are here)";
+  }
+  
+  else
+  {
+    return "<a href=\"$link.php\">$page</a>";  
+  }
+}
+
+
+
 
 /**
  * echoes a formatted list of the top-level navigation links wrapped in a div tag
