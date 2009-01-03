@@ -53,17 +53,19 @@ foreach ($slug_tests as $test){
 <?php text_navigation(3, array('The Game Room')); ?>
 
 <hr />
-<h2>test_sitemap()</h2>
-<?php $sitemap = parse_sitemap();
-	print_r($sitemap); ?>
+<h2>print_r($sitemap)</h2>
+<?php
+  $sitemap = parse_sitemap();
+	print_r($sitemap);
+?>
 
 <hr />
-<h2>format_sitemap($sitemap)</h2>
-<?php test_callback(); ?>
+<h2>print_sitemap()</h2>
+<?php print_sitemap(); ?>
 
 <hr />
-<h2>sitemap(array('About Orthodontics'))</h2>
-<?php sitemap(array('Contact Us', 'About Orthodontics')); ?>
+<h2>print_sitemap($exclude = array('About Orthodontics'))</h2>
+<?php print_sitemap(array('Contact Us', 'About Orthodontics')); ?>
 
 <hr />
 <h2>section_index()</h2>

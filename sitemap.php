@@ -72,7 +72,8 @@ function define_sitemap() {
   'Emergency Care', # if the array is empty the link will become 'emergency-care.php'
   'The Game Room',
   'Nested' => $secondary,
-  'Contact Us' => $contact_us
+  'Contact Us' => $contact_us,
+  'Test'
   );
   
   return $sitemap;
