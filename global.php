@@ -122,13 +122,13 @@ function get_section_link($section='')
       if (has_index_pages() || !has_sub_items($section))
       {
         $link .= slug_name($section);
+        $link .= '.php';
       }
       
       else
       {
-        $link .= slug_name(reset($sub));
+        $link .= reset($sub);
       }
-      $link .= '.php';
     }
     elseif (is_string($sub))
     {
@@ -302,7 +302,7 @@ function parse_sub_section($section, $sub_section)
   if (is_numeric($section))
   {
     # make link from page name
-    $sub = slug_name($sub_section);
+    $sub = slug_name($sub_section).'.php';
   }
   else
   {
@@ -367,7 +367,7 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
   # only include the item's id for top level nav items
   $include_id = $top_level;
   
-  $formatted = "\n<ul>\n";
+  $formatted = "\n<ul>";
   foreach ($input as $key => $value)
   {
     if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
@@ -381,13 +381,18 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
       
       elseif (is_array($value) && $include_sub_nav)
       {
-        $formatted .= get_section_link($key);
+        $section_link = get_section_link($key);
+        $formatted .= format_nav_link($key, $section_link);
         $formatted .= format_navigation($value, $exclusions, $sub_nav=true, $top_level=false); # recurse through nested navigation
       }
-      $formatted .= "</li>\n";
+      else {
+        $section_link = get_section_link($key);
+        $formatted .= format_nav_link($key, $section_link);
+      }
+      $formatted .= "</li>";
     }
   }
-  $formatted .= "\n</ul>\n";
+  $formatted .= "\n</ul>";
   return $formatted;
 }
 
@@ -398,7 +403,7 @@ function format_nav_link($nav_item, $link='')
 	{
 		$link = slug_name($nav_item).'.php';
 	}
-	$formatted = '<a href="'.$link.'">'$nav_item.'</a>';
+	return '<a href="'.$link.'">'.$nav_item.'</a>';
 }
 
 
@@ -408,9 +413,9 @@ function format_nav_link($nav_item, $link='')
 function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 {
   $sitemap = parse_sitemap();
-  $nav = "<div id=\"$div_id\">";
+  $nav = "\n<div id=\"$div_id\">";
   $nav .= format_navigation($sitemap, $exclusions, $include_sub_nav);
-  $nav .= "</div>\n";
+  $nav .= "\n</div>";
   print $nav;
 }
 
@@ -635,7 +640,7 @@ function get_nav_attributes($current, $nav_item, $nav_list, $include_id=false)
   }
   else
   {
-    $class[] = '$slug';
+    $class[] = $slug;
   }
   
   if($nav_item == $current){$class[] = 'active';}
