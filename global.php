@@ -25,6 +25,17 @@ require_once('config.php');
  */
 require_once('sitemap.php');
 
+function get_sitemap()
+{
+  static $sitemap;
+  if (!is_array($sitemap))
+  {
+    # does not currently exist, so create it
+    $sitemap = parse_sitemap();
+  }
+  return $sitemap;
+}
+
 
 /**
  * checks $_section and $_page_name to see if the current page is the homepage
@@ -47,7 +58,7 @@ function is_homepage()
 function has_index_pages()
 {
   $config = sc_config();
-  if($config['index_pages'] == true )
+  if(isset($config['index_pages']) && $config['index_pages'] == true)
   {
     return true;
   }
@@ -59,7 +70,7 @@ function has_index_pages()
 
 
 /**
- * returns the practice name if set in config.php
+ * returns the site name if set in config.php
  */
 function get_site_name()
 {
@@ -84,7 +95,7 @@ function has_sub_items($section='')
     {
       $section = $_section;
     }
-    $sitemap = parse_sitemap();
+    $sitemap = get_sitemap();
     $sub_items = $sitemap[$section];
     if(is_array($sub_items) && count($sub_items) > 1){return true;} else {return false;}
 }
@@ -114,7 +125,7 @@ function get_section_link($section='')
     {
       $section = $_section;
     }
-    $sitemap = parse_sitemap();
+    $sitemap = get_sitemap();
     $link = '';
     $sub = $sitemap[$section];
     if (is_array($sub))
@@ -367,33 +378,33 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
   # only include the item's id for top level nav items
   $include_id = $top_level;
   
-  $formatted = "\n<ul>";
+  $nav_string = "\n<ul>";
   foreach ($input as $key => $value)
   {
     if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
     {
-      $formatted .= "\n<li";
-      $formatted .= get_nav_attributes($_section, $section, $input, $include_id);
+      $nav_string .= "\n<li";
+      $nav_string .= get_nav_attributes($_section, $key, $input, $include_id).'>';
       
       if (is_string($value)) {
-          $formatted .= format_nav_link($key, $value);		
+          $nav_string .= format_nav_link($key, $value);		
       }
       
       elseif (is_array($value) && $include_sub_nav)
       {
         $section_link = get_section_link($key);
-        $formatted .= format_nav_link($key, $section_link);
-        $formatted .= format_navigation($value, $exclusions, $sub_nav=true, $top_level=false); # recurse through nested navigation
+        $nav_string .= format_nav_link($key, $section_link);
+        $nav_string .= format_navigation($value, $exclusions, $sub_nav=true, $top_level=false); # recurse through nested navigation
       }
       else {
         $section_link = get_section_link($key);
-        $formatted .= format_nav_link($key, $section_link);
+        $nav_string .= format_nav_link($key, $section_link);
       }
-      $formatted .= "</li>";
+      $nav_string .= "</li>";
     }
   }
-  $formatted .= "\n</ul>";
-  return $formatted;
+  $nav_string .= "\n</ul>";
+  return $nav_string;
 }
 
 
@@ -412,7 +423,7 @@ function format_nav_link($nav_item, $link='')
  */
 function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 {
-  $sitemap = parse_sitemap();
+  $sitemap = get_sitemap();
   $nav = "\n<div id=\"$div_id\">";
   $nav .= format_navigation($sitemap, $exclusions, $include_sub_nav);
   $nav .= "\n</div>";
@@ -441,6 +452,11 @@ function main_navigation($exclusions)
 }
 
 
+function sub_navigation($section='', $pre_text='')
+{
+  print_sub_navigation($section, $pre_text);
+}
+
 /**
  * echoes a <ul> wrapped in a <div> of the subnav links for the current section
  *
@@ -452,27 +468,29 @@ function main_navigation($exclusions)
  * @param string $section optionally show subnav links for specific section
  * @see sub_nav_ul()
  */
-function sub_navigation($section='', $pre_text='')
-{
-  
+function print_sub_navigation($section='', $pre_text='')
+{ 
+  global $_section;
   # Use the current section unless a specific section is given as a parameter
-  if (!$section){
+  if (!$section){ 
     $section = $_section;
   }
-    
-  if (has_sub_items($section)) {
-    $sub_nav = sub_nav_ul($section);
-    echo "<div id=\"subnav\">\n";
-    if ($pre_text) { echo "$pre_text"; }
-    echo "$sub_nav\n";
-    echo "</div>\n";
+  
+  # get sitemap
+  $sitemap = get_sitemap();
+  
+  if (has_sub_items($section))
+  {
+    $sub_nav = '';
+    if ($pre_text) { $sub_nav .= "$pre_text"; }
+    $sub_nav .= "<div id=\"subnav\">\n";
+    $sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, false);
+    $sub_nav .= "</div>\n";
+    print $sub_nav;
   }
 }
 
 
-/**
- * @see sub_navigation()
- */
 function sub_navigation_with_heading($section='', $link=false)
 {
 
@@ -492,7 +510,7 @@ function sub_navigation_with_heading($section='', $link=false)
   if ($link) { $heading .= "</a>"; }
   $heading .= "</h3>"; 
   
-  sub_navigation($section, $heading);
+  print_sub_navigation($section, $heading);
 }
 
 
@@ -643,6 +661,7 @@ function get_nav_attributes($current, $nav_item, $nav_list, $include_id=false)
     $class[] = $slug;
   }
   
+  # append relevant class names
   if($nav_item == $current){$class[] = 'active';}
   if($nav_item == reset($nav_list)){$class[] = 'first';}
   elseif($nav_item == end($nav_list)){$class[] = 'last';}
@@ -750,7 +769,7 @@ function format_sitemap($input, $exclusions=array()){
  */
 function print_sitemap($exclusions=array())
 {
-  $sitemap = parse_sitemap();
+  $sitemap = get_sitemap();
   echo format_sitemap($sitemap, $exclusions);
 }
 
@@ -812,7 +831,7 @@ function format_list_with_separator($list, $separator=' | ') {
 }
 
 
-function print_image_tag($file='', $alt='', $class='', $title) {
+function print_image_tag($file='', $alt='', $class='', $title='') {
   list($w, $h) = getimagesize("images/$file");
   $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
   if($class){$img_tag .= " class=\"$class\"";}
@@ -834,7 +853,7 @@ function print_image_tag($file='', $alt='', $class='', $title) {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
  */
-function place_image($file='', $alt='', $class='', $title) {
+function place_image($file='', $alt='', $class='', $title='') {
   
   global $_alt, $_page_name;
   
