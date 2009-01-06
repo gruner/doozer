@@ -466,40 +466,37 @@ function sub_navigation($section='', $pre_text='')
  * {@example sub_navigation.php}
  *
  * @param string $section optionally show subnav links for specific section
- * @see sub_nav_ul()
  */
 function print_sub_navigation($section='', $pre_text='')
 { 
   global $_section;
   # Use the current section unless a specific section is given as a parameter
-  if (!$section){ 
+  if (!$section)
+  { 
     $section = $_section;
   }
   
-  # get sitemap
   $sitemap = get_sitemap();
-  
   if (has_sub_items($section))
   {
     $sub_nav = '';
     if ($pre_text) { $sub_nav .= "$pre_text"; }
     $sub_nav .= "<div id=\"subnav\">\n";
-    $sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, false);
+    $sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
     $sub_nav .= "</div>\n";
     print $sub_nav;
   }
 }
 
 
-function sub_navigation_with_heading($section='', $link=false)
+function print_sub_navigation_with_heading($section='', $link=false)
 {
-
-    global $_section;
-    
-    # Use the current section unless a specific section is given as a parameter
-    if (!$section){
-      $section = $_section;
-    }
+  global $_section;
+  
+  # Use the current section unless a specific section is given as a parameter
+  if (!$section){
+    $section = $_section;
+  }
   
   $heading = "<h3>"; 
   if ($link) {
@@ -511,52 +508,6 @@ function sub_navigation_with_heading($section='', $link=false)
   $heading .= "</h3>"; 
   
   print_sub_navigation($section, $heading);
-}
-
-
-/**
- * creates a formatted <<ul>> of the current section's sub links
- *
- * adds 'class="active"' to the current page and gives each <<li>> a unique id based on the 'slug name'
- *
- * @param string $section optionally show subnav links for specific section
- * @param bool $include_attr optionally omit class and id attributes set for each <<li>>
- * @return string the subnav as a <<ul>>
- * @see slug_name()
- * @see sub_navigation() wraps this function in a <<div>>
- */
-function sub_nav_ul($section='', $include_attr=true) {
-   
-    global $_section, $_page_name;
-    
-    # Use the current section unless a specific section is given as a parameter
-    if (!$section){
-      $section = $_section;
-    }
-    
-    $sitemap = define_sitemap();
-    $sub_nav_string = "<ul>\n";
-    $sub_items = $sitemap[$section];
-    foreach ($sub_items as $key => $value) {
-      
-      $slug = slug_name($value);
-      
-      if (is_string($key)){
-        $sub_name = $key;
-        $sub_link = $value;
-      }else{
-        $sub_name = $value;
-        $sub_link = "$slug.php";
-      }
-      
-      $sub_nav_string .= "<li";
-      if ($include_attr){
-        $sub_nav_string .= get_nav_attributes($_page_name, $sub_name, $sub_items);
-      }
-      $sub_nav_string .= "><a href=\"$sub_link\" id=\"$slug\">$sub_name</a></li>\n";
-    }
-    $sub_nav_string .= "</ul>\n";
-    return $sub_nav_string;
 }
 
 
@@ -710,25 +661,6 @@ function text_navigation($br=0, $exclusions=array()) {
     }
     $nav_string .= '</p>';
     echo $nav_string;
-}
-
-
-/**
- * echoes a formatted list of the current section's links
- *
- * adds a header that reads: <br/>
- * 'In this section:'
- * 
- * @param string $section optionally show the index for any given section
- */
-function section_index($section="") {
-
-  global $_section; 
-
-  $sitemap = define_sitemap();
-  $index = "<h2>In this section:</h2>";
-  $index .= sub_nav_ul($_section, false);
-  echo $index;
 }
 
 
