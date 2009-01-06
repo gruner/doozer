@@ -314,7 +314,7 @@ function parse_sub_section($section, $sub_section)
     elseif (is_array($sub_section))
     {
       $sub = array();
-      # recusivly call this function for each section that has a sub-section
+      # recursivly call this function for each section that has a sub-section
       foreach ($sub_section as $sub_key => $sub_value)
       {
         $sub = parse_section($sub, $sub_key, $sub_value);
@@ -413,7 +413,7 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav') 
 }
 
 
-function format_navigation($input, $exclusions=array(), $include_sub_nav=false)
+function format_navigationX($input, $exclusions=array(), $include_sub_nav=false)
 {
   global $_section, $_page_name;
   $formatted = "\n<ul>\n";
@@ -425,7 +425,6 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false)
       {
         $link = get_section_link($section);
         $formatted .= '<li';
-
         $formatted .= format_navigation($value);
         $formatted .= '</li>';
       }
@@ -442,6 +441,43 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false)
   return $formatted;
 }
 
+
+function format_navigation($input, $exclusions=array(), $include_sub_nav=false)
+{
+  global $_section, $_page_name;
+  $formatted = "<ul>";
+  foreach ($input as $key => $value)
+  {
+    if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
+    {
+			if (is_numeric($key)) {
+					$formatted .= '<li';
+					$formatted .= get_nav_attributes($_section, $section, $input);
+					$formatted .= '<a href>';
+					$formatted .= '</li>';			
+			}
+			elseif (is_array($value) && $include_sub_nav)
+      {
+        $link = get_section_link($section);
+        $formatted .= '<li';
+        $formatted .= format_navigation($value); # recurse through nested navigation
+        $formatted .= '</li>';
+      }
+    }
+  }
+  $formatted .= '</ul>';
+  return $formatted;
+}
+
+
+function format_nav_link($nav_item, $link='')
+{
+	if (! $link)
+	{
+		$link = slug_name($nav_item);
+	}
+	$formatted = '<a href="'.$link.'">'$nav_item.'</a>';
+}
 
 
 function format_nav_ul($section='', $include_attr=true, $include_id=false)
@@ -485,7 +521,7 @@ function full_navigation($exclusions=array())
 
 
 /**
- * depricated, use navigation() instead
+ * deprecated, use navigation() instead
  * 
  * @param array $exclusions optionally omits any given sections from the echoed $nav_string
  */
