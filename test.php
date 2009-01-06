@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
 $_section = 'Braces 101';
 $_page_name = 'Life with Braces&reg;';
 $_keyword = 'Invisalign';
@@ -32,8 +34,8 @@ foreach ($slug_tests as $test){
 <p><?php echo get_site_name(); ?></p>
 
 <h2>navigation()</h2>
-<?php navigation($exclusions = array('Contact Us','Site Map')); ?>
-<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub_nav=true, $div_id='nav-with-sub'); ?>
+<?php print_navigation($exclusions = array('Contact Us','Site Map')); ?>
+<?php print_navigation($exclusions = array('Contact Us','Site Map'), $include_sub_nav=true, $div_id='nav-with-sub'); ?>
 
 <hr />
 <h2>sub_navigation()</h2>
@@ -66,10 +68,6 @@ foreach ($slug_tests as $test){
 <hr />
 <h2>print_sitemap($exclude = array('About Orthodontics'))</h2>
 <?php print_sitemap(array('Contact Us', 'About Orthodontics')); ?>
-
-<hr />
-<h2>section_index()</h2>
-<?php section_index(); ?>
 
 <hr />
 <h2>breadcrumbs()</h2>

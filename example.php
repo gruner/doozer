@@ -93,13 +93,6 @@ require_once('global.php');
 <?php sitemap(); ?>
 
 <hr />
-<h2>Section Index</h2>
-<p>This function parses <code>sitemap.php</code> and creates nested <code>&lt;ul&gt;</code>s of the site structure with links to each page.</p>
-<h3>Example:</h3>
-<pre><code>section_index();</code></pre>
-<?php section_index(); ?>
-
-<hr />
 <h2>Breadcrumbs</h2>
 <h3>Example:</h3>
 <pre><code>breadcrumbs();</code></pre>
