@@ -25,6 +25,10 @@ require_once('config.php');
  */
 require_once('sitemap.php');
 
+
+/**
+ * Only parse the sitemap once and save it as a static variable.
+ */
 function get_sitemap()
 {
   static $sitemap;
@@ -111,12 +115,6 @@ function has_sub_items($section='')
  * 
  * optionally check any section given as a parameter
  */
- 
-function section_link($section='')
-{   
-  return get_section_link($section);
-}
- 
 function get_section_link($section='')
 {
     global $_section;
@@ -154,7 +152,7 @@ function get_section_link($section='')
  * special characters from the given page name
  * and replacing spaces with dashes.
  * 
- * Used for setting unique id's on <<li>> elements
+ * Used for setting unique id's on <li> elements
  * in navigation as well as linking to files that follow our naming convention.
  */
 function slug_name($string)
@@ -198,7 +196,7 @@ function titleize($string)
 }
 
 /**
- * echoes the complete title tag of the page
+ * prints the complete title tag of the page
  *
  * Follows the convention of:
  * Section > Page Name - Keyword1 Braces Orthodontics - City ST - Orthodontist(s) Doctor Name(s) Practice Name - State Zip
@@ -239,12 +237,12 @@ function print_page_title()
   # remove special chars from page name
   $_page_title = titleize($_page_title);
 
-  echo "<title>$_page_title</title>";
+  print "<title>$_page_title</title>";
 }
 
 
 /**
- * echoes completed meta description and meta keyword tags
+ * prints completed meta description and meta keyword tags
  * 
  * looks for local $_meta_keywords and $_meta_description variables but 
  * defaults to the values defined in config.php.
@@ -277,7 +275,7 @@ function print_meta_tags()
         $value = $config["meta_$key"];
       }
       $meta_tag = "<meta name=\"$key\" content=\"$value\" />\n";
-      echo $meta_tag;
+      print $meta_tag;
     }
 }
 
@@ -355,7 +353,7 @@ function filter_sitemap($input, $callback=null)
 
 
 /**
- * echoes a formatted list of the top-level navigation links wrapped in a div tag
+ * prints a formatted list of the top-level navigation links wrapped in a div tag
  * 
  * * adds the slug name as the id of each <li>
  * * adds 'class="active"' to the current section
@@ -458,7 +456,7 @@ function sub_navigation($section='', $pre_text='')
 }
 
 /**
- * echoes a <ul> wrapped in a <div> of the subnav links for the current section
+ * prints a <ul> wrapped in a <div> of the subnav links for the current section
  *
  * optionally get the subnav links for any section given as a parameter
  *
@@ -500,7 +498,7 @@ function print_sub_navigation_with_heading($section='', $link=false)
   
   $heading = "<h3>"; 
   if ($link) {
-    $heading_link = section_link($section);
+    $heading_link = get_section_link($section);
     $heading .= "<a href=\"$heading_link\">"; 
   }
   $heading .= $section;
@@ -582,7 +580,7 @@ function sub_nav_p($breaks=array(), $separator=' | ', $class_name='sub_nav', $se
     }
     
     $formatted_list .= '</p>';
-    echo $formatted_list;
+    print $formatted_list;
 }
 
 
@@ -628,7 +626,7 @@ function get_nav_attributes($current, $nav_item, $nav_list, $include_id=false)
 
 
 /**
- * echoes a formatted list of the top-level navigation links for placement as the text navigation
+ * prints a formatted list of the top-level navigation links for placement as the text navigation
  *
  * Examples:
  * {@example text_navigation.php}
@@ -644,7 +642,7 @@ function text_navigation($br=0, $exclusions=array()) {
     foreach ($sitemap as $section => $sub_items) {
       # skip any sections that are in the exclusions array
       if (!in_array($section, $exclusions)) {
-        $link = section_link($section);
+        $link = get_section_link($section);
         $nav_string .= "<a href=\"$link\">$section</a>";
         
         # add a <br/> tag if given as a param
@@ -660,7 +658,7 @@ function text_navigation($br=0, $exclusions=array()) {
       }
     }
     $nav_string .= '</p>';
-    echo $nav_string;
+    print $nav_string;
 }
 
 
@@ -678,7 +676,6 @@ function format_sitemap($input, $exclusions=array()){
       if (is_array($value))
       {
         $link = reset($value);
-        #$formatted .= "<li><a href=\"$link.php\">$key</a>";
         $formatted .= '<li>'.get_sitemap_link($key, $link);
         $formatted .= format_sitemap($value);
         $formatted .= '</li>';
@@ -686,7 +683,6 @@ function format_sitemap($input, $exclusions=array()){
       
       else
       {
-        #$formatted .= "<li><a href=\"$value.php\">$key</a></li>";
         $formatted .= '<li>'.get_sitemap_link($key, $value).'</li>';
       }
     }
@@ -702,7 +698,7 @@ function format_sitemap($input, $exclusions=array()){
 function print_sitemap($exclusions=array())
 {
   $sitemap = get_sitemap();
-  echo format_sitemap($sitemap, $exclusions);
+  print format_sitemap($sitemap, $exclusions);
 }
 
 
@@ -716,13 +712,13 @@ function get_sitemap_link($page, $link)
   
   else
   {
-    return "<a href=\"$link.php\">$page</a>";  
+    return "<a href=\"$link\">$page</a>";  
   }
 }
 
 
 /**
- * echoes a formatted string with links to the current page's parent(s).
+ * prints a formatted string with links to the current page's parent(s).
  *
  * * $separator string defaults to the &#8250; character but can be overridden with any string.
  * * current page is bolded and unlinked.
@@ -747,7 +743,7 @@ function breadcrumbs($separator='&#8250;') {
       }
       $i++;
     }
-    echo $bc;
+    print $bc;
 }
 
 
@@ -771,11 +767,11 @@ function print_image_tag($file='', $alt='', $class='', $title='') {
   if($title){$img_tag .= " alt=\"$title\"";}
   $img_tag .= " />";
   
-  echo $img_tag;
+  print $img_tag;
 }
 
 /**
- * echoes a formatted image tag with calculated width and height attributes
+ * prints a formatted image tag with calculated width and height attributes
  *
  * if $file isn't specified, looks for any image named after the $_page_name
  *
@@ -823,7 +819,7 @@ function place_image_if_alt(){
 
 
 /**
- * echoes the script tag for creating a spam-friendly email link
+ * prints the script tag for creating a spam-friendly email link
  */
 function email_link($name, $domain){
   $js = "<script type=\"text/javascript\">\n";
@@ -834,17 +830,17 @@ function email_link($name, $domain){
   $js .= "document.write(name + '@' + domain + '</a>');\n";
   $js .= "// -->\n";
   $js .= "</script>\n";
-  echo $js;
+  print $js;
 }
 
 
 
 /**
- * echoes a div tag for embedding flash media with a standard notice if flash is not available.
+ * prints a div tag for embedding flash media with a standard notice if flash is not available.
  */
 function flash_div($div_name){
   $div = "<div id=\"$div_name\">\n";
   $div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
   $div .= "</div>\n";
-  echo $div;
+  print $div;
 }
