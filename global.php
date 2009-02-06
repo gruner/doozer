@@ -62,14 +62,7 @@ function is_homepage()
 function has_index_pages()
 {
   $config = sc_config();
-  if(isset($config['index_pages']) && $config['index_pages'] == true)
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return (isset($config['index_pages']) && $config['index_pages'] == true) ? true : false;
 }
 
 
@@ -101,7 +94,7 @@ function has_sub_items($section='')
     }
     $sitemap = get_sitemap();
     $sub_items = $sitemap[$section];
-    if(is_array($sub_items) && count($sub_items) > 1){return true;} else {return false;}
+    return (is_array($sub_items) && count($sub_items) > 1) ? true : false;
 }
 
 
@@ -115,20 +108,24 @@ function has_sub_items($section='')
  * 
  * optionally check any section given as a parameter
  */
-function get_section_link($section='')
+function get_section_link($section='', $section_sub)
 {
     global $_section;
     # Use the current section unless a specific section is given as a parameter
-    if (!$section)
+    if (! $section) { $section = $_section; }
+    
+    # if $section_sub is undefined, get it from the sitemap
+    if (! $section_sub)
     {
-      $section = $_section;
+      $sitemap = get_sitemap();
+      $section_sub = $sitemap[$section];
     }
-    $sitemap = get_sitemap();
+
     $link = '';
-    $sub = $sitemap[$section];
-    if (is_array($sub))
+
+    if (is_array($section_sub))
     {
-      if (has_index_pages() || !has_sub_items($section))
+      if (has_index_pages())
       {
         $link .= slug_name($section);
         $link .= '.php';
@@ -136,12 +133,12 @@ function get_section_link($section='')
       
       else
       {
-        $link .= reset($sub); # link to first sub item
+        $link .= reset($section_sub); # link to first sub item
       }
     }
-    elseif (is_string($sub)) # link is pre-defined
+    elseif (is_string($section_sub)) # link is pre-defined
     {
-      $link = $sub;
+      $link = $section_sub;
     }
     
     return $link;
@@ -410,7 +407,7 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
       
       else
       {
-        $section_link = get_section_link($key);
+        $section_link = get_section_link($key, $value);
         $nav_string .= format_nav_link($key, $section_link, $include_id);
         
         if (is_array($value) && $include_sub_nav) # item has subnav
@@ -436,14 +433,8 @@ function format_nav_link($nav_item, $link='', $include_id=false)
   $slug = slug_name($nav_item);
   $id = '';
   
-	if (! $link)
-	{
-		$link = "$slug.php";
-	}
-	
-	if ($include_id) {
-	  $id = " id=\"$slug\"";
-	}
+	if (! $link) {$link = "$slug.php";}
+	if ($include_id) {$id = " id=\"$slug\"";}
 
 	return "<a href=\"$link\"$id>$nav_item</a>";
 }
@@ -525,23 +516,21 @@ function print_sub_navigation($section='', $pre_string='', $post_string='')
 }
 
 
-function print_sub_navigation_with_heading($section='', $link=false)
+function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
 {
   global $_section;
   
   # Use the current section unless a specific section is given as a parameter
-  if (!$section){
-    $section = $_section;
-  }
+  if (! $section){ $section = $_section; }
   
-  $heading = "<h3>";
+  $heading = "<$tag>";
   if ($link) {
     $heading_link = get_section_link($section);
     $heading .= "<a href=\"$heading_link\">";
   }
   $heading .= $section;
   if ($link) { $heading .= "</a>"; }
-  $heading .= "</h3>";
+  $heading .= "</$tag>";
   
   print_sub_navigation($section, $heading);
 }
@@ -712,7 +701,7 @@ function format_sitemap($input, $exclusions=array()){
     {
       if (is_array($value))
       {
-        $link = reset($value);
+        $link = get_section_link($key, $value);
         $formatted .= '<li>'.get_sitemap_link($key, $link);
         $formatted .= format_sitemap($value);
         $formatted .= '</li>';
