@@ -1,13 +1,12 @@
 <?php
 /**
- * This file defines site-specific variables that are used by {@link global.php}.
+ * This file defines site-specific variables that are used by  global.php.
  *
  * The data defined in this file are used as default values throughout a site. 
  * Each separate page can override the default values by defining them locally.
  *
- * The purpose is to define all site-specifig information in this single file rather than having to alter {@link global.php} for each site.
+ * The purpose is to define all site-specifig information in this single file rather than having to alter global.php for each site.
  *
- * @package scFramework
  */
 
 /**

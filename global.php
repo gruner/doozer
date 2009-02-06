@@ -136,10 +136,10 @@ function get_section_link($section='')
       
       else
       {
-        $link .= reset($sub);
+        $link .= reset($sub); # link to first sub item
       }
     }
-    elseif (is_string($sub))
+    elseif (is_string($sub)) # link is pre-defined
     {
       $link = $sub;
     }
@@ -167,7 +167,7 @@ function slug_name($string)
 function strip_special_chars($string)
 {
   # Define special characters that will be stripped from the name
-  $special_chars = array('.',',','?','!','|',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
+  $special_chars = array('.',',','?','!','$','|','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
   $processed_string = str_replace($special_chars, '', $string);
   return $processed_string;
 }
@@ -280,6 +280,9 @@ function print_meta_tags()
 }
 
 
+/**
+ * processes sitemap.php, creating links from item names
+ */
 function parse_sitemap()
 {
   $defined_sitemap = define_sitemap();
@@ -292,13 +295,22 @@ function parse_sitemap()
 }
 
 
+/**
+ * processes each section of the sitemap,
+ * determining if there is a linked sub-section
+ */
 function parse_section($sitemap, $section, $sub_section)
 {
   if (is_string($section))
+    # array is in the form of
+    # $section => $sub_section
   {
     $sitemap[$section] = parse_sub_section($section, $sub_section);
   }
   else
+    # array is in the form of
+    # key => $section
+    # with key being numeric because there are no sub-items
   {
     $sitemap[$sub_section] = parse_sub_section($section, $sub_section);
   }
@@ -306,16 +318,21 @@ function parse_section($sitemap, $section, $sub_section)
 }
 
 
+/**
+ * processes each suv-section of the sitemap,
+ * recusively calling itself for each linked sub-sub-section, etc.
+ * Allows for infinitely nested levels of navigation
+ */
 function parse_sub_section($section, $sub_section)
 {
-  if (is_numeric($section))
+  if (is_numeric($section)) # numeric key, $sub_section is really the $section
   {
     # make link from page name
     $sub = slug_name($sub_section).'.php';
   }
   else
   {
-    if (is_string($sub_section))
+    if (is_string($sub_section)) # $sub_section is a defined link
     {
       return $sub_section;
     }
@@ -323,7 +340,7 @@ function parse_sub_section($section, $sub_section)
     elseif (is_array($sub_section))
     {
       $sub = array();
-      # recursivly call this function for each section that has a sub-section
+      # recursively process each section that has a sub-section
       foreach ($sub_section as $sub_key => $sub_value)
       {
         $sub = parse_section($sub, $sub_key, $sub_value);
@@ -339,29 +356,24 @@ function parse_sub_section($section, $sub_section)
 }
 
 
-function filter_sitemap($input, $callback=null)
-{
-  foreach ($input as $key => $value)
-  {
-    if (is_array($value))
-    {
-      $value = filter_sitemap($value, $callback);
-    }
-  }
-  return array_filter($input, $callback);
-}
+/**
+ * Not using this yet
+ */
+// function filter_sitemap($input, $callback=null)
+// {
+//   foreach ($input as $key => $value)
+//   {
+//     if (is_array($value))
+//     {
+//       $value = filter_sitemap($value, $callback);
+//     }
+//   }
+//   return array_filter($input, $callback);
+// }
 
 
 /**
- * prints a formatted list of the top-level navigation links wrapped in a div tag
- * 
- * * adds the slug name as the id of each <li>
- * * adds 'class="active"' to the current section
- * * optionally includes the subnav items as a nested <ul>
- * 
- * @param array $exclusions optionally omits any given sections from the echoed $nav_string
- * @param bool $include_sub_nav optionally include nested sub navigation
- * @param string $div_id optionally define the id of the generated div
+ * alias for print_navigation
  */
 function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 {
@@ -369,6 +381,9 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 }
 
 
+/**
+ * recursively formats the navigation sitemap, building a string of nested <ul>s
+ */
 function format_navigation($input, $exclusions=array(), $include_sub_nav=false, $top_level=true)
 {
   global $_section, $_page_name;
@@ -381,22 +396,28 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
   {
     if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
     {
-      $nav_string .= "\n<li";
-      $nav_string .= get_nav_attributes($_section, $key, $input, $include_id).'>';
       
-      if (is_string($value)) {
-          $nav_string .= format_nav_link($key, $value);		
+      if ($top_level){$current = $_section;}
+      else {$current = $_page_name;}
+      
+      $nav_string .= "\n<li";
+      $nav_string .= get_nav_attributes($current, $key, $input).'>';
+      
+      if (is_string($value)) # link is pre-defined
+      {
+         $nav_string .= format_nav_link($key, $value, $include_id);
       }
       
-      elseif (is_array($value) && $include_sub_nav)
+      else
       {
         $section_link = get_section_link($key);
-        $nav_string .= format_nav_link($key, $section_link);
-        $nav_string .= format_navigation($value, $exclusions, $sub_nav=true, $top_level=false); # recurse through nested navigation
-      }
-      else {
-        $section_link = get_section_link($key);
-        $nav_string .= format_nav_link($key, $section_link);
+        $nav_string .= format_nav_link($key, $section_link, $include_id);
+        
+        if (is_array($value) && $include_sub_nav) # item has subnav
+        {
+          # recurse through nested navigation
+          $nav_string .= format_navigation($value, $exclusions, $sub_nav=true, $top_level=false);
+        }
       }
       $nav_string .= "</li>";
     }
@@ -406,18 +427,38 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
 }
 
 
-function format_nav_link($nav_item, $link='')
+/**
+ * Creates a nav link string.
+ * If no link is given it uses the item's slug name
+ */
+function format_nav_link($nav_item, $link='', $include_id=false)
 {
+  $slug = slug_name($nav_item);
+  $id = '';
+  
 	if (! $link)
 	{
-		$link = slug_name($nav_item).'.php';
+		$link = "$slug.php";
 	}
-	return '<a href="'.$link.'">'.$nav_item.'</a>';
+	
+	if ($include_id) {
+	  $id = " id=\"$slug\"";
+	}
+
+	return "<a href=\"$link\"$id>$nav_item</a>";
 }
 
 
 /**
- * prints the formatted sitemap in the form of nested lists with links to each page
+ * prints the formatted sitemap as nested lists of links wrapped in a div tag
+ * 
+ * * adds the slug name as the id of each <a> tag
+ * * adds 'class="active"' to the current section
+ * * optionally includes the subnav items as a nested <ul>
+ * 
+ * @param array $exclusions optionally omits any given sections from the echoed $nav_string
+ * @param bool $include_sub_nav optionally include nested sub navigation
+ * @param string $div_id optionally define the id of the generated div
  */
 function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 {
@@ -460,12 +501,8 @@ function sub_navigation($section='', $pre_text='')
  *
  * optionally get the subnav links for any section given as a parameter
  *
- * Example: <br/>
- * {@example sub_navigation.php}
- *
- * @param string $section optionally show subnav links for specific section
  */
-function print_sub_navigation($section='', $pre_text='')
+function print_sub_navigation($section='', $pre_string='', $post_string='')
 { 
   global $_section;
   # Use the current section unless a specific section is given as a parameter
@@ -478,10 +515,11 @@ function print_sub_navigation($section='', $pre_text='')
   if (has_sub_items($section))
   {
     $sub_nav = '';
-    if ($pre_text) { $sub_nav .= "$pre_text"; }
+    if ($pre_string) { $sub_nav .= "$pre_string"; }
     $sub_nav .= "<div id=\"subnav\">\n";
     $sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
     $sub_nav .= "</div>\n";
+    if ($post_string) { $sub_nav .= "$post_string"; }
     print $sub_nav;
   }
 }
@@ -496,14 +534,14 @@ function print_sub_navigation_with_heading($section='', $link=false)
     $section = $_section;
   }
   
-  $heading = "<h3>"; 
+  $heading = "<h3>";
   if ($link) {
     $heading_link = get_section_link($section);
-    $heading .= "<a href=\"$heading_link\">"; 
+    $heading .= "<a href=\"$heading_link\">";
   }
   $heading .= $section;
   if ($link) { $heading .= "</a>"; }
-  $heading .= "</h3>"; 
+  $heading .= "</h3>";
   
   print_sub_navigation($section, $heading);
 }
@@ -595,25 +633,24 @@ function sub_nav_p($breaks=array(), $separator=' | ', $class_name='sub_nav', $se
  * @param array $nav_list the array that contains $nav_item
  * @return string the formatted attributes for the <li>
  */
-function get_nav_attributes($current, $nav_item, $nav_list, $include_id=false)
+function get_nav_attributes($current, $nav_item, $nav_list)
 {
   $attr = '';
   $class = array();
-  $slug = slug_name($nav_item);
+
+  # depending on how $nav_list is structured we have to compare
+  # against its values or keys
+  $first_item = reset($nav_list);
+  if (is_array($first_item)){$first_item = reset(array_keys($nav_list));}
   
-  if($include_id)
-  {
-    $attr .= " id=\"$slug\"";
-  }
-  else
-  {
-    $class[] = $slug;
-  }
+  $last_item = end($nav_list);
+  if (is_array($last_item)){$last_item = end(array_keys($nav_list));}
   
   # append relevant class names
-  if($nav_item == $current){$class[] = 'active';}
-  if($nav_item == reset($nav_list)){$class[] = 'first';}
-  elseif($nav_item == end($nav_list)){$class[] = 'last';}
+  $class[] = slug_name($nav_item);
+  if($nav_item === $current){$class[] = 'active';}
+  if($nav_item === $first_item){$class[] = 'first';}
+  if($nav_item === $last_item){$class[] = 'last';}
   
   if($class)
   {
@@ -781,26 +818,35 @@ function print_image_tag($file='', $alt='', $class='', $title='') {
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
  */
-function place_image($file='', $alt='', $class='', $title='') {
+function place_image($file='', $alt='', $class='', $title='')
+{
   
   global $_alt, $_page_name;
   
-  if (!$alt){
+  if (!$alt)
+  {
     $alt = $_alt;
   }
   
-  if (!$file){
+  if (!$file)
+  {
     $file = slug_name($_page_name);
   }
   
-  if (file_exists("images/$file")){
+  if (file_exists("images/$file"))
+  {
     print_image_tag($file, $alt, $class, $title);
-  } else {
+  }
+  
+  else
+  {
     # look for missing extensions
     $extensions = array('.jpg', '.gif', '.png');
-    foreach($extensions as $ext){
+    foreach($extensions as $ext)
+    {
       $try_file = $file.$ext;
-      if(file_exists("images/$try_file")){
+      if(file_exists("images/$try_file"))
+      {
         print_image_tag($try_file, $alt, $class, $title);
         break;
       }
