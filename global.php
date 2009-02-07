@@ -130,7 +130,6 @@ function get_section_link($section='', $section_sub='')
         $link .= slug_name($section);
         $link .= '.php';
       }
-      
       else
       {
         $link .= reset($section_sub); # link to first sub item
@@ -547,17 +546,17 @@ function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
  * @param string $section optionally show subnav links for specific section
  * @param bool $include_attr optionally omit class names set for each link
  */
-function sub_nav_p($breaks=array(), $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true) {
+function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true) {
    
     global $_section, $_page_name;
     
     # Use the current section unless a specific section is given as a parameter
-    if (!$section){
+    if (! $section){
       $section = $_section;
     }
     
-    # don't do output anything further if there are no sub items
-    if (!has_sub_items($section)) {return;}
+    # don't output anything further if there are no sub items
+    if (! has_sub_items($section)) {return;}
     
     $formatted_list = "<p class=\"$class_name\">";
     
@@ -577,6 +576,12 @@ function sub_nav_p($breaks=array(), $separator=' | ', $class_name='sub_nav', $se
     
     # separate the list of links into separate arrays for adding breaks
     if ($breaks) {
+      # breaks can be a single number or an array of numbers
+      if (! is_array($breaks) && is_numeric($breaks))
+      {
+        $breaks = array($breaks);
+      }
+      
       $link_blocks = array();
       $break_count = sizeof($breaks);
       for($j = 0; $j <= $break_count; $j++){
@@ -653,30 +658,67 @@ function get_nav_attributes($current, $nav_item, $nav_list)
  * @param array $exclusions optionally omit specific sections from the echoed $nav_string
  * @todo allow multiple <br/>s
  */
-function text_navigation($br=0, $exclusions=array()) {
-    $sitemap = define_sitemap();
-    $nav_string = '<p class="text-nav">';
-    $i = 1;
-    foreach ($sitemap as $section => $sub_items) {
-      # skip any sections that are in the exclusions array
-      if (!in_array($section, $exclusions)) {
-        $link = get_section_link($section);
-        $nav_string .= "<a href=\"$link\">$section</a>";
-        
-        # add a <br/> tag if given as a param
-        if($br == $i){
-          $nav_string .= '<br />';
-        }
-        
-        # add a separator unless it's the last item in the list or at a break
-        if ((count($sitemap) - count($exclusions)) != $i && $br != $i) {
-          $nav_string .= ' | ';
-        }
-        $i++;
+function print_text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav') {
+   
+    $formatted_list = "<p class=\"$class_name\">";
+    
+    $link_array = array();
+    $sitemap = get_sitemap();
+    foreach ($sitemap as $section => $sub_items)
+    {
+      if (! in_array($section, $exclusions))
+      {
+        $href = get_section_link($section, $sub_items);
+        $link = "<a href=\"$href\">$section</a>";
+        $link_array[] = $link;
       }
     }
-    $nav_string .= '</p>';
-    print $nav_string;
+    
+    # separate the list of links into separate arrays for adding breaks
+    if ($breaks)
+    {
+      # breaks can be a single number or an array of numbers
+      if (! is_array($breaks) && is_numeric($breaks))
+      {
+        $breaks = array($breaks);
+      }
+      
+      $link_blocks = array();
+      $break_count = sizeof($breaks);
+      for($j = 0; $j <= $break_count; $j++)
+      {
+        switch ($j)
+        {
+        case 0: #first
+          $offset = 0;
+          $length = $breaks[$j];
+          break;
+        case $break_count: #last
+          $offset = $breaks[$j-1];
+          $length = sizeof($link_array) - $offset;
+          break;
+        default:
+          $offset = $breaks[$j-1];
+          $length = $breaks[$j] - $breaks[$j-1];
+        }
+        $link_blocks[$j] = array_slice($link_array, $offset, $length);
+      }
+      # loop through newly created blocks and insert the
+      for($j = 0; $j < sizeof($link_blocks); $j++)
+      {
+        $link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
+      }
+      # add breaks between each block of links
+      $formatted_list .= format_list_with_separator($link_blocks, '<br />');
+    }
+    else
+    {
+      # if no breaks, add the separator to the raw list
+      $formatted_list .= format_list_with_separator($link_array, $separator);
+    }
+    
+    $formatted_list .= '</p>';
+    print $formatted_list;
 }
 
 
