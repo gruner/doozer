@@ -24,7 +24,7 @@ function test($code, $comments='')
   if($comments){print "<p class=\"quiet\">$comments</p>\n";}
   print "<p>\n";
   eval("$code;");
-  print "<p>\n<hr/>\n";
+  print "</p>\n<hr/>\n";
 }
 
 ?>
@@ -38,8 +38,9 @@ function test($code, $comments='')
 	<?php print_page_title(); ?>
 	<script type="text/javascript">
     $(document).ready(function(){
-  		$('#nav-with-sub li.first').append('<span class="quiet">  < first</span>');
-  		$('#nav-with-sub li.last').append('<span class="quiet">  < last</span>');
+  		$('li.first').append('<span class="quiet">  < first</span>');
+  		$('li.last').append('<span class="quiet">  < last</span>');
+  		$('#nav-with-sub a[href^="http://"]').after('<span class="quiet"> (external)</span>');
   	});//end document.ready
   </script>
 </head>
@@ -54,19 +55,27 @@ test('echo get_site_name()', 'gets the value of "site_name" defined in config.ph
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'))");
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'), \$include_sub_nav=true, \$div_id='nav-with-sub')");
 
+test("print_inclusive_navigation(array('Home','Patient Login'))", 'print a navigation div with only the specified nav items, excluding everything else');
+
 test("print_sub_navigation()");
+test("print_sub_navigation(\$section='Nested')");
 test("print_sub_navigation_with_heading()");
+test("print_sub_navigation_with_heading('', \$link=true)", 'adds a link to heading');
 test("print_sub_navigation_with_heading('', '', 'h1')");
 
 test("sub_nav_p()");
+test("sub_nav_p(2)");
+test("sub_nav_p(array(2))");
 test("sub_nav_p(array(1,3))", 'break the string after the first and third items');
 test("sub_nav_p('', ' >>>> ')", 'change the text that separates items');
 test("sub_nav_p(array(3),' &bull; ')");
 
-test("text_navigation()");
-test("text_navigation(4)");
-test("text_navigation(0, \$exclude=array('Contact Us'))");
-test("text_navigation(3, \$exclude=array('The Game Room'))");
+test("print_text_navigation()");
+test("print_text_navigation(4)");
+test("print_text_navigation(array(4))");
+test("print_text_navigation(array(2,5))");
+test("print_text_navigation(0, \$exclude=array('Contact Us'))");
+test("print_text_navigation(4, \$exclude=array('Test'), ' **** ')");
 
 test("print_sitemap()");
 test("print_sitemap(\$exclude=array('Contact Us', 'About Orthodontics'))");

@@ -481,6 +481,18 @@ function main_navigation($exclusions)
 }
 
 
+/**
+ * print a navigation div with only the specified nav items, excluding everything else
+ */
+function print_inclusive_navigation($inclusions=array(), $include_sub_nav=false, $div_id="util")
+{
+	$sitemap = get_sitemap();
+	$sections = array_keys($sitemap);
+	$exclusions = array_diff($sections, $inclusions);
+	print_navigation($exclusions, $include_sub_nav, $div_id);
+}
+
+
 function sub_navigation($section='', $pre_text='')
 {
   print_sub_navigation($section, $pre_text);
@@ -654,9 +666,9 @@ function get_nav_attributes($current, $nav_item, $nav_list)
  * Examples:
  * {@example text_navigation.php}
  *
- * @param integer $br optionally force a line break after the nth text link
+ * @param integer or array $breaks optionally force a line break after the nth text link
  * @param array $exclusions optionally omit specific sections from the echoed $nav_string
- * @todo allow multiple <br/>s
+ * @todo repeat a lot of code from sub_nav_p()
  */
 function print_text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav') {
    
