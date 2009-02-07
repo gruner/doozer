@@ -108,7 +108,7 @@ function has_sub_items($section='')
  * 
  * optionally check any section given as a parameter
  */
-function get_section_link($section='', $section_sub)
+function get_section_link($section='', $section_sub='')
 {
     global $_section;
     # Use the current section unless a specific section is given as a parameter
@@ -398,7 +398,7 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
       else {$current = $_page_name;}
       
       $nav_string .= "\n<li";
-      $nav_string .= get_nav_attributes($current, $key, $input).'>';
+      $nav_string .= get_nav_attributes($current, $key, $input).'>'; # append class names to <li>
       
       if (is_string($value)) # link is pre-defined
       {
@@ -626,20 +626,12 @@ function get_nav_attributes($current, $nav_item, $nav_list)
 {
   $attr = '';
   $class = array();
-
-  # depending on how $nav_list is structured we have to compare
-  # against its values or keys
-  $first_item = reset($nav_list);
-  if (is_array($first_item)){$first_item = reset(array_keys($nav_list));}
-  
-  $last_item = end($nav_list);
-  if (is_array($last_item)){$last_item = end(array_keys($nav_list));}
   
   # append relevant class names
   $class[] = slug_name($nav_item);
   if($nav_item === $current){$class[] = 'active';}
-  if($nav_item === $first_item){$class[] = 'first';}
-  if($nav_item === $last_item){$class[] = 'last';}
+  if($nav_item === reset(array_keys($nav_list))){$class[] = 'first';}
+  if($nav_item === end(array_keys($nav_list))){$class[] = 'last';}
   
   if($class)
   {

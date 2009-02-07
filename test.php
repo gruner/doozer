@@ -1,11 +1,21 @@
 <?php
 ini_set('display_errors', '1');
 error_reporting(E_WARNING);
+#error_reporting(E_ALL);
 $_section = 'Braces 101';
 $_page_name = 'Life with Braces&reg;';
 $_keyword = 'Invisalign';
 $_page_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
+
+$logr = array();
+
+function logr($str)
+{
+  global $logr;
+  $logr[] = $str;
+}
+
 require_once('global.php');
 
 function test($code, $comments='')
@@ -24,7 +34,14 @@ function test($code, $comments='')
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php print_meta_tags(); ?>
 	<link href="example.css" media="screen" rel="stylesheet" type="text/css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript"></script>
 	<?php print_page_title(); ?>
+	<script type="text/javascript">
+    $(document).ready(function(){
+  		$('#nav-with-sub li.first').append('<span class="quiet">  < first</span>');
+  		$('#nav-with-sub li.last').append('<span class="quiet">  < last</span>');
+  	});//end document.ready
+  </script>
 </head>
 <body class="<?php echo slug_name($_page_name); ?>">
 
@@ -76,6 +93,9 @@ test('place_image("non-existing-file")', "doesn't output anything if it can't fi
   $sitemap = parse_sitemap();
 	print_r($sitemap);
 ?>
+
+<h2>Log</h2>
+<?php print_r($logr); ?>
 
 </body>
 </html>
