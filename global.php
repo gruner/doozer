@@ -20,13 +20,13 @@
 require_once('config.php');
 
 
-/**
+/*
  * Include the sitemap for the site, which we parse in order to generate the navigation.
  */
 require_once('sitemap.php');
 
 
-/**
+/*
  * Only parse the sitemap once and save it as a static variable.
  */
 function get_sitemap()
@@ -41,7 +41,7 @@ function get_sitemap()
 }
 
 
-/**
+/*
  * checks $_section and $_page_name to see if the current page is the homepage
  */
 function is_homepage()
@@ -51,7 +51,7 @@ function is_homepage()
 }
 
 
-/**
+/*
  * checks config.php for 'index_pages' option
  *
  * If true, section links go to a section 'index page' (i.e. "In this section...)
@@ -66,7 +66,7 @@ function has_index_pages()
 }
 
 
-/**
+/*
  * returns the site name if set in config.php
  */
 function get_site_name()
@@ -80,7 +80,7 @@ function get_site_name()
 }
 
 
-/**
+/*
  * determines if the current section has sub-pages,
  * optionally check any section given as a parameter
  */
@@ -98,7 +98,7 @@ function has_sub_items($section='')
 }
 
 
-/**
+/*
  * determines the link to the current section
  *
  * if the section's sub items are an array
@@ -143,7 +143,7 @@ function get_section_link($section='', $section_sub='')
     return $link;
 }
 
-/**
+/*
  * creates a 'slug name' by stripping 
  * special characters from the given page name
  * and replacing spaces with dashes.
@@ -157,7 +157,7 @@ function slug_name($string)
 }
 
 
-/**
+/*
  * Strips special characters from a string.
  */
 function strip_special_chars($string)
@@ -169,7 +169,7 @@ function strip_special_chars($string)
 }
 
 
-/**
+/*
  * Loops through a hash of replacements
  * and replaces the key with its value in the given string.
  *
@@ -180,7 +180,7 @@ function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and
   return str_replace(array_keys($replacements), array_values($replacements), $string);
 }
 
-/**
+/*
  * Converts a string to make it suitable for use in a title tag.
  * Similar to slug_name, but keeps spaces.
  */
@@ -191,7 +191,7 @@ function titleize($string)
   return $titleized_name;
 }
 
-/**
+/*
  * prints the complete title tag of the page
  *
  * Follows the convention of:
@@ -369,15 +369,6 @@ function parse_sub_section($section, $sub_section)
 
 
 /**
- * alias for print_navigation
- */
-function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
-{
-  print_navigation($exclusions, $include_sub_nav, $div_id);  
-}
-
-
-/**
  * recursively formats the navigation sitemap, building a string of nested <ul>s
  */
 function format_navigation($input, $exclusions=array(), $include_sub_nav=false, $top_level=true)
@@ -412,7 +403,7 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
         if (is_array($value) && $include_sub_nav) # item has subnav
         {
           # recurse through nested navigation
-          $nav_string .= format_navigation($value, $exclusions, $sub_nav=true, $top_level=false);
+          $nav_string .= format_navigation($value, $exclusions, true, false);
         }
       }
       $nav_string .= "</li>";
@@ -460,28 +451,7 @@ function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='
 }
 
 
-/**
- * a wrapper for calling navigation() with included sub navigation
- * 
- */
-function full_navigation($exclusions=array())
-{
-  print_navigation($exclusions, $include_sub_nav=true);
-}
-
-
-/**
- * deprecated, use navigation() instead
- * 
- * @param array $exclusions optionally omits any given sections from the echoed $nav_string
- */
-function main_navigation($exclusions)
-{
-  print_navigation($exclusions, $include_sub_nav=false);
-}
-
-
-/**
+/*
  * print a navigation div with only the specified nav items, excluding everything else
  */
 function print_inclusive_navigation($inclusions=array(), $include_sub_nav=false, $div_id="util")
@@ -493,12 +463,7 @@ function print_inclusive_navigation($inclusions=array(), $include_sub_nav=false,
 }
 
 
-function sub_navigation($section='', $pre_text='')
-{
-  print_sub_navigation($section, $pre_text);
-}
-
-/**
+/*
  * prints a <ul> wrapped in a <div> of the subnav links for the current section
  *
  * optionally get the subnav links for any section given as a parameter
@@ -558,12 +523,14 @@ function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
  * @param string $section optionally show subnav links for specific section
  * @param bool $include_attr optionally omit class names set for each link
  */
-function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true) {
+function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
+{
    
     global $_section, $_page_name;
     
     # Use the current section unless a specific section is given as a parameter
-    if (! $section){
+    if (! $section)
+    {
       $section = $_section;
     }
     
@@ -575,10 +542,12 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
     $link_array = array();
     $sitemap = define_sitemap();
     $sub_items = $sitemap[$section];
-    foreach ($sub_items as $sub_name) {
+    foreach ($sub_items as $sub_name)
+    {
       $slug = slug_name($sub_name);
       $link = "<a href=\"$slug.php\"";
-      if ($include_attr){
+      if ($include_attr)
+      {
         $link .= get_nav_attributes($_page_name, $sub_name, $sub_items);
       }
       $link .= ">$sub_name</a>";
@@ -587,7 +556,8 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
     
     
     # separate the list of links into separate arrays for adding breaks
-    if ($breaks) {
+    if ($breaks)
+    {
       # breaks can be a single number or an array of numbers
       if (! is_array($breaks) && is_numeric($breaks))
       {
@@ -596,8 +566,10 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
       
       $link_blocks = array();
       $break_count = sizeof($breaks);
-      for($j = 0; $j <= $break_count; $j++){
-        switch ($j) {
+      for($j = 0; $j <= $break_count; $j++)
+      {
+        switch ($j)
+        {
         case 0: #first
           $offset = 0;
           $length = $breaks[$j];
@@ -613,12 +585,15 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
         $link_blocks[$j] = array_slice($link_array, $offset, $length);
       }
       # loop through newly created blocks and insert the
-      for($j = 0; $j < sizeof($link_blocks); $j++){
+      for($j = 0; $j < sizeof($link_blocks); $j++)
+      {
         $link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
       }
       # add breaks between each block of links
       $formatted_list .= format_list_with_separator($link_blocks, '<br />');
-    } else {
+    }
+    else
+    {
       # if no breaks, add the separator to the raw list
       $formatted_list .= format_list_with_separator($link_array, $separator);
     }
@@ -670,7 +645,8 @@ function get_nav_attributes($current, $nav_item, $nav_list)
  * @param array $exclusions optionally omit specific sections from the echoed $nav_string
  * @todo repeat a lot of code from sub_nav_p()
  */
-function print_text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav') {
+function print_text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav')
+{
    
     $formatted_list = "<p class=\"$class_name\">";
     
@@ -734,12 +710,13 @@ function print_text_navigation($breaks='', $exclusions=array(), $separator=' | '
 }
 
 
-/**
+/*
  * formats the sitemap in the form of nested lists with links to each page
  *
  * recurses for endless nested subnavigation
  */
-function format_sitemap($input, $exclusions=array()){
+function format_sitemap($input, $exclusions=array())
+{
   $formatted = '<ul>';
   foreach ($input as $key => $value)
   {
@@ -752,7 +729,6 @@ function format_sitemap($input, $exclusions=array()){
         $formatted .= format_sitemap($value);
         $formatted .= '</li>';
       }
-      
       else
       {
         $formatted .= '<li>'.get_sitemap_link($key, $value).'</li>';
@@ -764,7 +740,7 @@ function format_sitemap($input, $exclusions=array()){
 }
 
 
-/**
+/*
  * prints the formatted sitemap in the form of nested lists with links to each page
  */
 function print_sitemap($exclusions=array())
@@ -781,7 +757,6 @@ function get_sitemap_link($page, $link)
   {
     return "$page (You are here)";
   }
-  
   else
   {
     return "<a href=\"$link\">$page</a>";  
@@ -789,7 +764,7 @@ function get_sitemap_link($page, $link)
 }
 
 
-/**
+/*
  * prints a formatted string with links to the current page's parent(s).
  *
  * * $separator string defaults to the &#8250; character but can be overridden with any string.
@@ -798,7 +773,8 @@ function get_sitemap_link($page, $link)
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
  * @todo refactor to use format_list_with_separator
  */
-function breadcrumbs($separator='&#8250;') {
+function print_breadcrumbs($separator='&#8250;')
+{
     
     global $_section, $_page_name;
     
@@ -825,13 +801,15 @@ function breadcrumbs($separator='&#8250;') {
  * @param array $list 
  * @param string $separator the string inserted between items
  */
-function format_list_with_separator($list, $separator=' | ') {
+function format_list_with_separator($list, $separator=' | ')
+{
     $formatted_list = implode("$separator", $list);
     return $formatted_list;
 }
 
 
-function print_image_tag($file='', $alt='', $class='', $title='') {
+function print_image_tag($file='', $alt='', $class='', $title='')
+{
   list($w, $h) = getimagesize("images/$file");
   $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
   if($class){$img_tag .= " class=\"$class\"";}
@@ -893,7 +871,8 @@ function place_image($file='', $alt='', $class='', $title='')
 /**
  * calls place_image() if the $_alt variable is set for the page
  */
-function place_image_if_alt(){
+function place_image_if_alt()
+{
   global $_alt;
   if ($_alt){place_image('','','auto');}
 }
@@ -902,7 +881,8 @@ function place_image_if_alt(){
 /**
  * prints the script tag for creating a spam-friendly email link
  */
-function email_link($name, $domain){
+function email_link($name, $domain)
+{
   $js = "<script type=\"text/javascript\">\n";
   $js .= "<!--\n";
   $js .= "var name = \"$name\";\n";
@@ -919,7 +899,8 @@ function email_link($name, $domain){
 /**
  * prints a div tag for embedding flash media with a standard notice if flash is not available.
  */
-function flash_div($div_name){
+function flash_div($div_name)
+{
   $div = "<div id=\"$div_name\">\n";
   $div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
   $div .= "</div>\n";
