@@ -61,11 +61,6 @@ class TestOfFramework extends UnitTestCase {
 	function test_get_nav_attributes()
 	{
 	  $test1 = array('one','two','three');
-  	$this->assertIdentical(' class="one active first"', get_nav_attributes('one', 'one', $test1));
-  	$this->assertIdentical(' class="two"', get_nav_attributes('one', 'two', $test1));
-  	$this->assertIdentical(' class="three last"', get_nav_attributes('one', 'three', $test1));
-  	$this->assertIdentical(' class="three active last"', get_nav_attributes('three', 'three', $test1));
-  	
   	$test2 = array('uno' => $test1, 'dos' => $test1, 'tres' => $test1);
   	$this->assertidentical(' class="uno active first"', get_nav_attributes('uno', 'uno', $test2));
   	$this->assertidentical(' class="dos active"', get_nav_attributes('dos', 'dos', $test2));

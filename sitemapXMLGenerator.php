@@ -1,5 +1,7 @@
 <?php
 
+# This isn't working yet don't use
+
 # This file reads the site structure definied in 'sitemap.php'
 # and generates the root level 'sitemap.xml' file for search engine indexing
 
