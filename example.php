@@ -11,9 +11,9 @@ require_once('global.php');
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<?php meta_tags(); ?>
+	<?php print_meta_tags(); ?>
 	<link href="example.css" media="screen" rel="stylesheet" type="text/css" />
-	<?php page_title(); ?>
+	<?php print_page_title(); ?>
 </head>
 <body class="<?php echo slug_name($_page_name); ?>">
 
@@ -36,7 +36,7 @@ require_once('global.php');
 <h3>Options</h3>
 
 <ul>
-  <li>If you don't want certain sections to be included in the generated navigation, create an array with the section names you wish to excude and pass them to the function as the <code>$exclusions</code> parameter.</li>
+  <li>If you don't want certain sections to be included in the generated navigation, create an array with the section names you wish to exclude and pass them to the function as the <code>$exclusions</code> parameter.</li>
   <li>$sub_nav is a boolean parameter that specifies if the sub nav should be included as a nested &lt;ul&gt;s.</li>
   <li>The $div_id parameter lets you specify the id of the generated &lt;ul&gt;. It defaults to 'nav' if nothing is given.</li>
 </ul>

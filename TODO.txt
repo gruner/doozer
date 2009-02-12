@@ -1,5 +1,6 @@
 ## Bugs
 * When first sub sub-item is an array, the generated link is "Array".
+* in print_inclusive_navigation() the .first class is added, but not .last unless it's the actual last item in sitemap.php
 
 ## General
 * add back in the .head class for top-level li's that have a nested ul

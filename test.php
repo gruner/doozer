@@ -47,6 +47,7 @@ function test($code, $comments='')
 <body class="<?php echo slug_name($_page_name); ?>">
 
 <h1>PHP Framework</h1>
+<p class="quiet">This page lists PHP commands as headers followed by the output of that exact code. The "< first" and "< last" tags are being added with jQuery to li.first and li.last so you don't have to view the source to see the class names. Same with external links.</p>
 
 <?php 
 
@@ -80,7 +81,7 @@ test("print_text_navigation(4, \$exclude=array('Test'), ' **** ')");
 test("print_sitemap()");
 test("print_sitemap(\$exclude=array('Contact Us', 'About Orthodontics'))");
 
-test("breadcrumbs()");
+test("print_breadcrumbs()");
 
 $slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
 foreach ($slug_tests as $test){
