@@ -1,0 +1,4 @@
+* take out phpDoc comments because they add clutter, and the generated documentation it too complex 
+
+## Allow for edge cases:
+* multiple nav items that point to the same page
