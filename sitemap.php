@@ -8,8 +8,6 @@ function define_sitemap() {
   $about_our_office = array(
   'Meet the Orthodontist',
   'Meet the Staff',
-  'Office Tour',
-  'Office Policies',
   'External Link' => 'http://google.com'
   );
 
@@ -17,10 +15,6 @@ function define_sitemap() {
   'Why Braces?',
   'For Children',
   'For Adults',
-  'Two-Phase Treatment',
-  'Orthodontic Treatments',
-  'Ortho Dictionary',
-  'Ask the Orthodontist',
   'Resources'
   );
 
@@ -29,10 +23,6 @@ function define_sitemap() {
   'Types of Braces',
   'Types of Appliances',
   'Braces Diagram',
-  'Brace Painter',
-  'Oral Care Video',
-  'Retainers',
-  'iBraces'
   );
 
   $contact_us = array(
@@ -44,17 +34,16 @@ function define_sitemap() {
   
   $tertiary = array(
   	'tertiary 1',
-  	'tertiary 2',
+  	'tertiary 2' => 'http://google.com',
   	'tertiary 3',
-  	'tertiary 4',
-		'tertiary 5' => $contact_us
+  	'tertiary 4'
   );
   
   $secondary = array(
   	'secondary 1',
   	'secondary 2',
   	'secondary 3',
-  	'Tertiary' => $tertiary
+  	'tertiary' => $tertiary
   );
 
   # Separate sections are merged to form the master sitemap hash.
@@ -70,7 +59,6 @@ function define_sitemap() {
   'About Orthodontics' => $about_orthodontics,
   'Braces 101' => $braces_101,
   'Emergency Care', # if the array is empty the link will become 'emergency-care.php'
-  'The Game Room',
   'Nested' => $secondary,
   'Contact Us' => $contact_us,
   'Test'
