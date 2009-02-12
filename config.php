@@ -30,6 +30,8 @@ function sc_config(){
     $sc_config['title_keywords'] = 'Braces Orthodontics';
     
     $sc_config['site_name'] = 'Practice Name';
+    
+    # $sc_config['index_pages'] = true;
 
     return $sc_config;
 }
