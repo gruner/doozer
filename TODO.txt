@@ -1,4 +1,9 @@
-* take out phpDoc comments because they add clutter, and the generated documentation it too complex 
+## Bugs
+* When first sub sub-item is an array, the generated link is "Array".
+
+## General
+* add back in the .head class for top-level li's that have a nested ul
+* take out phpDoc comments because they add clutter, Dreamweaver chokes on them, and the generated documentation it too complex
 
 ## Allow for edge cases:
 * multiple nav items that point to the same page
