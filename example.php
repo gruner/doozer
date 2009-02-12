@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_WARNING);
 $_section = 'Braces 101';
 $_page_name = 'Life with Braces';
 $_keyword = 'Invisalign';
@@ -42,10 +43,10 @@ require_once('global.php');
 
 <h3>Example:</h3>
 <pre><code>navigation($exclusions = array('Contact Us','Site Map'));</code></pre>
-<?php navigation($exclusions = array('Contact Us','Site Map')); ?>
+<?php print_navigation($exclusions = array('Contact Us','Site Map')); ?>
 
 <pre><code>navigation($exclusions = array('Contact Us','Site Map'), $include_sub_nav=true, $div_id='nav-with-sub');</code></pre>
-<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub_nav=true, $div_id='nav-with-sub'); ?>
+<?php print_navigation($exclusions = array('Contact Us','Site Map'), $include_sub_nav=true, $div_id='nav-with-sub'); ?>
 
 <hr />
 <h2>Sub Navigation</h2>
