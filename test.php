@@ -41,6 +41,7 @@ function test($code, $comments='')
   		$('li.first').append('<span class="quiet">  < first</span>');
   		$('li.last').append('<span class="quiet">  < last</span>');
   		$('#nav-with-sub a[href^="http://"]').after('<span class="quiet"> (external)</span>');
+  		//$('a.head').after('<span class="quiet"> < head </span>');
   	});//end document.ready
   </script>
 </head>

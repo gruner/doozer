@@ -3,7 +3,6 @@
 * in print_inclusive_navigation() the .first class is added, but not .last unless it's the actual last item in sitemap.php
 
 ## General
-* add back in the .head class for top-level li's that have a nested ul
 * take out phpDoc comments because they add clutter, Dreamweaver chokes on them, and the generated documentation it too complex
 
 ## Allow for edge cases:

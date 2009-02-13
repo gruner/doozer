@@ -398,7 +398,9 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
       else
       {
         $section_link = get_section_link($key, $value);
-        $nav_string .= format_nav_link($key, $section_link, $include_id);
+        # add .head class for jquery accordion
+        $class = (is_array($value) && $include_sub_nav && $top_level) ? 'head' : '';
+        $nav_string .= format_nav_link($key, $section_link, $include_id, $class);
         
         if (is_array($value) && $include_sub_nav) # item has subnav
         {
@@ -418,15 +420,16 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
  * Creates a nav link string.
  * If no link is given it uses the item's slug name
  */
-function format_nav_link($nav_item, $link='', $include_id=false)
+function format_nav_link($nav_item, $link='', $include_id=false, $class='')
 {
   $slug = slug_name($nav_item);
   $id = '';
   
 	if (! $link) {$link = "$slug.php";}
 	if ($include_id) {$id = " id=\"$slug\"";}
+	if ($class) {$class = " class=\"$class\"";}
 
-	return "<a href=\"$link\"$id>$nav_item</a>";
+	return "<a href=\"$link\"$id$class>$nav_item</a>";
 }
 
 
