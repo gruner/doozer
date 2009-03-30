@@ -3,7 +3,7 @@ ini_set('display_errors', '1');
 error_reporting(E_WARNING);
 #error_reporting(E_ALL);
 $_section = 'Braces 101';
-$_page_name = 'Life with Braces&reg;';
+#$_page_name = 'Life with Braces&reg;';
 $_keyword = 'Invisalign';
 $_page_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
@@ -51,6 +51,9 @@ function test($code, $comments='')
 <p class="quiet">This page lists PHP commands as headers followed by the output of that exact code. The "< first" and "< last" tags are being added with jQuery to li.first and li.last so you don't have to view the source to see the class names. Same with external links.</p>
 
 <?php 
+
+test('echo $_page_name');
+test('echo get_page_name()');
 
 test('echo get_site_name()', 'gets the value of "site_name" defined in config.php'); 
 

@@ -3,6 +3,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php print_meta_tags(); ?>
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
 	<script src="http://2.scripts.sesamehost.com/scripts/jquery.flash.js" type="text/javascript"></script>
 	<script src="http://3.scripts.sesamehost.com/scripts/jquery.sifr.min.js" type="text/javascript" ></script>
@@ -10,8 +12,6 @@
 	<script src="http://5.scripts.sesamehost.com/scripts/jquery.nospam.js" type="text/javascript"></script>
 	<script src="http://6.scripts.sesamehost.com/scripts/jquery.fancybox.js" type="text/javascript"></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
-	<link rel="shortcut icon" href="favicon.ico" />
-	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
 	<!--[if lt IE 7]><link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen, projection"><![endif]-->
 	<?php print_page_title(); ?>
 </head>
