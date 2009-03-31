@@ -98,18 +98,6 @@ function has_sub_items($section='')
 }
 
 
-function get_page_name()
-{
-	$page_name = preg_match('/(\w+)\..+$/', $_SERVER['PHP_SELF'], $matches);
-	return $matches[1];
-}
-
-// if(! isset($_page_name) || empty($_page_name))
-// {
-// 	 $_page_name = get_page_name();
-// }
-
-
 /*
  * determines the link to the current section
  *
@@ -199,7 +187,7 @@ function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and
 function sanitize_title_text($string)
 {
   $sanitized_text = strip_special_chars($string);
-  $sanitized_text = replace_chars($titleized_name, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
+  $sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
   return $sanitized_text;
 }
 
@@ -636,10 +624,7 @@ function get_nav_attributes($current, $nav_item, $nav_list)
   
   # append relevant class names
   $class[] = slug_name($nav_item);
-  if($nav_item === $current){
-  	$class[] = 'active';
-  	set_page_title($nav_item);
-	}
+  if($nav_item === $current){$class[] = 'active';}
   if($nav_item === reset(array_keys($nav_list))){$class[] = 'first';}
   if($nav_item === end(array_keys($nav_list))){$class[] = 'last';}
   

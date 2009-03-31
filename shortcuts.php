@@ -1,7 +1,7 @@
 <?php
 
 /**
- * shortcuts
+ * include this file to use the older function names
  */
  
 

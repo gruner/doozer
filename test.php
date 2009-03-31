@@ -1,9 +1,9 @@
 <?php
 ini_set('display_errors', '1');
-error_reporting(E_WARNING);
-#error_reporting(E_ALL);
+#error_reporting(E_WARNING);
+error_reporting(E_ALL);
 $_section = 'Braces 101';
-#$_page_name = 'Life with Braces&reg;';
+$_page_name = 'Life with Braces&reg;';
 $_keyword = 'Invisalign';
 $_page_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
@@ -20,7 +20,7 @@ require_once('global.php');
 
 function test($code, $comments='')
 {
-  print "<h2>$code</h2>\n";
+  print "<h3 class=\"code\">$code</h3>\n";
   if($comments){print "<p class=\"quiet\">$comments</p>\n";}
   print "<p>\n";
   eval("$code;");
@@ -34,7 +34,7 @@ function test($code, $comments='')
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<?php print_meta_tags(); ?>
 	<link href="example.css" media="screen" rel="stylesheet" type="text/css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
 	<?php print_page_title(); ?>
 	<script type="text/javascript">
     $(document).ready(function(){
@@ -48,24 +48,36 @@ function test($code, $comments='')
 <body class="<?php echo slug_name($_page_name); ?>">
 
 <h1>PHP Framework</h1>
-<p class="quiet">This page lists PHP commands as headers followed by the output of that exact code. The "< first" and "< last" tags are being added with jQuery to li.first and li.last so you don't have to view the source to see the class names. Same with external links.</p>
+
+<p>This is an example page illustrating the available php functions that utilize the site stucture defined in <code>sitemap.php</code>.</p>
+
+<p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (The framework uses the names <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamicly generated navigation elements.</p>
+
+<p>These functions are defined in <code>global.php</code>. To enable this functionality simply include <code>global.php</code> on every page in addition to the header and footer includes. Then define the site structure as an array in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
+
+<h2>Naming Conventions</h2>
+
+<p>'Slug Name' is a term used in blogging and CMS software for stripping spaces and special characters from a page title to use as a file name or in a URL. The framework relies on php files that follow this naming contention. (e.g. A page titled 'Life with Braces' would be named 'life-with-braces.php').</p>
+
+<h2>Examples</h2>
+
+<p>This page lists PHP commands as headers followed by the output of that exact code. The "&lt; first" and "&lt; last" tags are being added with jQuery to li.first and li.last so you don't have to view the source to see the class names. A similar visualization is being done with external links. The .active class is highlighted in yellow.</p>
+
+<p>To illustrate these examples, this example page has the variables <code>$_section='Braces 101'</code> and <code>$_page_name='Life with Braces'</code>.</p>
+
+<hr />
 
 <?php 
-
-test('echo $_page_name');
-test('echo get_page_name()');
-
-test('echo get_site_name()', 'gets the value of "site_name" defined in config.php'); 
 
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'))");
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'), \$include_sub_nav=true, \$div_id='nav-with-sub')");
 
-test("print_inclusive_navigation(array('Home','Patient Login'))", 'print a navigation div with only the specified nav items, excluding everything else');
+test("print_inclusive_navigation(array('Home','Patient Login'))", 'print a navigation div with only the specified nav items, excludes everything else');
 
 test("print_sub_navigation()");
 test("print_sub_navigation(\$section='Nested')");
 test("print_sub_navigation_with_heading()");
-test("print_sub_navigation_with_heading('', \$link=true)", 'adds a link to heading');
+test("print_sub_navigation_with_heading('', \$link=true)", 'adds a linked heading');
 test("print_sub_navigation_with_heading('', '', 'h1')");
 
 test("sub_nav_p()");
@@ -87,6 +99,8 @@ test("print_sitemap(\$exclude=array('Contact Us', 'About Orthodontics'))");
 
 test("print_breadcrumbs()");
 
+test('echo get_site_name()', 'gets the value of "site_name" defined in config.php'); 
+
 $slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
 foreach ($slug_tests as $test){
   test("echo slug_name('$test')");
@@ -102,14 +116,14 @@ test('place_image("non-existing-file")', "doesn't output anything if it can't fi
 
 ?>
 
-<h2>print_r($sitemap)</h2>
+<!--<h2>print_r($sitemap)</h2>-->
 <?php
-  $sitemap = parse_sitemap();
-	print_r($sitemap);
+  # $sitemap = parse_sitemap();
+	# print_r($sitemap);
 ?>
 
-<h2>Log</h2>
-<?php print_r($logr); ?>
+<!--<h2>Log</h2>-->
+<?php # print_r($logr); ?>
 
 </body>
 </html>
