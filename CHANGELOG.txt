@@ -1,7 +1,9 @@
 Functions that print something on the page have been renamed to start with 'print_' (i.e. 'print_navigation()', 'print_meta_tags()').
 
+To keep using the older function names include the 'shortcuts.php' file which sets up aliases to the newer names.
+
 To prevent duplicate id's from being generated, only the top level navigation items will be given an id. Sub nav items are given a class name to allow for any one-off styling needs.
 
-In sitemap.php, you can define any level of nested sub-navigation to accomodate sites like Burland. See the example in sitemap.php.
+In sitemap.php, you can define any level of nested sub-navigation (to accomodate sites like Berland). See the example in sitemap.php.
 
 Also in sitemap.php, it is no longer necessary to add the '=> $no_sub' blank array to items that don't have sub-navigation. The item can just be listed on its own.
