@@ -30,9 +30,9 @@
 	</div><!--/bd-->
 	<div id="ft" class="container">
 		<p>footer text</p>
-		<?php text_navigation(); ?>
+		<?php print_text_navigation(); ?>
 		<p class="small"><strong><a href="http://www.sesamewebdesign.com">Orthodontic Web Site by Sesame Design&trade;</a></strong></p>
 	</div><!--/ft-->
 	<div id="util"></div><!--/util-->
-	<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--/nav-->
+	<?php print_navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--/nav-->
 </div><!--/container-->

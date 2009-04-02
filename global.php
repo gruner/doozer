@@ -31,13 +31,13 @@ require_once('sitemap.php');
  */
 function get_sitemap()
 {
-  static $sitemap;
-  if (!is_array($sitemap))
-  {
-    # does not currently exist, so create it
-    $sitemap = parse_sitemap();
-  }
-  return $sitemap;
+	static $sitemap;
+	if (!is_array($sitemap))
+	{
+		# does not currently exist, so create it
+		$sitemap = parse_sitemap();
+	}
+	return $sitemap;
 }
 
 
@@ -46,8 +46,8 @@ function get_sitemap()
  */
 function is_homepage()
 {
-  global $_section, $_page_name;
-  if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
+	global $_section, $_page_name;
+	if($_section == 'Home' && $_page_name == 'Home'){return true;} else {return false;}
 }
 
 
@@ -61,8 +61,8 @@ function is_homepage()
  */
 function has_index_pages()
 {
-  $config = sc_config();
-  return (isset($config['index_pages']) && $config['index_pages'] == true) ? true : false;
+	$config = sc_config();
+	return (isset($config['index_pages']) && $config['index_pages'] == true) ? true : false;
 }
 
 
@@ -71,12 +71,12 @@ function has_index_pages()
  */
 function get_site_name()
 {
-  $config = sc_config();
-  $site_name = $config['site_name'];
-  if(isset($site_name) || !empty($site_name))
-  {
-    return $site_name;
-  }
+	$config = sc_config();
+	$site_name = $config['site_name'];
+	if(isset($site_name) || !empty($site_name))
+	{
+		return $site_name;
+	}
 }
 
 
@@ -86,15 +86,15 @@ function get_site_name()
  */
 function has_sub_items($section='')
 {
-    global $_section;
-    # Use the current section unless a specific section is given as a parameter
-    if (!$section)
-    {
-      $section = $_section;
-    }
-    $sitemap = get_sitemap();
-    $sub_items = $sitemap[$section];
-    return (is_array($sub_items) && count($sub_items) > 1) ? true : false;
+		global $_section;
+		# Use the current section unless a specific section is given as a parameter
+		if (!$section)
+		{
+			$section = $_section;
+		}
+		$sitemap = get_sitemap();
+		$sub_items = $sitemap[$section];
+		return (is_array($sub_items) && count($sub_items) > 1) ? true : false;
 }
 
 
@@ -110,37 +110,37 @@ function has_sub_items($section='')
  */
 function get_section_link($section='', $section_sub='')
 {
-    global $_section;
-    # Use the current section unless a specific section is given as a parameter
-    if (! $section) { $section = $_section; }
-    
-    # if $section_sub is undefined, get it from the sitemap
-    if (! $section_sub)
-    {
-      $sitemap = get_sitemap();
-      $section_sub = $sitemap[$section];
-    }
+		global $_section;
+		# Use the current section unless a specific section is given as a parameter
+		if (! $section) { $section = $_section; }
+		
+		# if $section_sub is undefined, get it from the sitemap
+		if (! $section_sub)
+		{
+			$sitemap = get_sitemap();
+			$section_sub = $sitemap[$section];
+		}
 
-    $link = '';
+		$link = '';
 
-    if (is_array($section_sub))
-    {
-      if (has_index_pages())
-      {
-        $link .= slug_name($section);
-        $link .= '.php';
-      }
-      else
-      {
-        $link .= reset($section_sub); # link to first sub item
-      }
-    }
-    elseif (is_string($section_sub)) # link is pre-defined
-    {
-      $link = $section_sub;
-    }
-    
-    return $link;
+		if (is_array($section_sub))
+		{
+			if (has_index_pages())
+			{
+				$link .= slug_name($section);
+				$link .= '.php';
+			}
+			else
+			{
+				$link .= reset($section_sub); # link to first sub item
+			}
+		}
+		elseif (is_string($section_sub)) # link is pre-defined
+		{
+			$link = $section_sub;
+		}
+		
+		return $link;
 }
 
 /*
@@ -153,7 +153,7 @@ function get_section_link($section='', $section_sub='')
  */
 function slug_name($string)
 {
-  return replace_chars(strtolower(strip_special_chars($string)));
+	return replace_chars(strtolower(strip_special_chars($string)));
 }
 
 
@@ -162,10 +162,10 @@ function slug_name($string)
  */
 function strip_special_chars($string)
 {
-  # Define special characters that will be stripped from the name
-  $special_chars = array('.',',','?','!','$','|','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
-  $processed_string = str_replace($special_chars, '', $string);
-  return $processed_string;
+	# Define special characters that will be stripped from the name
+	$special_chars = array('.',',','?','!','$','|','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
+	$processed_string = str_replace($special_chars, '', $string);
+	return $processed_string;
 }
 
 
@@ -177,7 +177,7 @@ function strip_special_chars($string)
  */
 function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and', ' ' => '-','/' => '-'))
 {
-  return str_replace(array_keys($replacements), array_values($replacements), $string);
+	return str_replace(array_keys($replacements), array_values($replacements), $string);
 }
 
 /*
@@ -186,9 +186,9 @@ function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and
  */
 function sanitize_title_text($string)
 {
-  $sanitized_text = strip_special_chars($string);
-  $sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
-  return $sanitized_text;
+	$sanitized_text = strip_special_chars($string);
+	$sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
+	return $sanitized_text;
 }
 
 /*
@@ -200,40 +200,40 @@ function sanitize_title_text($string)
  */
 function print_page_title()
 {
-  global $_section, $_page_name, $_keyword, $_page_title;
-  $config = sc_config();
-  
-  if(!isset($_page_title) || empty($_page_title))
-  {
-    $_page_title = $config['page_title'];
-  }
-  
-  if(!isset($_keyword) || empty($_keyword))
-  {
-    $_keyword = $config['title_keywords'];
-  }
-  
-  # prepend the keyword to the title
-  $_page_title = "$_keyword - $_page_title"; 
-  
-  if (!is_homepage())
-  {
-    if($_section != $_page_name)
-    { 
-      $_page_title = "$_section > $_page_name - $_page_title";
-    }
-    
-    else
-    {
-      #prepend the section
-      $_page_title = "$_section - $_page_title";
-    } 
-  }
-  
-  # remove special chars from page name
-  $_page_title = sanitize_title_text($_page_title);
+	global $_section, $_page_name, $_keyword, $_page_title;
+	$config = sc_config();
+	
+	if(!isset($_page_title) || empty($_page_title))
+	{
+		$_page_title = $config['page_title'];
+	}
+	
+	if(!isset($_keyword) || empty($_keyword))
+	{
+		$_keyword = $config['title_keywords'];
+	}
+	
+	# prepend the keyword to the title
+	$_page_title = "$_keyword - $_page_title"; 
+	
+	if (!is_homepage())
+	{
+		if($_section != $_page_name)
+		{ 
+			$_page_title = "$_section > $_page_name - $_page_title";
+		}
+		
+		else
+		{
+			#prepend the section
+			$_page_title = "$_section - $_page_title";
+		} 
+	}
+	
+	# remove special chars from page name
+	$_page_title = sanitize_title_text($_page_title);
 
-  print "<title>$_page_title</title>";
+	print "<title>$_page_title</title>";
 }
 
 
@@ -245,34 +245,34 @@ function print_page_title()
  */
 function print_meta_tags()
 {
-    global $_keyword, $_description;
-    
-    $config = sc_config();
-    
-    $meta_keywords = $config['meta_keywords'];
-    $meta_description = $config['meta_description'];
-    
-    if (isset($_keyword) && !empty($_keyword))
-    {
-    # append page-specific keyword to global keywords string
-      $keyword = strtolower($_keyword);
-      $meta_keywords .= ", $keyword";
-    }
-    
-    # replace global description with local description if it exists
-    if (isset($_description) && !empty($_description)){$meta_description = $_description;}
-    
-    $meta = array('keywords' => $meta_keywords, 'description' => $meta_description);
-    
-    foreach ($meta as $key => $value)
-    {
-      if (!isset($value) || empty($value))
-      {
-        $value = $config["meta_$key"];
-      }
-      $meta_tag = "<meta name=\"$key\" content=\"$value\" />\n";
-      print $meta_tag;
-    }
+		global $_keyword, $_description;
+		
+		$config = sc_config();
+		
+		$meta_keywords = $config['meta_keywords'];
+		$meta_description = $config['meta_description'];
+		
+		if (isset($_keyword) && !empty($_keyword))
+		{
+		# append page-specific keyword to global keywords string
+			$keyword = strtolower($_keyword);
+			$meta_keywords .= ", $keyword";
+		}
+		
+		# replace global description with local description if it exists
+		if (isset($_description) && !empty($_description)){$meta_description = $_description;}
+		
+		$meta = array('keywords' => $meta_keywords, 'description' => $meta_description);
+		
+		foreach ($meta as $key => $value)
+		{
+			if (!isset($value) || empty($value))
+			{
+				$value = $config["meta_$key"];
+			}
+			$meta_tag = "<meta name=\"$key\" content=\"$value\" />\n";
+			print $meta_tag;
+		}
 }
 
 
@@ -281,13 +281,13 @@ function print_meta_tags()
  */
 function parse_sitemap()
 {
-  $defined_sitemap = define_sitemap();
-  $sitemap = array();
-  foreach ($defined_sitemap as $section => $sub_section)
-  {
-    $sitemap = parse_section($sitemap, $section, $sub_section);
-  }
-  return $sitemap;
+	$defined_sitemap = define_sitemap();
+	$sitemap = array();
+	foreach ($defined_sitemap as $section => $sub_section)
+	{
+		$sitemap = parse_section($sitemap, $section, $sub_section);
+	}
+	return $sitemap;
 }
 
 
@@ -297,20 +297,20 @@ function parse_sitemap()
  */
 function parse_section($sitemap, $section, $sub_section)
 {
-  if (is_string($section))
-    # array is in the form of
-    # $section => $sub_section
-  {
-    $sitemap[$section] = parse_sub_section($section, $sub_section);
-  }
-  else
-    # array is in the form of
-    # key => $section
-    # with key being numeric because there are no sub-items
-  {
-    $sitemap[$sub_section] = parse_sub_section($section, $sub_section);
-  }
-  return $sitemap;
+	if (is_string($section))
+		# array is in the form of
+		# $section => $sub_section
+	{
+		$sitemap[$section] = parse_sub_section($section, $sub_section);
+	}
+	else
+		# array is in the form of
+		# key => $section
+		# with key being numeric because there are no sub-items
+	{
+		$sitemap[$sub_section] = parse_sub_section($section, $sub_section);
+	}
+	return $sitemap;
 }
 
 
@@ -321,34 +321,34 @@ function parse_section($sitemap, $section, $sub_section)
  */
 function parse_sub_section($section, $sub_section)
 {
-  if (is_numeric($section)) # numeric key, $sub_section is really the $section
-  {
-    # make link from page name
-    $sub = slug_name($sub_section).'.php';
-  }
-  else
-  {
-    if (is_string($sub_section)) # $sub_section is a defined link
-    {
-      return $sub_section;
-    }
-    
-    elseif (is_array($sub_section))
-    {
-      $sub = array();
-      # recursively process each section that has a sub-section
-      foreach ($sub_section as $sub_key => $sub_value)
-      {
-        $sub = parse_section($sub, $sub_key, $sub_value);
-      }
-    }
-    
-    else
-    {
-      $sub = 'error parsing sitemap';
-    }
-  }
-  return $sub;
+	if (is_numeric($section)) # numeric key, $sub_section is really the $section
+	{
+		# make link from page name
+		$sub = slug_name($sub_section).'.php';
+	}
+	else
+	{
+		if (is_string($sub_section)) # $sub_section is a defined link
+		{
+			return $sub_section;
+		}
+		
+		elseif (is_array($sub_section))
+		{
+			$sub = array();
+			# recursively process each section that has a sub-section
+			foreach ($sub_section as $sub_key => $sub_value)
+			{
+				$sub = parse_section($sub, $sub_key, $sub_value);
+			}
+		}
+		
+		else
+		{
+			$sub = 'error parsing sitemap';
+		}
+	}
+	return $sub;
 }
 
 
@@ -373,46 +373,46 @@ function parse_sub_section($section, $sub_section)
  */
 function format_navigation($input, $exclusions=array(), $include_sub_nav=false, $top_level=true)
 {
-  global $_section, $_page_name;
-  
-  # only include the item's id for top level nav items
-  $include_id = $top_level;
-  
-  $nav_string = "\n<ul>";
-  foreach ($input as $key => $value)
-  {
-    if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
-    {
-      
-      if ($top_level){$current = $_section;}
-      else {$current = $_page_name;}
-      
-      $nav_string .= "\n<li";
-      $nav_string .= get_nav_attributes($current, $key, $input).'>'; # append class names to <li>
-      
-      if (is_string($value)) # link is pre-defined
-      {
-         $nav_string .= format_nav_link($key, $value, $include_id);
-      }
-      
-      else
-      {
-        $section_link = get_section_link($key, $value);
-        # add .head class for jquery accordion
-        $class = (is_array($value) && $include_sub_nav && $top_level) ? 'head' : '';
-        $nav_string .= format_nav_link($key, $section_link, $include_id, $class);
-        
-        if (is_array($value) && $include_sub_nav) # item has subnav
-        {
-          # recurse through nested navigation
-          $nav_string .= format_navigation($value, $exclusions, true, false);
-        }
-      }
-      $nav_string .= "</li>";
-    }
-  }
-  $nav_string .= "\n</ul>";
-  return $nav_string;
+	global $_section, $_page_name;
+	
+	# only include the item's id for top level nav items
+	$include_id = $top_level;
+	
+	$nav_string = "\n<ul>";
+	foreach ($input as $key => $value)
+	{
+		if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
+		{
+			
+			if ($top_level){$current = $_section;}
+			else {$current = $_page_name;}
+			
+			$nav_string .= "\n<li";
+			$nav_string .= get_nav_attributes($current, $key, $input).'>'; # append class names to <li>
+			
+			if (is_string($value)) # link is pre-defined
+			{
+				 $nav_string .= format_nav_link($key, $value, $include_id);
+			}
+			
+			else
+			{
+				$section_link = get_section_link($key, $value);
+				# add .head class for jquery accordion
+				$class = (is_array($value) && $include_sub_nav && $top_level) ? 'head' : '';
+				$nav_string .= format_nav_link($key, $section_link, $include_id, $class);
+				
+				if (is_array($value) && $include_sub_nav) # item has subnav
+				{
+					# recurse through nested navigation
+					$nav_string .= format_navigation($value, $exclusions, true, false);
+				}
+			}
+			$nav_string .= "</li>";
+		}
+	}
+	$nav_string .= "\n</ul>";
+	return $nav_string;
 }
 
 
@@ -422,9 +422,9 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
  */
 function format_nav_link($nav_item, $link='', $include_id=false, $class='')
 {
-  $slug = slug_name($nav_item);
-  $id = '';
-  
+	$slug = slug_name($nav_item);
+	$id = '';
+	
 	if (! $link) {$link = "$slug.php";}
 	if ($include_id) {$id = " id=\"$slug\"";}
 	if ($class) {$class = " class=\"$class\"";}
@@ -446,11 +446,11 @@ function format_nav_link($nav_item, $link='', $include_id=false, $class='')
  */
 function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 {
-  $sitemap = get_sitemap();
-  $nav = "\n<div id=\"$div_id\">";
-  $nav .= format_navigation($sitemap, $exclusions, $include_sub_nav);
-  $nav .= "\n</div>";
-  print $nav;
+	$sitemap = get_sitemap();
+	$nav = "\n<div id=\"$div_id\">";
+	$nav .= format_navigation($sitemap, $exclusions, $include_sub_nav);
+	$nav .= "\n</div>";
+	print $nav;
 }
 
 
@@ -474,44 +474,44 @@ function print_inclusive_navigation($inclusions=array(), $include_sub_nav=false,
  */
 function print_sub_navigation($section='', $pre_string='', $post_string='')
 { 
-  global $_section;
-  # Use the current section unless a specific section is given as a parameter
-  if (!$section)
-  { 
-    $section = $_section;
-  }
-  
-  $sitemap = get_sitemap();
-  if (has_sub_items($section))
-  {
-    $sub_nav = '';
-    if ($pre_string) { $sub_nav .= "$pre_string"; }
-    $sub_nav .= "<div id=\"subnav\">\n";
-    $sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
-    $sub_nav .= "</div>\n";
-    if ($post_string) { $sub_nav .= "$post_string"; }
-    print $sub_nav;
-  }
+	global $_section;
+	# Use the current section unless a specific section is given as a parameter
+	if (!$section)
+	{ 
+		$section = $_section;
+	}
+	
+	$sitemap = get_sitemap();
+	if (has_sub_items($section))
+	{
+		$sub_nav = '';
+		if ($pre_string) { $sub_nav .= "$pre_string"; }
+		$sub_nav .= "<div id=\"subnav\">\n";
+		$sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
+		$sub_nav .= "</div>\n";
+		if ($post_string) { $sub_nav .= "$post_string"; }
+		print $sub_nav;
+	}
 }
 
 
 function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
 {
-  global $_section;
-  
-  # Use the current section unless a specific section is given as a parameter
-  if (! $section){ $section = $_section; }
-  
-  $heading = "<$tag>";
-  if ($link) {
-    $heading_link = get_section_link($section);
-    $heading .= "<a href=\"$heading_link\">";
-  }
-  $heading .= $section;
-  if ($link) { $heading .= "</a>"; }
-  $heading .= "</$tag>";
-  
-  print_sub_navigation($section, $heading);
+	global $_section;
+	
+	# Use the current section unless a specific section is given as a parameter
+	if (! $section){ $section = $_section; }
+	
+	$heading = "<$tag>";
+	if ($link) {
+		$heading_link = get_section_link($section);
+		$heading .= "<a href=\"$heading_link\">";
+	}
+	$heading .= $section;
+	if ($link) { $heading .= "</a>"; }
+	$heading .= "</$tag>";
+	
+	print_sub_navigation($section, $heading);
 }
 
 
@@ -528,81 +528,81 @@ function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
  */
 function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
 {
-   
-    global $_section, $_page_name;
-    
-    # Use the current section unless a specific section is given as a parameter
-    if (! $section)
-    {
-      $section = $_section;
-    }
-    
-    # don't output anything further if there are no sub items
-    if (! has_sub_items($section)) {return;}
-    
-    $formatted_list = "<p class=\"$class_name\">";
-    
-    $link_array = array();
-    $sitemap = define_sitemap();
-    $sub_items = $sitemap[$section];
-    foreach ($sub_items as $sub_name)
-    {
-      $slug = slug_name($sub_name);
-      $link = "<a href=\"$slug.php\"";
-      if ($include_attr)
-      {
-        $link .= get_nav_attributes($_page_name, $sub_name, $sub_items);
-      }
-      $link .= ">$sub_name</a>";
-      $link_array[] = $link;
-    }
-    
-    
-    # separate the list of links into separate arrays for adding breaks
-    if ($breaks)
-    {
-      # breaks can be a single number or an array of numbers
-      if (! is_array($breaks) && is_numeric($breaks))
-      {
-        $breaks = array($breaks);
-      }
-      
-      $link_blocks = array();
-      $break_count = sizeof($breaks);
-      for($j = 0; $j <= $break_count; $j++)
-      {
-        switch ($j)
-        {
-        case 0: #first
-          $offset = 0;
-          $length = $breaks[$j];
-          break;
-        case $break_count: #last
-          $offset = $breaks[$j-1];
-          $length = sizeof($link_array) - $offset;
-          break;
-        default:
-          $offset = $breaks[$j-1];
-          $length = $breaks[$j] - $breaks[$j-1];
-        }
-        $link_blocks[$j] = array_slice($link_array, $offset, $length);
-      }
-      # loop through newly created blocks and insert the
-      for($j = 0; $j < sizeof($link_blocks); $j++)
-      {
-        $link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
-      }
-      # add breaks between each block of links
-      $formatted_list .= format_list_with_separator($link_blocks, '<br />');
-    }
-    else
-    {
-      # if no breaks, add the separator to the raw list
-      $formatted_list .= format_list_with_separator($link_array, $separator);
-    }
-    
-    $formatted_list .= '</p>';
-    print $formatted_list;
+	 
+		global $_section, $_page_name;
+		
+		# Use the current section unless a specific section is given as a parameter
+		if (! $section)
+		{
+			$section = $_section;
+		}
+		
+		# don't output anything further if there are no sub items
+		if (! has_sub_items($section)) {return;}
+		
+		$formatted_list = "<p class=\"$class_name\">";
+		
+		$link_array = array();
+		$sitemap = define_sitemap();
+		$sub_items = $sitemap[$section];
+		foreach ($sub_items as $sub_name)
+		{
+			$slug = slug_name($sub_name);
+			$link = "<a href=\"$slug.php\"";
+			if ($include_attr)
+			{
+				$link .= get_nav_attributes($_page_name, $sub_name, $sub_items);
+			}
+			$link .= ">$sub_name</a>";
+			$link_array[] = $link;
+		}
+		
+		
+		# separate the list of links into separate arrays for adding breaks
+		if ($breaks)
+		{
+			# breaks can be a single number or an array of numbers
+			if (! is_array($breaks) && is_numeric($breaks))
+			{
+				$breaks = array($breaks);
+			}
+			
+			$link_blocks = array();
+			$break_count = sizeof($breaks);
+			for($j = 0; $j <= $break_count; $j++)
+			{
+				switch ($j)
+				{
+				case 0: #first
+					$offset = 0;
+					$length = $breaks[$j];
+					break;
+				case $break_count: #last
+					$offset = $breaks[$j-1];
+					$length = sizeof($link_array) - $offset;
+					break;
+				default:
+					$offset = $breaks[$j-1];
+					$length = $breaks[$j] - $breaks[$j-1];
+				}
+				$link_blocks[$j] = array_slice($link_array, $offset, $length);
+			}
+			# loop through newly created blocks and insert the
+			for($j = 0; $j < sizeof($link_blocks); $j++)
+			{
+				$link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
+			}
+			# add breaks between each block of links
+			$formatted_list .= format_list_with_separator($link_blocks, '<br />');
+		}
+		else
+		{
+			# if no breaks, add the separator to the raw list
+			$formatted_list .= format_list_with_separator($link_array, $separator);
+		}
+		
+		$formatted_list .= '</p>';
+		print $formatted_list;
 }
 
 
@@ -619,22 +619,22 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
  */
 function get_nav_attributes($current, $nav_item, $nav_list)
 {
-  $attr = '';
-  $class = array();
-  
-  # append relevant class names
-  $class[] = slug_name($nav_item);
-  if($nav_item === $current){$class[] = 'active';}
-  if($nav_item === reset(array_keys($nav_list))){$class[] = 'first';}
-  if($nav_item === end(array_keys($nav_list))){$class[] = 'last';}
-  
-  if($class)
-  {
-    $classes = implode(' ', $class);
-    $attr .= " class=\"$classes\"";
-  }
-  
-  return $attr;
+	$attr = '';
+	$class = array();
+	
+	# append relevant class names
+	$class[] = slug_name($nav_item);
+	if($nav_item === $current){$class[] = 'active';}
+	if($nav_item === reset(array_keys($nav_list))){$class[] = 'first';}
+	if($nav_item === end(array_keys($nav_list))){$class[] = 'last';}
+	
+	if($class)
+	{
+		$classes = implode(' ', $class);
+		$attr .= " class=\"$classes\"";
+	}
+	
+	return $attr;
 }
 
 
@@ -650,66 +650,66 @@ function get_nav_attributes($current, $nav_item, $nav_list)
  */
 function print_text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav')
 {
-   
-    $formatted_list = "<p class=\"$class_name\">";
-    
-    $link_array = array();
-    $sitemap = get_sitemap();
-    foreach ($sitemap as $section => $sub_items)
-    {
-      if (! in_array($section, $exclusions))
-      {
-        $href = get_section_link($section, $sub_items);
-        $link = "<a href=\"$href\">$section</a>";
-        $link_array[] = $link;
-      }
-    }
-    
-    # separate the list of links into separate arrays for adding breaks
-    if ($breaks)
-    {
-      # breaks can be a single number or an array of numbers
-      if (! is_array($breaks) && is_numeric($breaks))
-      {
-        $breaks = array($breaks);
-      }
-      
-      $link_blocks = array();
-      $break_count = sizeof($breaks);
-      for($j = 0; $j <= $break_count; $j++)
-      {
-        switch ($j)
-        {
-        case 0: #first
-          $offset = 0;
-          $length = $breaks[$j];
-          break;
-        case $break_count: #last
-          $offset = $breaks[$j-1];
-          $length = sizeof($link_array) - $offset;
-          break;
-        default:
-          $offset = $breaks[$j-1];
-          $length = $breaks[$j] - $breaks[$j-1];
-        }
-        $link_blocks[$j] = array_slice($link_array, $offset, $length);
-      }
-      # loop through newly created blocks and insert the
-      for($j = 0; $j < sizeof($link_blocks); $j++)
-      {
-        $link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
-      }
-      # add breaks between each block of links
-      $formatted_list .= format_list_with_separator($link_blocks, '<br />');
-    }
-    else
-    {
-      # if no breaks, add the separator to the raw list
-      $formatted_list .= format_list_with_separator($link_array, $separator);
-    }
-    
-    $formatted_list .= '</p>';
-    print $formatted_list;
+	 
+		$formatted_list = "<p class=\"$class_name\">";
+		
+		$link_array = array();
+		$sitemap = get_sitemap();
+		foreach ($sitemap as $section => $sub_items)
+		{
+			if (! in_array($section, $exclusions))
+			{
+				$href = get_section_link($section, $sub_items);
+				$link = "<a href=\"$href\">$section</a>";
+				$link_array[] = $link;
+			}
+		}
+		
+		# separate the list of links into separate arrays for adding breaks
+		if ($breaks)
+		{
+			# breaks can be a single number or an array of numbers
+			if (! is_array($breaks) && is_numeric($breaks))
+			{
+				$breaks = array($breaks);
+			}
+			
+			$link_blocks = array();
+			$break_count = sizeof($breaks);
+			for($j = 0; $j <= $break_count; $j++)
+			{
+				switch ($j)
+				{
+				case 0: #first
+					$offset = 0;
+					$length = $breaks[$j];
+					break;
+				case $break_count: #last
+					$offset = $breaks[$j-1];
+					$length = sizeof($link_array) - $offset;
+					break;
+				default:
+					$offset = $breaks[$j-1];
+					$length = $breaks[$j] - $breaks[$j-1];
+				}
+				$link_blocks[$j] = array_slice($link_array, $offset, $length);
+			}
+			# loop through newly created blocks and insert the
+			for($j = 0; $j < sizeof($link_blocks); $j++)
+			{
+				$link_blocks[$j] = format_list_with_separator($link_blocks[$j], $separator); # add separator between each link
+			}
+			# add breaks between each block of links
+			$formatted_list .= format_list_with_separator($link_blocks, '<br />');
+		}
+		else
+		{
+			# if no breaks, add the separator to the raw list
+			$formatted_list .= format_list_with_separator($link_array, $separator);
+		}
+		
+		$formatted_list .= '</p>';
+		print $formatted_list;
 }
 
 
@@ -720,26 +720,26 @@ function print_text_navigation($breaks='', $exclusions=array(), $separator=' | '
  */
 function format_sitemap($input, $exclusions=array())
 {
-  $formatted = '<ul>';
-  foreach ($input as $key => $value)
-  {
-    if (!in_array($key, $exclusions))
-    {
-      if (is_array($value))
-      {
-        $link = get_section_link($key, $value);
-        $formatted .= '<li>'.get_sitemap_link($key, $link);
-        $formatted .= format_sitemap($value);
-        $formatted .= '</li>';
-      }
-      else
-      {
-        $formatted .= '<li>'.get_sitemap_link($key, $value).'</li>';
-      }
-    }
-  }
-  $formatted .= '</ul>';
-  return $formatted;
+	$formatted = '<ul>';
+	foreach ($input as $key => $value)
+	{
+		if (!in_array($key, $exclusions))
+		{
+			if (is_array($value))
+			{
+				$link = get_section_link($key, $value);
+				$formatted .= '<li>'.get_sitemap_link($key, $link);
+				$formatted .= format_sitemap($value);
+				$formatted .= '</li>';
+			}
+			else
+			{
+				$formatted .= '<li>'.get_sitemap_link($key, $value).'</li>';
+			}
+		}
+	}
+	$formatted .= '</ul>';
+	return $formatted;
 }
 
 
@@ -748,22 +748,22 @@ function format_sitemap($input, $exclusions=array())
  */
 function print_sitemap($exclusions=array())
 {
-  $sitemap = get_sitemap();
-  print format_sitemap($sitemap, $exclusions);
+	$sitemap = get_sitemap();
+	print format_sitemap($sitemap, $exclusions);
 }
 
 
 function get_sitemap_link($page, $link)
 {
-  global $_page_name;
-  if ($page == $_page_name)
-  {
-    return "$page (You are here)";
-  }
-  else
-  {
-    return "<a href=\"$link\">$page</a>";  
-  }
+	global $_page_name;
+	if ($page == $_page_name)
+	{
+		return "$page (You are here)";
+	}
+	else
+	{
+		return "<a href=\"$link\">$page</a>";  
+	}
 }
 
 
@@ -776,25 +776,87 @@ function get_sitemap_link($page, $link)
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
  * @todo refactor to use format_list_with_separator
  */
-function print_breadcrumbs($separator='&#8250;')
+function print_breadcrumbs_old($separator='&#8250;')
 {
-    
-    global $_section, $_page_name;
-    
-    $bc_hash = array('Home' => 'index', $_section => slug_name($_section), $_page_name => slug_name($_page_name));
-    $bc = '<p class="breadcrumbs">';
-    $i = 1;
-    $count = count($bc_hash);
-    foreach($bc_hash as $name => $url){
-      if ($i < $count){
-        $bc .= "<a href=\"$url.php\">$name</a>";
-        $bc .= " $separator ";
-      }else{
-        $bc .= "<strong>$name</strong></p>";
-      }
-      $i++;
-    }
-    print $bc;
+		
+		global $_section, $_page_name;
+		
+		$bc_hash = array('Home' => 'index', $_section => slug_name($_section), $_page_name => slug_name($_page_name));
+		$bc = '<p class="breadcrumbs">';
+		$i = 1;
+		$count = count($bc_hash);
+		foreach($bc_hash as $name => $url){
+			if ($i < $count){
+				$bc .= "<a href=\"$url.php\">$name</a>";
+				$bc .= " $separator ";
+			}else{
+				$bc .= "<strong>$name</strong></p>";
+			}
+			$i++;
+		}
+		print $bc;
+}
+
+
+function print_breadcrumbs($separator=' &#8250; ')
+{
+	global $_section, $_page_name;
+	$sitemap = get_sitemap();
+	$bc_array = array();
+	$bc_hash = collect_breadcrumbs($sitemap);
+	
+	$i = 1;
+	$count = count($bc_hash);
+	foreach($bc_hash as $name => $url)
+	{
+		if ($i < $count)
+		{
+			$bc_array[] = "<a href=\"$url\">$name</a>";
+		}
+		else
+		{
+			$bc_array[] = "<strong>$name</strong>";
+		}
+		$i++;
+	}
+	
+	$bc_string = '<p class="breadcrumbs">';
+	$bc_string .= format_list_with_separator($bc_array, $separator);
+	$bc_string .= '</p>';
+	print $bc_string;
+}
+
+
+function collect_breadcrumbs($input, $first_run=true)
+{
+	global $_section, $_page_name;
+	$bc_hash = array('Home' => 'index');
+	
+	$current = $first_run ? $_section : $_page_name;
+	
+	foreach ($input as $key => $value)
+	{
+		if ($key == $current)
+		{
+			if (is_string($value)) # link is pre-defined
+			{
+				$bc_hash[$key] = $value; 
+			}
+			else
+			{
+				$bc_hash[$key] = get_section_link($key, $value);
+					
+				if (is_array($value)) # item has subnav
+				{
+					# recurse through nested navigation
+					$bc_hash = array_merge($bc_hash, collect_breadcrumbs($value, $first_run=false));
+				}
+			}
+				
+		}
+
+	}
+	return $bc_hash;
 }
 
 
@@ -806,21 +868,21 @@ function print_breadcrumbs($separator='&#8250;')
  */
 function format_list_with_separator($list, $separator=' | ')
 {
-    $formatted_list = implode("$separator", $list);
-    return $formatted_list;
+		$formatted_list = implode("$separator", $list);
+		return $formatted_list;
 }
 
 
 function print_image_tag($file='', $alt='', $class='', $title='')
 {
-  list($w, $h) = getimagesize("images/$file");
-  $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
-  if($class){$img_tag .= " class=\"$class\"";}
-  if($alt){$img_tag .= " alt=\"$alt\"";}
-  if($title){$img_tag .= " alt=\"$title\"";}
-  $img_tag .= " />";
-  
-  print $img_tag;
+	list($w, $h) = getimagesize("images/$file");
+	$img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
+	if($class){$img_tag .= " class=\"$class\"";}
+	if($alt){$img_tag .= " alt=\"$alt\"";}
+	if($title){$img_tag .= " alt=\"$title\"";}
+	$img_tag .= " />";
+	
+	print $img_tag;
 }
 
 /**
@@ -836,38 +898,38 @@ function print_image_tag($file='', $alt='', $class='', $title='')
  */
 function place_image($file='', $alt='', $class='', $title='')
 {
-  
-  global $_alt, $_page_name;
-  
-  if (!$alt)
-  {
-    $alt = $_alt;
-  }
-  
-  if (!$file)
-  {
-    $file = slug_name($_page_name);
-  }
-  
-  if (file_exists("images/$file"))
-  {
-    print_image_tag($file, $alt, $class, $title);
-  }
-  
-  else
-  {
-    # look for missing extensions
-    $extensions = array('.jpg', '.gif', '.png');
-    foreach($extensions as $ext)
-    {
-      $try_file = $file.$ext;
-      if(file_exists("images/$try_file"))
-      {
-        print_image_tag($try_file, $alt, $class, $title);
-        break;
-      }
-    }
-  }
+	
+	global $_alt, $_page_name;
+	
+	if (!$alt)
+	{
+		$alt = $_alt;
+	}
+	
+	if (!$file)
+	{
+		$file = slug_name($_page_name);
+	}
+	
+	if (file_exists("images/$file"))
+	{
+		print_image_tag($file, $alt, $class, $title);
+	}
+	
+	else
+	{
+		# look for missing extensions
+		$extensions = array('.jpg', '.gif', '.png');
+		foreach($extensions as $ext)
+		{
+			$try_file = $file.$ext;
+			if(file_exists("images/$try_file"))
+			{
+				print_image_tag($try_file, $alt, $class, $title);
+				break;
+			}
+		}
+	}
 }
 
 
@@ -876,8 +938,8 @@ function place_image($file='', $alt='', $class='', $title='')
  */
 function place_image_if_alt()
 {
-  global $_alt;
-  if ($_alt){place_image('','','auto');}
+	global $_alt;
+	if ($_alt){place_image('','','auto');}
 }
 
 
@@ -886,15 +948,15 @@ function place_image_if_alt()
  */
 function email_link($name, $domain)
 {
-  $js = "<script type=\"text/javascript\">\n";
-  $js .= "<!--\n";
-  $js .= "var name = \"$name\";\n";
-  $js .= "var domain = \"$domain\";\n";
-  $js .= "document.write('<a href=\\\"mailto:' + name + '@' + domain + '\\\">');\n";
-  $js .= "document.write(name + '@' + domain + '</a>');\n";
-  $js .= "// -->\n";
-  $js .= "</script>\n";
-  print $js;
+	$js = "<script type=\"text/javascript\">\n";
+	$js .= "<!--\n";
+	$js .= "var name = \"$name\";\n";
+	$js .= "var domain = \"$domain\";\n";
+	$js .= "document.write('<a href=\\\"mailto:' + name + '@' + domain + '\\\">');\n";
+	$js .= "document.write(name + '@' + domain + '</a>');\n";
+	$js .= "// -->\n";
+	$js .= "</script>\n";
+	print $js;
 }
 
 
@@ -904,8 +966,8 @@ function email_link($name, $domain)
  */
 function flash_div($div_name)
 {
-  $div = "<div id=\"$div_name\">\n";
-  $div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
-  $div .= "</div>\n";
-  print $div;
+	$div = "<div id=\"$div_name\">\n";
+	$div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
+	$div .= "</div>\n";
+	print $div;
 }

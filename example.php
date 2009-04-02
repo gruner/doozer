@@ -98,6 +98,7 @@ test("print_sitemap()");
 test("print_sitemap(\$exclude=array('Contact Us', 'About Orthodontics'))");
 
 test("print_breadcrumbs()");
+test("print_breadcrumbs(' ++ ')", 'specify custom separator string');
 
 test('echo get_site_name()', 'gets the value of "site_name" defined in config.php'); 
 
