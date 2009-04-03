@@ -40,7 +40,7 @@ function define_sitemap() {
   );
   
   $secondary = array(
-  	'secondary 1',
+  	'secondary 1' => $tertiary,
   	'secondary 2',
   	'secondary 3',
   	'tertiary' => $tertiary
@@ -59,7 +59,16 @@ function define_sitemap() {
   'About Orthodontics' => $about_orthodontics,
   'Braces 101' => $braces_101,
   'Emergency Care', # if the array is empty the link will become 'emergency-care.php'
-  'Nested' => $secondary,
+  'Nested' => array(
+  	'secondary 1' => array(
+  	  'tertiary 1',
+  	  'tertiary 2' => 'http://google.com',
+  	  'tertiary 3',
+  	  'tertiary 4'),
+  	'secondary 2',
+  	'secondary 3',
+  	'tertiary' => $tertiary
+  ),
   'Contact Us' => $contact_us,
   'Test'
   );

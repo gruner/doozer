@@ -1,5 +1,4 @@
 ## Bugs
-* When first sub sub-item is an array, the generated link is "Array".
 * in print_inclusive_navigation() the .first class is added, but not .last unless it's the actual last item in sitemap.php
 * sections links for breadcrumbs don't account for index_page options
 

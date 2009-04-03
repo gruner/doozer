@@ -1,3 +1,5 @@
+2009-04-03 Fixed a bug that when the first sub sub-item is an array, the generated link was "Array".
+
 Functions that print something on the page have been renamed to start with 'print_' (i.e. 'print_navigation()', 'print_meta_tags()').
 
 To keep using the older function names include the 'shortcuts.php' file which sets up aliases to the newer names.

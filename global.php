@@ -132,7 +132,7 @@ function get_section_link($section='', $section_sub='')
       }
       else
       {
-        $link .= reset($section_sub); # link to first sub item
+        $link .= get_first_unnested_item($section_sub); # link to first sub item that isn't a nested array
       }
     }
     elseif (is_string($section_sub)) # link is pre-defined
@@ -142,6 +142,22 @@ function get_section_link($section='', $section_sub='')
     
     return $link;
 }
+
+
+/*
+ * recurse through an array to find the first
+ * sub item that isn't itself an array
+ */
+function get_first_unnested_item($items)
+{
+  $sub_item = reset($items);
+  while (is_array($sub_item))
+  {
+    $sub_item = reset($sub_item);
+  }
+  return $sub_item;
+}
+
 
 /*
  * creates a 'slug name' by stripping 
@@ -398,6 +414,7 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
       else
       {
         $section_link = get_section_link($key, $value);
+        
         # add .head class for jquery accordion
         $class = (is_array($value) && $include_sub_nav && $top_level) ? 'head' : '';
         $nav_string .= format_nav_link($key, $section_link, $include_id, $class);
@@ -425,11 +442,11 @@ function format_nav_link($nav_item, $link='', $include_id=false, $class='')
   $slug = slug_name($nav_item);
   $id = '';
   
-	if (! $link) {$link = "$slug.php";}
-	if ($include_id) {$id = " id=\"$slug\"";}
-	if ($class) {$class = " class=\"$class\"";}
+  if (! $link) {$link = "$slug.php";}
+  if ($include_id) {$id = " id=\"$slug\"";}
+  if ($class) {$class = " class=\"$class\"";}
 
-	return "<a href=\"$link\"$id$class>$nav_item</a>";
+  return "<a href=\"$link\"$id$class>$nav_item</a>";
 }
 
 
@@ -459,10 +476,10 @@ function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='
  */
 function print_inclusive_navigation($inclusions=array(), $include_sub_nav=false, $div_id="util")
 {
-	$sitemap = get_sitemap();
-	$sections = array_keys($sitemap);
-	$exclusions = array_diff($sections, $inclusions);
-	print_navigation($exclusions, $include_sub_nav, $div_id);
+  $sitemap = get_sitemap();
+  $sections = array_keys($sitemap);
+  $exclusions = array_diff($sections, $inclusions);
+  print_navigation($exclusions, $include_sub_nav, $div_id);
 }
 
 

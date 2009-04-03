@@ -22,9 +22,9 @@ function test($code, $comments='')
 {
   print "<h3 class=\"code\">$code</h3>\n";
   if($comments){print "<p class=\"quiet\">$comments</p>\n";}
-  print "<p>\n";
+  print "<div>\n";
   eval("$code;");
-  print "</p>\n<hr/>\n";
+  print "</div>\n<hr/>\n";
 }
 
 ?>
@@ -122,8 +122,8 @@ test('place_image("non-existing-file")', "doesn't output anything if it can't fi
 	# print_r($sitemap);
 ?>
 
-<!--<h2>Log</h2>-->
-<?php # print_r($logr); ?>
+<h2>Log</h2>
+<?php print_r($logr); ?>
 
 </body>
 </html>
