@@ -5,14 +5,14 @@
 	<?php print_meta_tags(); ?>
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
-	<script src="http://2.scripts.sesamehost.com/scripts/jquery.flash.js" type="text/javascript"></script>
-	<script src="http://3.scripts.sesamehost.com/scripts/jquery.sifr.min.js" type="text/javascript" ></script>
-	<script src="http://4.scripts.sesamehost.com/scripts/jquery.pngFix.js" type="text/javascript"></script>
-	<script src="http://5.scripts.sesamehost.com/scripts/jquery.nospam.js" type="text/javascript"></script>
-	<script src="http://6.scripts.sesamehost.com/scripts/jquery.fancybox.js" type="text/javascript"></script>
-	<script src="scripts/global.js" type="text/javascript"></script>
 	<!--[if lt IE 7]><link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen, projection"><![endif]-->
+	<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
+	<script src="http://2.scripts.sesamehost.com/scripts/jquery.flash.js" type="text/javascript"></script>
+	<script src="http://3.scripts.sesamehost.com/scripts/jquery.sifr.min.js" type="text/javascript" ></script>-->
+	<script src="http://localhost/_lib/scripts/jquery-1.2.6.js" type="text/javascript"></script>
+	<script src="http://localhost/_lib/scripts/jquery.flash.js" type="text/javascript"></script>
+	<script src="http://localhost/_lib/scripts/jquery.sifr.min.js" type="text/javascript" ></script>
+	<script src="scripts/global.js" type="text/javascript"></script>
 	<?php print_page_title(); ?>
 </head>
 
@@ -30,9 +30,9 @@
 	</div><!--/bd-->
 	<div id="ft" class="container">
 		<p>footer text</p>
-		<?php text_navigation(); ?>
+		<?php print_text_navigation(); ?>
 		<p class="small"><strong><a href="http://www.sesamewebdesign.com">Orthodontic Web Site by Sesame Design&trade;</a></strong></p>
 	</div><!--/ft-->
 	<div id="util"></div><!--/util-->
-	<?php navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--/nav-->
+	<?php print_navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--/nav-->
 </div><!--/container-->

@@ -86,6 +86,7 @@ test("sub_nav_p(array(2))");
 test("sub_nav_p(array(1,3))", 'break the string after the first and third items');
 test("sub_nav_p('', ' >>>> ')", 'change the text that separates items');
 test("sub_nav_p(array(3),' &bull; ')");
+test("sub_nav_p('', '', '', 'Nested')");
 
 test("print_text_navigation()");
 test("print_text_navigation(4)");
