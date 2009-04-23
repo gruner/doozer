@@ -29,7 +29,7 @@
 		</div><!--/content-->
 	</div><!--/bd-->
 	<div id="ft" class="container">
-		<p>footer text</p>
+		<p><%= config['php']['footer_text'] %></p>
 		<?php print_text_navigation(); ?>
 		<p class="small"><strong><a href="http://www.sesamewebdesign.com">Orthodontic Web Site by Sesame Design&trade;</a></strong></p>
 	</div><!--/ft-->
