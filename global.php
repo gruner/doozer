@@ -774,42 +774,17 @@ function get_sitemap_link($page, $link)
  * * current page is bolded and unlinked.
  *
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
- * @todo refactor to use format_list_with_separator
  */
-function print_breadcrumbs_old($separator='&#8250;')
-{
-		
-		global $_section, $_page_name;
-		
-		$bc_hash = array('Home' => 'index', $_section => slug_name($_section), $_page_name => slug_name($_page_name));
-		$bc = '<p class="breadcrumbs">';
-		$i = 1;
-		$count = count($bc_hash);
-		foreach($bc_hash as $name => $url){
-			if ($i < $count){
-				$bc .= "<a href=\"$url.php\">$name</a>";
-				$bc .= " $separator ";
-			}else{
-				$bc .= "<strong>$name</strong></p>";
-			}
-			$i++;
-		}
-		print $bc;
-}
-
-
 function print_breadcrumbs($separator=' &#8250; ')
 {
 	global $_section, $_page_name;
-	$sitemap = get_sitemap();
+	$bc_hash = collect_breadcrumbs(get_sitemap());
 	$bc_array = array();
-	$bc_hash = collect_breadcrumbs($sitemap);
 	
-	$i = 1;
-	$count = count($bc_hash);
 	foreach($bc_hash as $name => $url)
 	{
-		if ($i < $count)
+		# format all items except the last as links
+		if ($name != end(array_keys($bc_hash)))
 		{
 			$bc_array[] = "<a href=\"$url\">$name</a>";
 		}
@@ -817,7 +792,6 @@ function print_breadcrumbs($separator=' &#8250; ')
 		{
 			$bc_array[] = "<strong>$name</strong>";
 		}
-		$i++;
 	}
 	
 	$bc_string = '<p class="breadcrumbs">';
@@ -830,7 +804,7 @@ function print_breadcrumbs($separator=' &#8250; ')
 function collect_breadcrumbs($input, $first_run=true)
 {
 	global $_section, $_page_name;
-	$bc_hash = array('Home' => 'index');
+	$bc_hash = array('Home' => 'index.php');
 	
 	$current = $first_run ? $_section : $_page_name;
 	
@@ -845,14 +819,14 @@ function collect_breadcrumbs($input, $first_run=true)
 			else
 			{
 				$bc_hash[$key] = get_section_link($key, $value);
-					
 				if (is_array($value)) # item has subnav
 				{
 					# recurse through nested navigation
-					$bc_hash = array_merge($bc_hash, collect_breadcrumbs($value, $first_run=false));
+					# TODO not sure why it doesn't work for tertiary navigation
+					$temp_recurse = collect_breadcrumbs($value, false);
+					$bc_hash = array_merge($bc_hash, $temp_recurse);
 				}
 			}
-				
 		}
 
 	}
@@ -862,9 +836,6 @@ function collect_breadcrumbs($input, $first_run=true)
 
 /**
  * formats an array into a single string by inserting the given separator string between items
- *
- * @param array $list 
- * @param string $separator the string inserted between items
  */
 function format_list_with_separator($list, $separator=' | ')
 {
