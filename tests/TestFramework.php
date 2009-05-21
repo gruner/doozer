@@ -26,6 +26,7 @@ class TestOfFramework extends UnitTestCase {
   {
     $this->assertEqual(slug_name('Life with Braces&reg;'), 'life-with-braces');
     $this->assertEqual(slug_name('TMJ/TMD'), 'tmj-tmd');
+    $this->assertEqual(slug_name('In-Ovation&reg;'), 'in-ovation');
     $this->assertEqual(slug_name('Damon&trade;'), 'damon');
     $this->assertEqual(slug_name('Why Braces?'), 'why-braces');
     $this->assertEqual(slug_name('Braces 101'), 'braces-101');

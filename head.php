@@ -20,19 +20,11 @@
 
 <div id="container">
 	<div id="hd" class="container">
-		<h1 id="logo"><a href="index.php"><?php echo get_site_name(); ?></a></h1>
+		<h1 id="logo"><a href="index.php"><?php print get_site_name(); ?></a></h1>
 	</div><!--/hd-->
 	<div id="bd" class="container">
-	  <div id="sidebar" class="column"></div><!--/sidebar-->
+	  <div id="sidebar" class="column">
+	  	<?php if($_sidebar_content){print $_sidebar_content;} ?>
+	  </div><!--/sidebar-->
 		<div id="content" class="column">
 			<?php place_image_if_alt(); ?>
-		</div><!--/content-->
-	</div><!--/bd-->
-	<div id="ft" class="container">
-		<p><%= config['php']['footer_text'] %></p>
-		<?php print_text_navigation(); ?>
-		<p class="small"><strong><a href="http://www.sesamewebdesign.com">Orthodontic Web Site by Sesame Design&trade;</a></strong></p>
-	</div><!--/ft-->
-	<div id="util"></div><!--/util-->
-	<?php print_navigation($exclusions = array('Contact Us','Site Map'), $include_sub=true); ?><!--/nav-->
-</div><!--/container-->
