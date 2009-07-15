@@ -1,4 +1,5 @@
 ## Bugs
+* sub_nav_p() doesn't format external links properly - it shows the url, not the name
 * in print_inclusive_navigation() the .first class is added, but not .last unless it's the actual last item in sitemap.php
 * sections links for breadcrumbs don't account for index_page options
 
