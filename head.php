@@ -6,12 +6,13 @@
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link href="css/main.css" media="screen" rel="stylesheet" type="text/css" />
 	<!--[if lt IE 7]><link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen, projection"><![endif]-->
-	<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
+	
+	<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
 	<script src="http://2.scripts.sesamehost.com/scripts/jquery.flash.js" type="text/javascript"></script>
-	<script src="http://3.scripts.sesamehost.com/scripts/jquery.sifr.min.js" type="text/javascript" ></script>-->
-	<script src="http://localhost/_lib/scripts/jquery-1.2.6.js" type="text/javascript"></script>
+	<script src="http://4.scripts.sesamehost.com/scripts/jquery.cookie.js" type="text/javascript" ></script>-->
+	
+	<script src="http://localhost/_lib/scripts/jquery-1.3.2.js" type="text/javascript"></script>
 	<script src="http://localhost/_lib/scripts/jquery.flash.js" type="text/javascript"></script>
-	<script src="http://localhost/_lib/scripts/jquery.sifr.min.js" type="text/javascript" ></script>
 	<script src="scripts/global.js" type="text/javascript"></script>
 	<?php print_page_title(); ?>
 </head>
@@ -27,4 +28,5 @@
 	  	<?php if($_sidebar_content){print $_sidebar_content;} ?>
 	  </div><!--/sidebar-->
 		<div id="content" class="column">
+			<!-- IE6 Detect Advise Notice --><?php if($ie6_alert){ echo $ie6_alert_box; } ?><!-- // end IE6 Detect Advise Notice -->
 			<?php place_image_if_alt(); ?>

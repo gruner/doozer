@@ -24,7 +24,7 @@ require_once('config.php');
  * Include the sitemap for the site, which we parse in order to generate the navigation.
  */
 require_once('sitemap.php');
-
+include_once('ie6_alert.php');
 
 /*
  * Only parse the sitemap once and save it as a static variable.
@@ -934,8 +934,12 @@ function place_image_if_alt()
 /**
  * prints the script tag for creating a spam-friendly email link
  */
-function email_link($name, $domain)
+function email_link($address)
 {
+	$pieces = explode("@", $address);
+	$name = $pieces[0];
+	$domain = $pieces[1];
+	
 	$js = "<script type=\"text/javascript\">\n";
 	$js .= "<!--\n";
 	$js .= "var name = \"$name\";\n";
@@ -944,7 +948,7 @@ function email_link($name, $domain)
 	$js .= "document.write(name + '@' + domain + '</a>');\n";
 	$js .= "// -->\n";
 	$js .= "</script>\n";
-	print $js;
+	return $js;
 }
 
 
