@@ -10,3 +10,6 @@ $_sidebar = '<p>This is content for the sidebar</p>';
 ?>
 
 <p>This is an example page. <?php $dz->content_dir(); ?></p>
+
+<?php $dz->content('sidebar'); ?>
+<?php $dz->sidebar(); ?>

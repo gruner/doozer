@@ -13,27 +13,30 @@ class Doozer
 		$this->helpers = new DZHelpers($this);
 		//$this->content_dir = dirname($_SERVER['REQUEST_URI']); $cur_dir = basename(dirname($_SERVER[PHP_SELF]))
 		$this->get_page();
-		$this->merge_page_vars();
-		# $this->load_content($this->page);
+		$this->page = new DZPage();  # basename(dirname(__FILE__))
+		# array_merge($this->config, $this->page->meta); # TODO find a place for
+	}
+
+
+	public function config($config)
+	{
+		$this->config = array_merge($this->page->meta, $config);
 	}
 
 
 	public function content($section='')
 	{
-		$page = "$this->page".'.php'; # TODO: make path be relative to the index page
 		$dz = $this;
 		if (empty($section))
 		{
-			if (file_exists($page))
+			if (file_exists($this->page->fn))
 			{
-				include $page;
-				// get_defined_vars(); filter to get all '$_' vars
+				include $this->page->fn;
 			}
 		}
-		else
+		elseif(isset($this->config[$section]))
 		{
-			# TODO: return the $_[section] var
-			return;
+			echo $this->config[$section];
 		}
 	}
 
@@ -52,31 +55,8 @@ class Doozer
 
 	public function page()
 	{
-		echo $this->page;
+		echo $this->page->name;
 	}
-
-
-	private function get_page()
-	{
-		# TODO: should probably do some sanitizing of the query string
-
-		if (isset($this->page)) {
-			return $this->page;
-		}
-		else
-		{
-			# query string variable sets the page, defaults to 'home'
-			$this->page = isset($_GET['page']) ? $_GET['page'] : 'home';
-			return $this->page;
-		}
-	}
-	
-	
-	private function merge_page_vars()
-	{
-		# code...
-	}
-
 
 	// private function load_content($page)
 	// {
@@ -110,11 +90,23 @@ class Doozer
 */
 class DZPage
 {
-	public $meta, $fn;
+	public $name, $fn, $meta;
 	
-	function __construct($name)
+	function __construct($root_dir='')
 	{
-		# code...
+		# query string variable sets the page, defaults to 'home'
+		# TODO: should probably do some sanitizing of the query string
+		$this->name = isset($_GET['page']) ? $_GET['page'] : 'home';
+		$this->fn = $root_dir.$this->name.'.php';
+		$this->get_meta();
+	}
+	
+	private function get_meta()
+	{
+		$this->meta = array();
+		# get the meta vars from the page
+		# * parse the page as text?
+		# * output buffering?
 	}
 }
 

@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors',1); 
-error_reporting(E_ALL);
+// ini_set('display_errors',1); 
+// error_reporting(E_ALL);
 
 require_once('doozer.php');
 
@@ -9,15 +9,14 @@ require_once('doozer.php');
 | SITE CONFIGURATION
 |===============================================================
 */
-$dz->config = array(
+$dz->config(array(
 	'meta_keywords' => 'paste, the, site, keywords, here',
 	'meta_description' => 'paste the site description text here',
 	'title' => 'City ST - Orthodontist name - State zip',
 	'title_keywords' => 'Braces Orthodontics',
 	'site_name' => 'Practice Name',
-	'index_pages' => true,
-	'test_config' => 'from config',
-	'content_dir' =>  basename(dirname(__FILE__))
+	'sidebar' => '<h1>Sidebar</h1>',
+	'index_pages' => true)
 );
 
 ?>
@@ -34,13 +33,16 @@ $dz->config = array(
 </head>
 
 <body>
-
+<?php $dz->meta_tags(); ?>
 <p><?php $dz->title_keywords(); ?></p>
 <p><?php $dz->test_helper(); ?></p>
 <p><?php $dz->page(); ?></p>
 <p><?php $dz->test_with_param('Hello from awesomeness!'); ?></p>
 <?php $dz->content(); ?>
-<?php # $dz->content('sidebar'); # echoes '$_sidebar' var defined on the page ?>
+
+<?php $dz->content('sidebar'); ?>
+<?php $dz->sidebar(); ?>
+
 <?php $dz->image_tag('test-png.png'); ?>
 
 </body>

@@ -26,12 +26,11 @@ class DZHelpers
 	 */
 	public function meta_tags()
 	{
-		$meta_tags = array('keywords' => $this->dz->meta_keywords(), 'description' => $this->dz->meta_description());
+		$meta_tags = array('keywords' => $this->dz->config['meta_keywords'], 'description' => $this->dz->config['meta_description']);
 		$html = '';
-		foreach ($meta_tags as $key => $value)
+		foreach ($meta_tags as $name => $content)
 		{
-			$html .= $this->tag('meta', array('name' => $key, 'content' => $value));
-			$html .= "\n";
+			$html .= $this->tag('meta', array('name' => $name, 'content' => $content))."\n";
 		}
 		return $html;
 	}
@@ -105,7 +104,7 @@ class DZHelpers
 						$attrs[] = "$key=\"$key\"";
 					}
 				}
-				elseif (isset($value)) {
+				elseif (isset($value) && !empty($value)) {
 					$final_value = (is_array($value)) ? implode(' ', $value) : $value;
 					if ($escape) {
 						$final_value = $this->escape_once($final_value);
