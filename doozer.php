@@ -6,37 +6,60 @@ require_once('dz_helpers.php');
 class Doozer
 {
 	public $config, $page;
-	private $helpers, $content, $page_vars;
+	private $helpers;
 	
 	function __construct()
 	{
 		$this->helpers = new DZHelpers($this);
+		//$this->content_dir = dirname($_SERVER['REQUEST_URI']); $cur_dir = basename(dirname($_SERVER[PHP_SELF]))
 		$this->get_page();
-		$this->load_content($this->page); # load the page corresponding to page var and eval its code
+		$this->merge_page_vars();
+		# $this->load_content($this->page);
 	}
-	
+
+
 	public function content($section='')
 	{
-		echo $this->content;
+		$page = "$this->page".'.php'; # TODO: make path be relative to the index page
+		$dz = $this;
+		if (empty($section))
+		{
+			if (file_exists($page))
+			{
+				include $page;
+				// get_defined_vars(); filter to get all '$_' vars
+			}
+		}
+		else
+		{
+			# TODO: return the $_[section] var
+			return;
+		}
 	}
-	
+
+
 	public function nav($value='')
 	{
 		# code...
 	}
-	
+
+
 	public function text_nav($value='')
 	{
 		# code...
 	}
-	
+
+
 	public function page()
 	{
 		echo $this->page;
 	}
 
+
 	private function get_page()
 	{
+		# TODO: should probably do some sanitizing of the query string
+
 		if (isset($this->page)) {
 			return $this->page;
 		}
@@ -48,18 +71,26 @@ class Doozer
 		}
 	}
 	
-	private function load_content($page)
+	
+	private function merge_page_vars()
 	{
-		if (file_exists($page.'.php'))
-		{
-			ob_start();
-			include $page.'.php';
-			$this->content = ob_get_contents();
-			// get_defined_vars(); filter to get all '$_' vars
-			ob_end_clean();
-		}
-		return false;
+		# code...
 	}
+
+
+	// private function load_content($page)
+	// {
+	// 	if (file_exists($page.'.php'))
+	// 	{
+	// 		ob_start();
+	// 		include $page.'.php';
+	// 		$this->content = ob_get_contents();
+	// 		// get_defined_vars(); filter to get all '$_' vars
+	// 		ob_end_clean();
+	// 	}
+	// 	return false;
+	// }
+
 
 	protected function __call($method, $params) {
 		# check for page-level variable named $_[method]
@@ -69,9 +100,24 @@ class Doozer
 		}
 		else {
 			# pass the $method to the helper object
-			echo $this->helpers->$method($params);
+			echo $this->helpers->$method($params[0]);
 		}
 	}
 }
+
+/**
+* 
+*/
+class DZPage
+{
+	public $meta, $fn;
+	
+	function __construct($name)
+	{
+		# code...
+	}
+}
+
+
 $dz = new Doozer();
 ?>

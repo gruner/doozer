@@ -16,7 +16,8 @@ $dz->config = array(
 	'title_keywords' => 'Braces Orthodontics',
 	'site_name' => 'Practice Name',
 	'index_pages' => true,
-	'test_config' => 'from config'
+	'test_config' => 'from config',
+	'content_dir' =>  basename(dirname(__FILE__))
 );
 
 ?>
@@ -26,6 +27,7 @@ $dz->config = array(
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<?php $dz->meta_tags(); ?>
 
 	<title>untitled</title>
 	
@@ -40,5 +42,6 @@ $dz->config = array(
 <?php $dz->content(); ?>
 <?php # $dz->content('sidebar'); # echoes '$_sidebar' var defined on the page ?>
 <?php $dz->image_tag('test-png.png'); ?>
+
 </body>
 </html>

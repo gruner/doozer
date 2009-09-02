@@ -9,4 +9,4 @@ $_alt = 'this string will be the default alt text when using the place_image() f
 $_sidebar = '<p>This is content for the sidebar</p>';
 ?>
 
-<p>This is an example page. <?php echo $_alt ?></p>
+<p>This is an example page. <?php $dz->content_dir(); ?></p>

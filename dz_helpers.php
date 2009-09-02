@@ -11,17 +11,13 @@ class DZHelpers
 		$this->dz = $dz;
 	}
 
-	public function test_helper()
-	{
-		return 'from helper';
-	}
-	
+
 	public function test_with_param($param)
 	{
 		return $param;
 	}
-	
-	
+
+
 	/**
 	 * prints completed meta description and meta keyword tags
 	 * 
