@@ -4,25 +4,40 @@
 */
 class Doozer
 {
-	function _site_config()
+	public config, sitemap;
+	private helpers;
+	
+	public function __construct()
+	{
+		$this->helpers = new DZHelpers($this);
+	}
+	
+	public function content($section='')
 	{
 		# code...
 	}
 	
-	
-	
-	function __construct()
+	public function nav($value='')
 	{
-		$t = $this;
-		$site = $t->_site_config();
-		$page = $t->_page_config();
-		$sitemap = $t->_parse_sitemap();
+		# code...
+	}
+	
+	public function text_nav($value='')
+	{
+		# code...
+	}
+	
+	protected function __call($method, $params) {
+		# check for page-level variable named $_[method]
+		# else check for site-level variable
+		if ($this->config[$method]){
+			echo $this->config[$method];
+		}
+		else {
+			# pass the $method to the helper object
+			echo $this.helpers->$method;
+		}
 	}
 }
 $dz = new Doozer();
 ?>
-
-<?php $dz->nav(); ?>
-<?php Doozer::nav(); ?>
-<?php $dz->subnav(); ?>
-<?php $dz->breadcrumbs(); ?>

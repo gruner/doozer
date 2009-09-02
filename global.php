@@ -67,20 +67,6 @@ function has_index_pages()
 
 
 /*
- * returns the site name if set in config.php
- */
-function get_site_name()
-{
-	$config = sc_config();
-	$site_name = $config['site_name'];
-	if(isset($site_name) || !empty($site_name))
-	{
-		return $site_name;
-	}
-}
-
-
-/*
  * determines if the current section has sub-pages,
  * optionally check any section given as a parameter
  */
@@ -250,45 +236,6 @@ function print_page_title()
 	$_page_title = sanitize_title_text($_page_title);
 
 	print "<title>$_page_title</title>";
-}
-
-
-/**
- * prints completed meta description and meta keyword tags
- * 
- * looks for local $_meta_keywords and $_meta_description variables but 
- * defaults to the values defined in config.php.
- */
-function print_meta_tags()
-{
-		global $_keyword, $_description;
-		
-		$config = sc_config();
-		
-		$meta_keywords = $config['meta_keywords'];
-		$meta_description = $config['meta_description'];
-		
-		if (isset($_keyword) && !empty($_keyword))
-		{
-		# append page-specific keyword to global keywords string
-			$keyword = strtolower($_keyword);
-			$meta_keywords .= ", $keyword";
-		}
-		
-		# replace global description with local description if it exists
-		if (isset($_description) && !empty($_description)){$meta_description = $_description;}
-		
-		$meta = array('keywords' => $meta_keywords, 'description' => $meta_description);
-		
-		foreach ($meta as $key => $value)
-		{
-			if (!isset($value) || empty($value))
-			{
-				$value = $config["meta_$key"];
-			}
-			$meta_tag = "<meta name=\"$key\" content=\"$value\" />\n";
-			print $meta_tag;
-		}
 }
 
 
@@ -861,105 +808,3 @@ function format_list_with_separator($list, $separator=' | ')
 }
 
 
-function print_image_tag($file='', $alt='', $class='', $title='')
-{
-	list($w, $h) = getimagesize("images/$file");
-	$img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
-	if($class){$img_tag .= " class=\"$class\"";}
-	if($alt){$img_tag .= " alt=\"$alt\"";}
-	if($title){$img_tag .= " alt=\"$title\"";}
-	$img_tag .= " />";
-	
-	print $img_tag;
-}
-
-/**
- * prints a formatted image tag with calculated width and height attributes
- *
- * if $file isn't specified, looks for any image named after the $_page_name
- *
- * if $alt isn't specified, looks for page variable $_alt
- *
- * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
- * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
- * @param string $class text for image's class attribute (optional, omits attribute if not set)
- */
-function place_image($file='', $alt='', $class='', $title='')
-{
-	
-	global $_alt, $_page_name;
-	
-	if (!$alt)
-	{
-		$alt = $_alt;
-	}
-	
-	if (!$file)
-	{
-		$file = slug_name($_page_name);
-	}
-	
-	if (file_exists("images/$file"))
-	{
-		print_image_tag($file, $alt, $class, $title);
-	}
-	
-	else
-	{
-		# look for missing extensions
-		$extensions = array('.jpg', '.gif', '.png');
-		foreach($extensions as $ext)
-		{
-			$try_file = $file.$ext;
-			if(file_exists("images/$try_file"))
-			{
-				print_image_tag($try_file, $alt, $class, $title);
-				break;
-			}
-		}
-	}
-}
-
-
-/**
- * calls place_image() if the $_alt variable is set for the page
- */
-function place_image_if_alt()
-{
-	global $_alt;
-	if ($_alt){place_image('','','auto');}
-}
-
-
-/**
- * prints the script tag for creating a spam-friendly email link
- */
-function email_link($address)
-{
-	$pieces = explode("@", $address);
-	$name = $pieces[0];
-	$domain = $pieces[1];
-	
-	$js = "<script type=\"text/javascript\">\n";
-	$js .= "<!--\n";
-	$js .= "var name = \"$name\";\n";
-	$js .= "var domain = \"$domain\";\n";
-	$js .= "document.write('<a href=\\\"mailto:' + name + '@' + domain + '\\\">');\n";
-	$js .= "document.write(name + '@' + domain + '</a>');\n";
-	$js .= "// -->\n";
-	$js .= "</script>\n";
-	return $js;
-}
-
-
-
-/**
- * prints a div tag for embedding flash media with a standard notice if flash is not available.
- */
-function flash_div($div_name)
-{
-	$div = "<div id=\"$div_name\">\n";
-	$div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
-	$div .= "</div>\n";
-	print $div;
-}

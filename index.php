@@ -1,18 +1,30 @@
-<?php require_once('doozer.php');
-  $dz_config['meta_keywords'] = 'paste, the, site, keywords, here';
-  $dz_config['meta_description'] = 'paste the site description text here';
-  $dz_config['page_title'] = 'City ST - Orthodontist name - State zip';
-  $dz_config['title_keywords'] = 'Braces Orthodontics';
-  $dz_config['site_name'] = 'Practice Name';
-  $dz_config['index_pages'] = true;
+<?php
+require_once('doozer.php');
 
+/*
+|===============================================================
+| SITE CONFIGURATION
+|===============================================================
+*/
+$dz->config = array(
+	'meta_keywords' => 'paste, the, site, keywords, here',
+	'meta_description' => 'paste the site description text here',
+	'title' => 'City ST - Orthodontist name - State zip',
+	'title_keywords' => 'Braces Orthodontics',
+	'site_name' => 'Practice Name',
+	'index_pages' => = true
+));
 
-
-	$dz->site(array(
-		'meta_keywords' => ''
-	)); # site config
-	$dz->sitemap(); # define sitemap
+/*
+|===============================================================
+| DEFINE THE SITEMAP
+|===============================================================
+*/
+$dz->sitemap = array(
+	// yada yada
+));
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -31,7 +43,7 @@
 	<?php $dz->title(); ?>
 </head>
 
-<body class="<?php $dz->page_slug(); ?>">
+<body class="<?php $dz->slug(); ?>">
 
 <div id="container">
 	<div id="hd" class="container">
