@@ -1,0 +1,3 @@
+# translate query string to url
+# RewriteCond %{QUERY_STRING} slug=
+# RewriteRule (.*) http://www.domain.com/$1? [R=301]

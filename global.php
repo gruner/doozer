@@ -807,4 +807,59 @@ function format_list_with_separator($list, $separator=' | ')
 		return $formatted_list;
 }
 
+/**
+ * prints a formatted image tag with calculated width and height attributes
+ *
+ * if $file isn't specified, looks for any image named after the $_page_name
+ *
+ * if $alt isn't specified, looks for page variable $_alt
+ *
+ * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
+ * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
+ * @param string $class text for image's class attribute (optional, omits attribute if not set)
+ */
+public function place_image($file='', $alt='', $class='', $title='')
+{
 
+	global $_alt, $_page_name;
+
+	if (!$alt)
+	{
+		$alt = $_alt;
+	}
+
+	if (!$file)
+	{
+		$file = slug_name($_page_name);
+	}
+
+	if (file_exists("images/$file"))
+	{
+		print_image_tag($file, $alt, $class, $title);
+	}
+
+	else
+	{
+		# look for missing extensions
+		$extensions = array('.jpg', '.gif', '.png');
+		foreach($extensions as $ext)
+		{
+			$try_file = $file.$ext;
+			if(file_exists("images/$try_file"))
+			{
+				image_tag($try_file, $alt, $class, $title);
+				break;
+			}
+		}
+	}
+}
+
+
+/**
+ * calls image() if the $_alt variable is set for the page
+ */
+public function conditional_image()
+{
+	global $_alt;
+	if ($_alt){place_image('','','auto');}
+}

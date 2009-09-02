@@ -39,5 +39,6 @@ $dz->config = array(
 <p><?php $dz->test_with_param('Hello from awesomeness!'); ?></p>
 <?php $dz->content(); ?>
 <?php # $dz->content('sidebar'); # echoes '$_sidebar' var defined on the page ?>
+<?php $dz->image_tag('test-png.png'); ?>
 </body>
 </html>
