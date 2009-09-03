@@ -1,4 +1,5 @@
 <?php
+require_once('Doozer_Sitemap.php');
 require_once('Doozer_Helpers.php');
 
 /**
@@ -6,14 +7,14 @@ require_once('Doozer_Helpers.php');
 */
 class Doozer
 {
-	public $config, $page;
+	public $meta, $page;
 	private $helpers;
 	
 	function __construct()
 	{
 		$this->helpers = new Doozer_Helpers($this);
 		$this->page = new Doozer_Page();  # basename(dirname(__FILE__))
-		$this->config = array();
+		$this->meta = array('sidebar' => '<h1>Fubar</h1>');
 	}
 
 /**
@@ -33,9 +34,9 @@ class Doozer
 				include $this->page->fn;
 			}
 		}
-		elseif(isset($this->config[$section]))
+		elseif(isset($this->meta[$section]))
 		{
-			echo $this->config[$section];
+			echo $this->meta[$section];
 		}
 	}
 
@@ -74,7 +75,7 @@ class Doozer
 	{
 		if ($var == 'config' && is_array($val))
 		{
-			$this->config = $val + $this->config; # merge the new values with the config array
+			$this->meta = $val + $this->meta; # merge the new values with the meta array
 		}
 	}
 
@@ -82,8 +83,8 @@ class Doozer
 	protected function __call($method, $params) {
 		# check for page-level variable named $_[method]
 		# else check for site-level variable
-		if (isset($this->config[$method])){
-			echo $this->config[$method];
+		if (isset($this->meta[$method])){
+			echo $this->meta[$method];
 		}
 		else {
 			# pass the $method to the helper object
@@ -124,7 +125,7 @@ class Doozer_Page
 class Doozer_Navigation
 {
 	
-	public $page, $section
+	public $page, $section;
 	
 	function __construct($page, $section)
 	{

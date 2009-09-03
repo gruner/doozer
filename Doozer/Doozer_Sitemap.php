@@ -5,7 +5,7 @@
 */
 class Doozer_Tree
 {
-	public $value, $children
+	public $value, $children;
 
 	function __construct($value)
 	{

@@ -74,7 +74,7 @@ class Doozer_Helpers
 	 */
 	public function meta_tags()
 	{
-		$meta_tags = array('keywords' => $this->dz->config['meta_keywords'], 'description' => $this->dz->config['meta_description']);
+		$meta_tags = array('keywords' => $this->dz->meta['meta_keywords'], 'description' => $this->dz->meta['meta_description']);
 		$html = '';
 		foreach ($meta_tags as $name => $content)
 		{
