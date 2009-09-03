@@ -1,5 +1,6 @@
 <?php
 require_once('dz_helpers.php');
+
 /**
 * dev note: all public methods should echo a result
 */
@@ -10,20 +11,25 @@ class Doozer
 	
 	function __construct()
 	{
-		$this->helpers = new DZHelpers($this);
-		//$this->content_dir = dirname($_SERVER['REQUEST_URI']); $cur_dir = basename(dirname($_SERVER[PHP_SELF]))
-		$this->get_page();
-		$this->page = new DZPage();  # basename(dirname(__FILE__))
-		# array_merge($this->config, $this->page->meta); # TODO find a place for
+		$this->helpers = new Doozer_Helpers($this);
+		$this->page = new Doozer_Page();  # basename(dirname(__FILE__))
 	}
 
 
 	public function config($config)
 	{
+		# this violates our goal of having public methods echo a result
+		# but don't know what else to do
 		$this->config = array_merge($this->page->meta, $config);
 	}
 
-
+/**
+ * outputs content from the page, either the page itself
+ * or one of its page vars given as $section
+ *
+ * useful for defining pieces of content, such as a sidebar, that can
+ * be plugged into the template
+ */
 	public function content($section='')
 	{
 		$dz = $this;
@@ -88,7 +94,7 @@ class Doozer
 /**
 * 
 */
-class DZPage
+class Doozer_Page
 {
 	public $name, $fn, $meta;
 	
@@ -107,6 +113,41 @@ class DZPage
 		# get the meta vars from the page
 		# * parse the page as text?
 		# * output buffering?
+	}
+}
+
+/**
+* 
+*/
+class Doozer_Sitemap
+{
+	
+	function __construct($sitemap)
+	{
+		# code...
+	}
+	
+	/**
+	 * converts the sitemap into nested uls
+	 */
+	public function to_html()
+	{
+		# code...
+	}
+}
+
+/**
+* 
+*/
+class Doozer_Navigation
+{
+	
+	public $page, $section
+	
+	function __construct($page, $section)
+	{
+		$this->$page = $page;
+		$this->$section = $section;
 	}
 }
 

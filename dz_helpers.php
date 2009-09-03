@@ -2,7 +2,7 @@
 /**
 * all helpers return a value rather than printing it
 */
-class DZHelpers
+class Doozer_Helpers
 {
 	private $dz;
 	
@@ -17,12 +17,60 @@ class DZHelpers
 		return $param;
 	}
 
+	/*
+	 * Creates a 'slug name' by stripping 
+	 * special characters from the given page name
+	 * and replacing spaces with dashes.
+	 * 
+	 * Used for setting unique id's on <li> elements
+	 * in navigation as well as linking to files that follow its naming convention.
+	 */
+	public function slug($string)
+	{
+		return $this->replace_chars(strtolower($this->strip_special_chars($string)));
+	}
+
+
+	/*
+	 * Strips special characters from a string.
+	 */
+	private function strip_special_chars($string)
+	{
+		# Define special characters that will be stripped from the name
+		$special_chars = array('.',',','?','!','$','|','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
+		$processed_string = str_replace($special_chars, '', $string);
+		return $processed_string;
+	}
+
+
+	/*
+	 * Loops through a hash of replacements
+	 * and replaces the key with its value in the given string.
+	 *
+	 * $replacements array has default values which can be overridden when called
+	 */
+	private function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and', ' ' => '-','/' => '-'))
+	{
+		return str_replace(array_keys($replacements), array_values($replacements), $string);
+	}
+
+	/*
+	 * Converts a string to make it suitable for use in a title tag.
+	 * Similar to slug_name, but keeps spaces.
+	 */
+	public function sanitize_title_text($string)
+	{
+		$sanitized_text = strip_special_chars($string);
+		$sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
+		return $sanitized_text;
+	}
+
 
 	/**
 	 * prints completed meta description and meta keyword tags
 	 * 
 	 * looks for local $_meta_keywords and $_meta_description variables but 
-	 * defaults to the values defined in config.php.
+	 * defaults to the site values
 	 */
 	public function meta_tags()
 	{

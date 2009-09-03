@@ -145,53 +145,7 @@ function get_first_unnested_item($items)
 }
 
 
-/*
- * creates a 'slug name' by stripping 
- * special characters from the given page name
- * and replacing spaces with dashes.
- * 
- * Used for setting unique id's on <li> elements
- * in navigation as well as linking to files that follow our naming convention.
- */
-function slug_name($string)
-{
-	return replace_chars(strtolower(strip_special_chars($string)));
-}
 
-
-/*
- * Strips special characters from a string.
- */
-function strip_special_chars($string)
-{
-	# Define special characters that will be stripped from the name
-	$special_chars = array('.',',','?','!','$','|','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');	
-	$processed_string = str_replace($special_chars, '', $string);
-	return $processed_string;
-}
-
-
-/*
- * Loops through a hash of replacements
- * and replaces the key with its value in the given string.
- *
- * $replacements array has default values which can be overridden when called
- */
-function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and', ' ' => '-','/' => '-'))
-{
-	return str_replace(array_keys($replacements), array_values($replacements), $string);
-}
-
-/*
- * Converts a string to make it suitable for use in a title tag.
- * Similar to slug_name, but keeps spaces.
- */
-function sanitize_title_text($string)
-{
-	$sanitized_text = strip_special_chars($string);
-	$sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
-	return $sanitized_text;
-}
 
 /*
  * prints the complete title tag of the page
@@ -800,6 +754,7 @@ function collect_breadcrumbs($input, $first_run=true)
 
 /**
  * formats an array into a single string by inserting the given separator string between items
+ * TODO this is worthless, just use implode!
  */
 function format_list_with_separator($list, $separator=' | ')
 {
