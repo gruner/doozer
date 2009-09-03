@@ -9,15 +9,14 @@ require_once('doozer.php');
 | SITE CONFIGURATION
 |===============================================================
 */
-$dz->config(array(
+$dz->config = array(
 	'meta_keywords' => 'paste, the, site, keywords, here',
 	'meta_description' => 'paste the site description text here',
 	'title' => 'City ST - Orthodontist name - State zip',
 	'title_keywords' => 'Braces Orthodontics',
 	'site_name' => 'Practice Name',
 	'sidebar' => '<h1>Sidebar</h1>',
-	'index_pages' => true)
-);
+	'index_pages' => true);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"

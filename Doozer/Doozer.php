@@ -1,5 +1,5 @@
 <?php
-require_once('dz_helpers.php');
+require_once('Doozer_Helpers.php');
 
 /**
 * dev note: all public methods should echo a result
@@ -13,14 +13,7 @@ class Doozer
 	{
 		$this->helpers = new Doozer_Helpers($this);
 		$this->page = new Doozer_Page();  # basename(dirname(__FILE__))
-	}
-
-
-	public function config($config)
-	{
-		# this violates our goal of having public methods echo a result
-		# but don't know what else to do
-		$this->config = array_merge($this->page->meta, $config);
+		$this->config = array();
 	}
 
 /**
@@ -76,6 +69,14 @@ class Doozer
 	// 	}
 	// 	return false;
 	// }
+	
+	protected function __set($var, $val)
+	{
+		if ($var == 'config' && is_array($val))
+		{
+			$this->config = $val + $this->config; # merge the new values with the config array
+		}
+	}
 
 
 	protected function __call($method, $params) {
@@ -90,6 +91,7 @@ class Doozer
 		}
 	}
 }
+
 
 /**
 * 
@@ -119,26 +121,6 @@ class Doozer_Page
 /**
 * 
 */
-class Doozer_Sitemap
-{
-	
-	function __construct($sitemap)
-	{
-		# code...
-	}
-	
-	/**
-	 * converts the sitemap into nested uls
-	 */
-	public function to_html()
-	{
-		# code...
-	}
-}
-
-/**
-* 
-*/
 class Doozer_Navigation
 {
 	
@@ -151,6 +133,6 @@ class Doozer_Navigation
 	}
 }
 
-
+# instantiate a new Doozer object
 $dz = new Doozer();
 ?>
