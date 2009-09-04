@@ -33,7 +33,6 @@ $dz->config = array(
 <body>
 <?php $dz->meta_tags(); ?>
 <p><?php $dz->title_keywords(); ?></p>
-<p><?php $dz->test_helper(); ?></p>
 <p><?php $dz->page(); ?></p>
 <p><?php $dz->test_with_param('Hello from awesomeness!'); ?></p>
 <?php $dz->content(); ?>

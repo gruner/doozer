@@ -9,7 +9,7 @@ class Doozer_Tree
 
 	function __construct($value)
 	{
-		$this->name = $name;
+		$this->value = $value;
 		$this->children = array();
 	}
 	

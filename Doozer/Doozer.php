@@ -14,7 +14,7 @@ class Doozer
 	{
 		$this->helpers = new Doozer_Helpers($this);
 		$this->page = new Doozer_Page();  # basename(dirname(__FILE__))
-		$this->meta = array('sidebar' => '<h1>Fubar</h1>');
+		$this->meta = array('index_pages' => false);
 	}
 
 /**
