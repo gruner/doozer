@@ -30,7 +30,7 @@ class Doozer_Tree
 class Doozer_Sitemap extends Doozer_Tree
 {
 	
-	function __construct($sitemap)
+	function __construct(array $sitemap)
 	{
 		# code...
 	}

@@ -8,7 +8,7 @@ require_once('Doozer_Helpers.php');
 class Doozer
 {
 	public $meta, $page;
-	private $helpers;
+	private $sitemap, $helpers;
 	
 	function __construct()
 	{
@@ -73,14 +73,21 @@ class Doozer
 	
 	protected function __set($var, $val)
 	{
-		if ($var == 'config' && is_array($val))
+		if (is_array($val))
 		{
-			$this->meta = $val + $this->meta; # merge the new values with the meta array
+			if ($var == 'config')
+			{
+				$this->meta = $val + $this->meta; # merge the new values with the meta array
+			}
+			elseif ($var == 'sitemap')
+			{
+				$this->sitemap = new Doozer_Sitemap($val);
+			}
 		}
 	}
 
 
-	protected function __call($method, $params) {
+	protected function __call($method, $params = null) {
 		# check for page-level variable named $_[method]
 		# else check for site-level variable
 		if (isset($this->meta[$method])){
@@ -89,6 +96,10 @@ class Doozer
 		else {
 			# pass the $method to the helper object
 			echo $this->helpers->$method($params[0]);
+			
+			#echo call_user_func_array($this->helpers->$method(), $params);
+			# $helper_method = $this->helpers->$method();
+			# echo call_user_func_array($helper_method, $params);
 		}
 	}
 }
