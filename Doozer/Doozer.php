@@ -80,7 +80,7 @@ class Doozer
 	}
 
 
-	protected function __call($method, $params) {
+	protected function __call($method, $args) {
 		# check for page-level variable named $_[method]
 		# else check for site-level variable
 		if (isset($this->meta[$method])){
@@ -88,7 +88,7 @@ class Doozer
 		}
 		else {
 			# pass the $method to the helper object
-			echo $this->helpers->$method($params[0]);
+			echo call_user_func_array(array($this->helpers, $method), $args);
 		}
 	}
 }
