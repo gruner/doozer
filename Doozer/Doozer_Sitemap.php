@@ -42,5 +42,13 @@ class Doozer_Sitemap extends Doozer_Tree
 	{
 		# code...
 	}
+	
+	/**
+	 * converts the sitemap into navigation div
+	 */
+	public function navigation()
+	{
+		# code...
+	}
 }
 ?>
