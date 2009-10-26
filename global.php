@@ -24,7 +24,7 @@ require_once('config.php');
  * Include the sitemap for the site, which we parse in order to generate the navigation.
  */
 require_once('sitemap.php');
-include_once('ie6_alert.php');
+//include_once('ie6_alert.php');
 
 /*
  * Only parse the sitemap once and save it as a static variable.
@@ -40,6 +40,18 @@ function get_sitemap()
 	return $sitemap;
 }
 
+
+function h1_tag()
+{
+	global $_page_name;
+	
+	$h1 = (isset($_h1) && !empty($_h1)) ? $_h1 : $_page_name;
+	if ($h1 != false)
+	{
+		$slug = slug_name($_page_name);
+		return "<h1 class=\"$slug\">$h1</h1>";
+	}
+}
 
 /*
  * checks $_section and $_page_name to see if the current page is the homepage
@@ -216,40 +228,18 @@ function sanitize_title_text($string)
  */
 function print_page_title()
 {
-	global $_section, $_page_name, $_keyword, $_page_title;
+	global $_page_name, $_title;
 	$config = sc_config();
 	
-	if(!isset($_page_title) || empty($_page_title))
+	if(!isset($_title) || empty($_title))
 	{
-		$_page_title = $config['page_title'];
-	}
-	
-	if(!isset($_keyword) || empty($_keyword))
-	{
-		$_keyword = $config['title_keywords'];
-	}
-	
-	# prepend the keyword to the title
-	$_page_title = "$_keyword - $_page_title"; 
-	
-	if (!is_homepage())
-	{
-		if($_section != $_page_name)
-		{ 
-			$_page_title = "$_section > $_page_name - $_page_title";
-		}
-		
-		else
-		{
-			#prepend the section
-			$_page_title = "$_section - $_page_title";
-		} 
+		$_title = "$_page_name - ".$config['page_title'];
 	}
 	
 	# remove special chars from page name
-	$_page_title = sanitize_title_text($_page_title);
+	$_title = sanitize_title_text($_title);
 
-	print "<title>$_page_title</title>";
+	print "<title>$_title</title>";
 }
 
 
@@ -949,17 +939,4 @@ function email_link($address)
 	$js .= "// -->\n";
 	$js .= "</script>\n";
 	return $js;
-}
-
-
-
-/**
- * prints a div tag for embedding flash media with a standard notice if flash is not available.
- */
-function flash_div($div_name)
-{
-	$div = "<div id=\"$div_name\">\n";
-	$div .= "<p class=\"notice\">The intended media clip requires a newer version of Adobe Flash&reg; Player. Please visit <a href=\"http://www.adobe.com/go/getflashplayer\">www.adobe.com</a> to download the latest version.</p>\n";
-	$div .= "</div>\n";
-	print $div;
 }

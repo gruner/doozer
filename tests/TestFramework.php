@@ -8,6 +8,7 @@ class TestOfFramework extends UnitTestCase {
   
   function setUp()
   {
+    $_h1 = 'H1 Override';
     $_section = 'Braces 101';
     $_page_name = 'Life with Braces&reg;';
     $_keyword = 'Invisalign';
@@ -113,6 +114,12 @@ class TestOfFramework extends UnitTestCase {
       'three'
     );
     $this->assertEqual('tertiary1', get_first_unnested_item($nested));
+  }
+
+  function test_h1_tag()
+  {
+    $this->setup();
+    $this->assertEqual('<h1 class="life-with-braces">H1 Override</h1>', h1_tag());
   }
 
 }

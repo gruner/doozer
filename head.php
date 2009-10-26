@@ -29,4 +29,5 @@
 	  </div><!--/sidebar-->
 		<div id="content" class="column">
 			<!-- IE6 Detect Advise Notice --><?php if($ie6_alert){ echo $ie6_alert_box; } ?><!-- // end IE6 Detect Advise Notice -->
+			<?php echo h1_tag(); ?>
 			<?php place_image_if_alt(); ?>
