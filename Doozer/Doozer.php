@@ -8,40 +8,41 @@ require_once('Doozer_Helpers.php');
 class Doozer
 {
 	public $meta, $page;
-	private $helpers;
+	private $helpers, $sitemap;
 	
 	function __construct()
 	{
 		$this->helpers = new Doozer_Helpers($this);
-		$this->page = new Doozer_Page();  # basename(dirname(__FILE__))
-		$this->meta = array('index_pages' => false);
+		$this->sitemap = new Doozer_Sitemap();
+		$this->page = new Doozer_Page();
+		$this->meta = array('index_pages' => false); # set any default values here
 	}
 
 /**
  * outputs content from the page, either the page itself
- * or one of its page vars given as $section
+ * or a snippet of html defined on the page, given as the $html var
  *
- * useful for defining pieces of content, such as a sidebar, that can
+ * useful for defining pieces of html content per page, such as a sidebar, that can
  * be plugged into the template
  */
-	public function content($section='')
+	public function content($html='')
 	{
-		$dz = $this;
-		if (empty($section))
+		$dz = $this; # set $dz for page scope
+		if (empty($html))
 		{
 			if (file_exists($this->page->fn))
 			{
 				include $this->page->fn;
 			}
 		}
-		elseif(isset($this->meta[$section]))
+		elseif(isset($this->meta[$html]))
 		{
-			echo $this->meta[$section];
+			echo $this->meta[$html];
 		}
 	}
 
 
-	public function nav($value='')
+	public function nav()
 	{
 		# code...
 	}
@@ -58,24 +59,16 @@ class Doozer
 		echo $this->page->name;
 	}
 
-	// private function load_content($page)
-	// {
-	// 	if (file_exists($page.'.php'))
-	// 	{
-	// 		ob_start();
-	// 		include $page.'.php';
-	// 		$this->content = ob_get_contents();
-	// 		// get_defined_vars(); filter to get all '$_' vars
-	// 		ob_end_clean();
-	// 	}
-	// 	return false;
-	// }
-	
+
 	protected function __set($var, $val)
 	{
 		if ($var == 'config' && is_array($val))
 		{
 			$this->meta = $val + $this->meta; # merge the new values with the meta array
+		}
+		elseif ($var == 'sitemap' && is_array($val))
+		{
+			$this->sitemap->set_sitemap($val);
 		}
 	}
 
@@ -95,7 +88,7 @@ class Doozer
 
 
 /**
-* 
+* Holds the state of the current page and defines its corresponding file
 */
 class Doozer_Page
 {
@@ -114,25 +107,13 @@ class Doozer_Page
 	{
 		$this->meta = array();
 		# get the meta vars from the page
+		# * need to get these right away
 		# * parse the page as text?
 		# * output buffering?
+		//get_defined_vars(); //array_keys(get_defined_vars()));
 	}
 }
 
-/**
-* 
-*/
-class Doozer_Navigation
-{
-	
-	public $page, $section;
-	
-	function __construct($page, $section)
-	{
-		$this->$page = $page;
-		$this->$section = $section;
-	}
-}
 
 # instantiate a new Doozer object
 $dz = new Doozer();
