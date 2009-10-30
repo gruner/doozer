@@ -30,9 +30,9 @@ class Doozer
 		$dz = $this; # set $dz for page scope
 		if (empty($html))
 		{
-			if (file_exists($this->page->fn))
+			if (file_exists($this->page->filename))
 			{
-				include $this->page->fn;
+				include $this->page->filename;
 			}
 		}
 		elseif(isset($this->meta[$html]))
@@ -99,20 +99,42 @@ class Doozer
 */
 class Doozer_Page
 {
-	public $name, $fn, $meta;
+	public $name, $filename, $meta, $content;
 	
 	function __construct($root_dir='')
 	{
 		# query string variable sets the page, defaults to 'home'
 		# TODO: should probably do some sanitizing of the query string
 		$this->name = isset($_GET['page']) ? $_GET['page'] : 'home';
-		$this->fn = $root_dir.$this->name.'.php';
-		$this->get_meta();
+		$this->filename = $root_dir.$this->name.'.php';
+		$this->get_content();
 	}
 	
-	private function get_meta()
+	
+	private function get_meta($content)
 	{
+	  
+	 # code...
+	}
+	
+	private function get_content()
+	{
+	  if (file_exists($this->filename) && is_file($this->filename))
+	  {
+	    ob_start($this->get_meta);
+	    include($this->filename);
+      $this->meta = get_defined_vars();
+      ob_end_flush();
+
+      $delete_key = array_search($this, $vars); # find the filename to delete
+      unset($vars[$delete_key]); # delete the file entry
+
+      return $vars;
+	   # code...
+	  }
+	  
 		$this->meta = array();
+		$this->get_content();
 		# get the meta vars from the page
 		# * need to get these right away
 		# * parse the page as text?
