@@ -85,6 +85,7 @@ class Doozer_Sitemap
 	 * determining if there is a linked sub-section
 	 */
 	function parse_section($sitemap, $section, $sub_section)
+
 	{
 		if (is_string($section))
 			# array is in the form of

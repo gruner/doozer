@@ -8,7 +8,7 @@ require_once('Doozer_Helpers.php');
 class Doozer
 {
 	public $meta, $page;
-	private $helpers, $sitemap;
+	private $sitemap, $helpers;
 	
 	function __construct()
 	{
@@ -62,9 +62,16 @@ class Doozer
 
 	protected function __set($var, $val)
 	{
-		if ($var == 'config' && is_array($val))
+		if (is_array($val))
 		{
-			$this->meta = $val + $this->meta; # merge the new values with the meta array
+			if ($var == 'config')
+			{
+				$this->meta = $val + $this->meta; # merge the new values with the meta array
+			}
+			elseif ($var == 'sitemap')
+			{
+				$this->sitemap = new Doozer_Sitemap($val);
+			}
 		}
 		elseif ($var == 'sitemap' && is_array($val))
 		{
