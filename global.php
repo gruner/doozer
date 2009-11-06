@@ -48,7 +48,7 @@ function is_homepage()
  */
 function has_index_pages()
 {
-  $config = sc_config();
+  global $config;
   return (isset($config['index_pages']) && $config['index_pages'] == true);
 }
 
@@ -58,7 +58,7 @@ function has_index_pages()
  */
 function get_site_name()
 {
-  $config = sc_config();
+  global $config;
   $site_name = $config['site_name'];
   if (exists($site_name))
   {
@@ -156,9 +156,7 @@ function use_default($var, $default='')
  */
 function title_tag()
 {
-  global $_page_name, $_title;
-
-  $config = sc_config();
+  global $_page_name, $_title, $config;
 
   $title = use_default($_title, "$_page_name - ".$config['page_title']);
 
@@ -181,8 +179,7 @@ function print_page_title()
  */
 function meta_tags()
 {
-  global $_keywords, $_description;
-  $config = sc_config();
+  global $_keywords, $_description, $config;
 
   $meta_tags = '';
 
@@ -472,7 +469,7 @@ function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
 function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
 {
 
-    global $_section, $_page_name;
+    global $_section, $_page_name, $sitemap;
 
     # Use the current section unless a specific section is given as a parameter
     if (! $section)
@@ -486,7 +483,6 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
     $formatted_list = "<p class=\"$class_name\">";
 
     $link_array = array();
-    $sitemap = define_sitemap();
     $sub_items = $sitemap[$section];
     foreach ($sub_items as $sub_name)
     {
@@ -802,7 +798,7 @@ function get_sitemap()
  */
 function parse_sitemap()
 {
-  $defined_sitemap = define_sitemap();
+  $defined_sitemap = $GLOBALS['sitemap'];
   $sitemap = array();
   foreach ($defined_sitemap as $section => $sub_section)
   {

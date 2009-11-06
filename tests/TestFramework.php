@@ -19,6 +19,23 @@ class TestOfFramework extends UnitTestCase {
   }
 
 
+  function test_exists()
+  {
+    $this->assertTrue(exists($GLOBALS['_page_name']));
+
+    $foo = '';
+    $bar = array();
+    $this->assertFalse(exists($foo));
+    $this->assertFalse(exists($bar));
+
+    $this->assertEqual(use_default('', 'foo'), 'foo');
+    $this->assertEqual(use_default('bar', 'foo'), 'bar');
+
+    $this->assertNotEqual(use_default('bar', 'foo'), 'foo');
+    $this->assertNotEqual(use_default('', 'foo'), '');
+  }
+
+
   function test_site_name()
   {
     $this->assertEqual('Practice Name', get_site_name());
@@ -75,14 +92,6 @@ class TestOfFramework extends UnitTestCase {
     $this->assertIdentical('uno', reset(array_keys($test2)));
     $this->assertidentical('tres', end(array_keys($test2)));
   }
-
-
-  // function test_sitemap_is_singleton()
-  // {
-  //   $a = get_sitemap();
-  //   $b = get_sitemap();
-  //   $this->assertReference($a,$b);
-  // }
 
 
   function test_array_examples()

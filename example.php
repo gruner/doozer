@@ -107,7 +107,6 @@ test("print_breadcrumbs(' ++ ')", 'specify custom separator string');
 test('echo get_site_name()', 'gets the value of "site_name" defined in config.php');
 
 test('echo h1_tag()', 'Creates an h1 tag. Uses $_h1 variable for the text (if defined) but defaults to $_page_name variable.');
-test('echo h1_tag()');
 
 $slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
 foreach ($slug_tests as $test){
@@ -120,7 +119,6 @@ test('place_image("test-png")');
 test('place_image("test-gif")');
 test('place_image("test-jpg")');
 test('place_image("non-existing-file")', "doesn't output anything if it can't find the file");
-
 
 ?>
 

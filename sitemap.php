@@ -1,6 +1,4 @@
 <?php
-function define_sitemap()
-{
 
   # Each section of the site is defined as a separate array.
   # Each string in the array will be converted into a link
@@ -73,7 +71,3 @@ function define_sitemap()
   'Contact Us' => $contact_us,
   'Test'
   );
-
-  return $sitemap;
-}
-?>
