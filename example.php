@@ -7,6 +7,7 @@ $_page_name = 'Life with Braces&reg;';
 $_keywords = 'Invisalign';
 $_title = '[this text replaces the title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
+$_content = '<p>sidebar</p>';
 
 $logr = array();
 
@@ -49,6 +50,10 @@ function test($code, $comments='')
 </head>
 
 <body class="<?php echo slug_name($_page_name); ?>">
+
+<h1><?php content($_content); ?></h1>
+<h1><?php content($foo, $_content); ?></h1>
+<h1><?php content($foo); ?></h1>
 
 <h1>PHP Framework</h1>
 

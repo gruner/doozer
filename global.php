@@ -271,7 +271,7 @@ function place_image($file='', $alt='', $class='', $title='')
 
 
 /**
- * calls place_image() if the $_alt variable is set for the page
+ * Calls place_image() if the $_alt variable is set for the page
  */
 function place_image_if_alt()
 {
@@ -284,7 +284,7 @@ function place_image_if_alt()
 
 
 /**
- * prints the script tag for creating a spam-friendly email link
+ * Prints the script tag for creating a spam-friendly email link
  */
 function email_link_tag($address)
 {
@@ -304,13 +304,26 @@ function email_link_tag($address)
 }
 
 
+/**
+ * Allows injecting pieces of content into the header or footer includes
+ */
+function content($content, $default='')
+{
+  $content = use_default($content, $default)
+  if (exists($content))
+  {
+    echo $content;
+  }
+}
+
+
 # ============================================================================ #
 #    NAVIGATION HELPERS                                                        #
 # ============================================================================ #
 
 
 /**
- * recursively formats the navigation sitemap, building a string of nested <ul>s
+ * Recursively formats the navigation sitemap, building a string of nested <ul>s
  */
 function format_navigation($input, $exclusions=array(), $include_sub_nav=false, $top_level=true)
 {
@@ -374,7 +387,7 @@ function format_nav_link($nav_item, $link='', $include_id=false, $class='')
 
 
 /**
- * prints the formatted sitemap as nested lists of links wrapped in a div tag
+ * Prints the formatted sitemap as nested lists of links wrapped in a div tag
  *
  * * adds the slug name as the id of each <a> tag
  * * adds 'class="active"' to the current section

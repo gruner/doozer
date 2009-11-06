@@ -25,7 +25,7 @@
 	</div><!--/hd-->
 	<div id="bd" class="container">
 	  <div id="sidebar" class="column">
-	  	<?php if($_sidebar_content){print $_sidebar_content;} ?>
+			<?php content($_sidebar_content); ?>
 	  </div><!--/sidebar-->
 		<div id="content" class="column">
 			<!-- IE6 Detect Advise Notice --><?php if($ie6_alert){ echo $ie6_alert_box; } ?><!-- // end IE6 Detect Advise Notice -->
