@@ -4,8 +4,8 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 $_section = 'Braces 101';
 $_page_name = 'Life with Braces&reg;';
-$_keyword = 'Invisalign';
-$_page_title = '[this text replaces the base title]';
+$_keywords = 'Invisalign';
+$_title = '[this text replaces the title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
 
 $logr = array();
@@ -20,23 +20,24 @@ require_once('global.php');
 
 function test($code, $comments='')
 {
-  print "<h3 class=\"code\">$code</h3>\n";
+  echo "<h3 class=\"code\">$code</h3>\n";
   if($comments){print "<p class=\"quiet\">$comments</p>\n";}
-  print "<div>\n";
+  echo "<div>\n";
   eval("$code;");
-  print "</div>\n<hr/>\n";
+  echo "</div>\n<hr/>\n";
 }
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-	<?php print_meta_tags(); ?>
-	<link href="example.css" media="screen" rel="stylesheet" type="text/css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
-	<?php print_page_title(); ?>
-	<script type="text/javascript">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<?php echo meta_tags(); ?>
+	<link rel="stylesheet" href="example.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+	<?php echo title_tag(); ?>
+
+	<script>
     $(document).ready(function(){
   		$('li.first').append('<span class="quiet">  < first</span>');
   		$('li.last').append('<span class="quiet">  < last</span>');
@@ -44,16 +45,18 @@ function test($code, $comments='')
   		//$('a.head').after('<span class="quiet"> < head </span>');
   	});//end document.ready
   </script>
+
 </head>
+
 <body class="<?php echo slug_name($_page_name); ?>">
 
 <h1>PHP Framework</h1>
 
 <p>This is an example page illustrating the available php functions that utilize the site stucture defined in <code>sitemap.php</code>.</p>
 
-<p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (The framework uses the names <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamicly generated navigation elements.</p>
+<p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (The framework uses the names <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamically generated navigation elements.</p>
 
-<p>These functions are defined in <code>global.php</code>. To enable this functionality simply include <code>global.php</code> on every page in addition to the header and footer includes. Then define the site structure as an array in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
+<p>These functions are defined in <code>global.php</code>. To enable this functionality simply include <code>global.php</code> on every page before calling the header include. Then define the site structure as an array in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
 
 <h2>Naming Conventions</h2>
 
@@ -67,7 +70,7 @@ function test($code, $comments='')
 
 <hr />
 
-<?php 
+<?php
 
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'))");
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'), \$include_sub_nav=true, \$div_id='nav-with-sub')");
@@ -101,7 +104,10 @@ test("print_sitemap(\$exclude=array('Contact Us', 'About Orthodontics'))");
 test("print_breadcrumbs()");
 test("print_breadcrumbs(' ++ ')", 'specify custom separator string');
 
-test('echo get_site_name()', 'gets the value of "site_name" defined in config.php'); 
+test('echo get_site_name()', 'gets the value of "site_name" defined in config.php');
+
+test('echo h1_tag()', 'Creates an h1 tag. Uses $_h1 variable for the text (if defined) but defaults to $_page_name variable.');
+test('echo h1_tag()');
 
 $slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
 foreach ($slug_tests as $test){
