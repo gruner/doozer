@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 $_section = 'Braces 101';
 $_page_name = 'Life with Braces&reg;';
 $_keywords = 'Invisalign';
-$_title = '[this text replaces the title]';
+//$_title = '[this text replaces the title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
 $_content = '<p>sidebar</p>';
 
@@ -51,13 +51,9 @@ function test($code, $comments='')
 
 <body class="<?php echo slug_name($_page_name); ?>">
 
-<h1><?php content($_content); ?></h1>
-<h1><?php content($foo, $_content); ?></h1>
-<h1><?php content($foo); ?></h1>
+<h1>Doozer &ndash; A PHP Framework</h1>
 
-<h1>PHP Framework</h1>
-
-<p>This is an example page illustrating the available php functions that utilize the site stucture defined in <code>sitemap.php</code>.</p>
+<p>This is an example page illustrating the available php functions that utilize the site structure defined in <code>sitemap.php</code>.</p>
 
 <p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (The framework uses the names <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamically generated navigation elements.</p>
 
@@ -81,6 +77,7 @@ test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'))");
 test("print_navigation(\$exclusions = array('Contact Us', 'Site Map'), \$include_sub_nav=true, \$div_id='nav-with-sub')");
 
 test("print_inclusive_navigation(array('Home','Patient Login'))", 'print a navigation div with only the specified nav items, excludes everything else');
+test("print_inclusive_navigation(array('About Our Office','About Orthodontics'), true, 'inclusive')");
 
 test("print_sub_navigation()");
 test("print_sub_navigation(\$section='Nested')");
@@ -111,7 +108,7 @@ test("print_breadcrumbs(' ++ ')", 'specify custom separator string');
 
 test('echo get_site_name()', 'gets the value of "site_name" defined in config.php');
 
-test('echo h1_tag()', 'Creates an h1 tag. Uses $_h1 variable for the text (if defined) but defaults to $_page_name variable.');
+test('echo headline_tag()', 'Creates an h1 tag. Uses $_page_heading variable for the text (if defined) but defaults to $_page_name variable.');
 
 $slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
 foreach ($slug_tests as $test){

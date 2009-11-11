@@ -1,26 +1,57 @@
 <?php
-/**
- * This file contains several php functions for easily creating dynamic navigation by utilizing the site structure defined in sitemap.php.
- *
- * It also contains several utility functions for quickly generating other common html elements.
- *
- * Using our existing approach of defining '$page' and '$section' variables for each page (this framework uses the convention '$_page_name', and '$_section' to indicate that they are local to each page), we can call the following functions from any page and get dynamically generated navigation elements.
- *
- * To enable this functionality simply include this file on every page, similar to how we're already including the header and footer files. Then define the site structure in sitemap.php, also kept in the includes folder. (Note: The root level 'Site Map' page should be named 'site-map.php' to avoid conflicting names.)
 
- @package scFramework
+# ============================================================================ #
+
+/**
+ *  D O O Z E R
+ *
+ *  a PHP navigation framework.
+ *
+ *  For more information: {@link http://github/gruner/doozer}
+ *
+ *  @author Andrew Gruner
+ *  @copyright Copyright (c) 2009 Andrew Gruner
+ *  @license http://opensource.org/licenses/mit-license.php The MIT License
+ *  @package doozer
  */
 
+#   -----------------------------------------------------------------------    #
+#    Copyright (c) 2009 Andrew Gruner                                          #
+#                                                                              #
+#    Permission is hereby granted, free of charge, to any person               #
+#    obtaining a copy of this software and associated documentation            #
+#    files (the "Software"), to deal in the Software without                   #
+#    restriction, including without limitation the rights to use,              #
+#    copy, modify, merge, publish, distribute, sublicense, and/or sell         #
+#    copies of the Software, and to permit persons to whom the                 #
+#    Software is furnished to do so, subject to the following                  #
+#    conditions:                                                               #
+#                                                                              #
+#    The above copyright notice and this permission notice shall be            #
+#    included in all copies or substantial portions of the Software.           #
+#                                                                              #
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,           #
+#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES           #
+#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND                  #
+#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT               #
+#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,              #
+#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING              #
+#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR             #
+#    OTHER DEALINGS IN THE SOFTWARE.                                           #
+# ============================================================================ #
+
+
+
 
 /**
- * Include the configuration file for the site which stores site-specific settings
+ * Include the configuration and sitemap files
+ *
+ * These define site-specific settings
  * such as page title and meta information. This allows for site-specific changes
  * without having to edit global.php.
  */
 require_once('config.php');
-require_once('sitemap.php'); // Include the sitemap for the site, which we parse in order to generate the navigation.
-//include_once('ie6_alert.php');
-
+require_once('sitemap.php');
 
 
 # ============================================================================ #
@@ -59,10 +90,9 @@ function has_index_pages()
 function get_site_name()
 {
   global $config;
-  $site_name = $config['site_name'];
-  if (exists($site_name))
+  if (exists($config['site_name']))
   {
-    return $site_name;
+    return $config['site_name'];
   }
 }
 
@@ -118,12 +148,11 @@ function sanitize_title_text($string)
 
 
 /**
- * formats an array into a single string by inserting the given separator string between items
+ * Formats an array into a single string by inserting the given separator string between items
  */
 function format_list_with_separator($list, $separator=' | ')
 {
-  $formatted_list = implode("$separator", $list);
-  return $formatted_list;
+  return implode($separator, $list);
 }
 
 
@@ -150,7 +179,61 @@ function use_default($var, $default='')
 # ============================================================================ #
 
 
-/*
+/**
+ * Creates a self-closing html tag
+ */
+function tag($name, $options=null, $open=false)
+{
+  $tag_options = exists($options) ? tag_options($options) : '';
+  $closing = $open ? '>' : ' />';
+  return '<'.$name.$tag_options.$closing;
+}
+
+
+/**
+ * Creates an html tag
+ */
+function content_tag($name, $content, $options=null)
+{
+  $tag_options = exists($options) ? tag_options($options) : '';
+  return '<'.$name.$tag_options.'>'.$content.'</'.$name.'>';
+}
+
+
+function tag_options($options)
+{
+  $boolean_attributes = array('disabled', 'readonly', 'multiple', 'checked', 'autobuffer',
+                             'autoplay', 'controls', 'loop', 'selected', 'hidden', 'scoped', 'async',
+                             'defer', 'reversed', 'ismap', 'seemless', 'muted', 'required',
+                             'autofocus', 'novalidate', 'formnovalidate', 'open');
+  if (is_array($options))
+  {
+    $attrs = array();
+    foreach ($options as $key => $value)
+    {
+      if (in_array($key, $boolean_attributes))
+      {
+        if (isset($value))
+        {
+          $attrs[] = "$key=\"$key\"";
+        }
+      }
+      elseif (exists($value))
+      {
+        $final_value = (is_array($value)) ? implode(' ', $value) : $value;
+        $attrs[] = "$key=\"$final_value\"";
+      }
+    }
+  }
+  if (!empty($attrs))
+  {
+    $attrs = implode(' ', $attrs);
+    return " $attrs";
+  }
+}
+
+
+/**
  * Returns the complete title tag of the page.
  * Looks for local $_title variable but defaults to the value definded in config.php
  */
@@ -162,12 +245,7 @@ function title_tag()
 
   # remove special chars from page name
   $title = sanitize_title_text($title);
-  return "<title>$title</title>";
-}
-
-function print_page_title()
-{
-  echo title_tag();
+  return content_tag('title', $title);
 }
 
 
@@ -179,7 +257,7 @@ function print_page_title()
  */
 function meta_tags()
 {
-  global $_keywords, $_description, $config;
+  global $config, $_keywords, $_description;
 
   $meta_tags = '';
 
@@ -189,14 +267,9 @@ function meta_tags()
   {
     $default = '_'.$key;
     $value = use_default($$default, $value); # use the local variable if it exists
-    $meta_tags .= "<meta name=\"$key\" content=\"$value\" />\n";
+    $meta_tags .= tag('meta', array('name' => $key, 'content' => $value))."\n";
   }
   return $meta_tags;
-}
-
-function print_meta_tags()
-{
-  echo meta_tags();
 }
 
 
@@ -205,34 +278,34 @@ function print_meta_tags()
  *
  * Uses $_page_name for the text unless $_h1 is set
  */
-function h1_tag()
+function headline_tag($heading='h1')
 {
-  global $_page_name, $_h1;
+  global $_page_name, $_page_headline;
 
-  $h1 = use_default($_h1, $_page_name);
+  $headline = use_default($_page_headline, $_page_name);
 
-  if ($h1 != false)
+  if ($headline != false)
   {
     $slug = slug_name($_page_name);
-    return "<h1 class=\"$slug\">$h1</h1>";
+    //return "<h1 class=\"$slug\">$headline</h1>";
+    return content_tag($heading, $headline, array('class' => $slug));
   }
 }
 
 
-function print_image_tag($file='', $alt='', $class='', $title='')
+function image_tag($file, $alt='', $class='', $title='')
 {
-  list($w, $h) = getimagesize("images/$file");
-  $img_tag = "<img src=\"images/$file\" width=\"$w\" height=\"$h\"";
-  if($class){$img_tag .= " class=\"$class\"";}
-  if($alt){$img_tag .= " alt=\"$alt\"";}
-  if($title){$img_tag .= " alt=\"$title\"";}
-  $img_tag .= " />";
-
-  echo $img_tag;
+  $file = "images/$file";
+  if(file_exists($file))
+  {
+    list($w, $h) = getimagesize($file);
+    return tag('img', array('src' => $file, 'width' => $w, 'height' => $h, 'alt' => $alt, 'class' => $class, 'title' => $title));
+  }
 }
 
+
 /**
- * prints a formatted image tag with calculated width and height attributes
+ * Prints a formatted image tag with calculated width and height attributes
  *
  * if $file isn't specified, looks for any image named after the $_page_name
  *
@@ -251,7 +324,7 @@ function place_image($file='', $alt='', $class='', $title='')
 
   if (file_exists("images/$file"))
   {
-    print_image_tag($file, $alt, $class, $title);
+    return image_tag($file, $alt, $class, $title);
   }
   else
   {
@@ -262,7 +335,7 @@ function place_image($file='', $alt='', $class='', $title='')
       $try_file = $file.$ext;
       if(file_exists("images/$try_file"))
       {
-        print_image_tag($try_file, $alt, $class, $title);
+        return image_tag($try_file, $alt, $class, $title);
         break;
       }
     }
@@ -278,7 +351,7 @@ function place_image_if_alt()
   global $_alt;
   if ($_alt)
   {
-    place_image('','','auto');
+    return place_image('','','auto');
   }
 }
 
@@ -309,10 +382,10 @@ function email_link_tag($address)
  */
 function content($content, $default='')
 {
-  $content = use_default($content, $default)
+  $content = use_default($content, $default);
   if (exists($content))
   {
-    echo $content;
+    return $content;
   }
 }
 
@@ -332,20 +405,18 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
   # only include the item's id for top level nav items
   $include_id = $top_level;
 
-  $nav_string = "\n<ul>";
+  $nav_string = '';
   foreach ($input as $key => $value)
   {
     if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
     {
-      if ($top_level){$current = $_section;}
-      else {$current = $_page_name;}
+      $current = ($top_level) ? $_section : $_page_name;
 
-      $nav_string .= "\n<li";
-      $nav_string .= get_nav_attributes($current, $key, $input).'>'; # append class names to <li>
+      $li_string = '';
 
       if (is_string($value)) # link is pre-defined
       {
-         $nav_string .= format_nav_link($key, $value, $include_id);
+         $li_string .= format_nav_link($key, $value, $include_id);
       }
       else
       {
@@ -353,41 +424,40 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
 
         # add .head class for jquery accordion
         $class = (is_array($value) && $include_sub_nav && $top_level) ? 'head' : '';
-        $nav_string .= format_nav_link($key, $section_link, $include_id, $class);
+        $li_string .= format_nav_link($key, $section_link, $include_id, $class);
 
         if (is_array($value) && $include_sub_nav) # item has subnav
         {
           # recurse through nested navigation
-          $nav_string .= format_navigation($value, $exclusions, true, false);
+          $li_string .= format_navigation($value, $exclusions, true, false);
         }
       }
-      $nav_string .= "</li>";
+      $li_tag_options = get_nav_attributes($current, $key, $input); # append class names to <li>
+      $nav_string .= content_tag('li', $li_string, $li_tag_options);
     }
   }
-  $nav_string .= "\n</ul>";
-  return $nav_string;
+
+  return content_tag('ul', $nav_string);
 }
 
 
 /**
- * Creates a nav link string.
+ * Creates a nav link string
  * If no link is given it uses the item's slug name
  */
 function format_nav_link($nav_item, $link='', $include_id=false, $class='')
 {
   $slug = slug_name($nav_item);
-  $id = '';
+  $tag_options = array('href' => use_default($link, "$slug.php"));
+  if (exists($class)) { $tag_options['class'] = $class; }
+  if ($include_id) { $tag_options['id'] = $slug; }
 
-  if (! $link) {$link = "$slug.php";}
-  if ($include_id) {$id = " id=\"$slug\"";}
-  if ($class) {$class = " class=\"$class\"";}
-
-  return "<a href=\"$link\"$id$class>$nav_item</a>";
+  return content_tag('a', $nav_item, $tag_options);
 }
 
 
 /**
- * Prints the formatted sitemap as nested lists of links wrapped in a div tag
+ * Creates the formatted sitemap as nested lists of links wrapped in a div tag
  *
  * * adds the slug name as the id of each <a> tag
  * * adds 'class="active"' to the current section
@@ -397,79 +467,67 @@ function format_nav_link($nav_item, $link='', $include_id=false, $class='')
  * @param bool $include_sub_nav optionally include nested sub navigation
  * @param string $div_id optionally define the id of the generated div
  */
-function print_navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
+function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 {
   $sitemap = get_sitemap();
-  $nav = "\n<div id=\"$div_id\">";
-  $nav .= format_navigation($sitemap, $exclusions, $include_sub_nav);
-  $nav .= "\n</div>";
-  echo $nav;
+  $nav = format_navigation($sitemap, $exclusions, $include_sub_nav);
+  return content_tag('div', $nav, array('id' => $div_id));
 }
 
 
 /**
- * print a navigation div with only the specified nav items, excluding everything else
+ * Creates a navigation div with only the specified nav items, excluding everything else
  */
-function print_inclusive_navigation($inclusions=array(), $include_sub_nav=false, $div_id="util")
+function custom_navigation($inclusions=array(), $include_sub_nav=false, $div_id='util')
 {
   $sitemap = get_sitemap();
   $sections = array_keys($sitemap);
   $exclusions = array_diff($sections, $inclusions);
-  print_navigation($exclusions, $include_sub_nav, $div_id);
+  return navigation($exclusions, $include_sub_nav, $div_id);
 }
 
 
-/*
- * prints a <ul> wrapped in a <div> of the subnav links for the current section
+/**
+ * Prints a <ul> wrapped in a <div> of the subnav links for the current section
  *
  * optionally get the subnav links for any section given as a parameter
  *
  */
-function print_sub_navigation($section='', $pre_string='', $post_string='')
+function sub_navigation($section='', $pre_string='', $post_string='')
 {
   global $_section;
   # Use the current section unless a specific section is given as a parameter
-  if (!$section)
-  {
-    $section = $_section;
-  }
+  $section = use_default($section, $_section);
 
   $sitemap = get_sitemap();
   if (has_sub_items($section))
   {
     $sub_nav = '';
-    if ($pre_string) { $sub_nav .= "$pre_string"; }
-    $sub_nav .= "<div id=\"subnav\">\n";
-    $sub_nav .= format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
-    $sub_nav .= "</div>\n";
-    if ($post_string) { $sub_nav .= "$post_string"; }
-    echo $sub_nav;
+    if (exists($pre_string)) { $sub_nav .= "$pre_string"; }
+    $sub_nav_items = format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
+    $sub_nav .= content_tag('div', $sub_nav_items, array('id' => 'subnav'));
+    if (exists($post_string)) { $sub_nav .= "$post_string"; }
+    return $sub_nav;
   }
-}
-
-
-function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
-{
-  global $_section;
-
-  # Use the current section unless a specific section is given as a parameter
-  if (! $section){ $section = $_section; }
-
-  $heading = "<$tag>";
-  if ($link) {
-    $heading_link = get_section_link($section);
-    $heading .= "<a href=\"$heading_link\">";
-  }
-  $heading .= $section;
-  if ($link) { $heading .= "</a>"; }
-  $heading .= "</$tag>";
-
-  print_sub_navigation($section, $heading);
 }
 
 
 /**
- * creates a formatted <<p>> of the current section's sub links with ' | ' between each link
+ *
+ */
+function sub_navigation_with_heading($section='', $link=false, $tag='h3')
+{
+  global $_section;
+
+  # Use the current section unless a specific section is given as a parameter
+  $section = use_default($section, $_section);
+  $heading = ($link) ? content_tag('a', $section, array('href' => get_section_link($section))) : $section;
+  return sub_navigation($section, content_tag($tag, $heading));
+}
+
+
+/**
+ * Creates a formatted <<p>> of the current section's sub links with ' | ' between each link
  *
  * adds 'class="active"' to the current link
  *
@@ -481,7 +539,6 @@ function print_sub_navigation_with_heading($section='', $link=false, $tag='h3')
  */
 function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
 {
-
     global $_section, $_page_name, $sitemap;
 
     # Use the current section unless a specific section is given as a parameter
@@ -493,20 +550,16 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
     # don't output anything further if there are no sub items
     if (! has_sub_items($section)) {return;}
 
-    $formatted_list = "<p class=\"$class_name\">";
+    $formatted_list = '';
 
     $link_array = array();
     $sub_items = $sitemap[$section];
     foreach ($sub_items as $sub_name)
     {
       $slug = slug_name($sub_name);
-      $link = "<a href=\"$slug.php\"";
-      if ($include_attr)
-      {
-        $link .= get_nav_attributes($_page_name, $sub_name, $sub_items);
-      }
-      $link .= ">$sub_name</a>";
-      $link_array[] = $link;
+      $tag_options = ($include_attr) ? get_nav_attributes($_page_name, $sub_name, $sub_items) : array();
+      $tag_options['href'] = "$slug.php";
+      $link_array[] = content_tag('a', $sub_name, $tag_options);
     }
 
 
@@ -553,13 +606,13 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
       $formatted_list .= format_list_with_separator($link_array, $separator);
     }
 
-    $formatted_list .= '</p>';
-    echo $formatted_list;
+    $tag_options = exists($class_name) ? array('class' => $class_name) : null;
+    echo content_tag('p', $formatted_list, $tag_options);
 }
 
 
 /**
- * gets id and class names for each <li> in the navigation
+ * Gets class names for each <li> in the navigation
  *
  * * adds 'first' and 'last' classes to the first and last items in the list<br/>
  * * adds 'active' class to the current section or page
@@ -571,7 +624,7 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
  */
 function get_nav_attributes($current, $nav_item, $nav_list)
 {
-  $attr = '';
+  $attr = array();
   $class = array();
 
   # append relevant class names
@@ -580,18 +633,16 @@ function get_nav_attributes($current, $nav_item, $nav_list)
   if($nav_item === reset(array_keys($nav_list))){$class[] = 'first';}
   if($nav_item === end(array_keys($nav_list))){$class[] = 'last';}
 
-  if($class)
+  if(! empty($class))
   {
-    $classes = implode(' ', $class);
-    $attr .= " class=\"$classes\"";
+    $attr['class'] = implode(' ', $class);
   }
 
   return $attr;
 }
 
-
 /**
- * prints a formatted list of the top-level navigation links for placement as the text navigation
+ * Prints a formatted list of the top-level navigation links for placement as the text navigation
  *
  * Examples:
  * {@example text_navigation.php}
@@ -600,10 +651,9 @@ function get_nav_attributes($current, $nav_item, $nav_list)
  * @param array $exclusions optionally omit specific sections from the echoed $nav_string
  * @todo repeat a lot of code from sub_nav_p()
  */
-function print_text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav')
+function text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav')
 {
-
-  $formatted_list = "<p class=\"$class_name\">";
+  $formatted_list = '';
 
   $link_array = array();
   $sitemap = get_sitemap();
@@ -660,19 +710,19 @@ function print_text_navigation($breaks='', $exclusions=array(), $separator=' | '
     $formatted_list .= format_list_with_separator($link_array, $separator);
   }
 
-  $formatted_list .= '</p>';
-  echo $formatted_list;
+  $tag_options = exists($class_name) ? array('class' => $class_name) : null;
+  return content_tag('p', $formatted_list, $tag_options);
 }
 
 
-/*
- * formats the sitemap in the form of nested lists with links to each page
+/**
+ * Formats the sitemap in the form of nested lists with links to each page
  *
  * recurses for endless nested subnavigation
  */
 function format_sitemap($input, $exclusions=array())
 {
-  $formatted = '<ul>';
+  $formatted = '';
   foreach ($input as $key => $value)
   {
     if (!in_array($key, $exclusions))
@@ -680,28 +730,31 @@ function format_sitemap($input, $exclusions=array())
       if (is_array($value))
       {
         $link = get_section_link($key, $value);
-        $formatted .= '<li>'.get_sitemap_link($key, $link);
-        $formatted .= format_sitemap($value);
-        $formatted .= '</li>';
+
+        # recurse through nested links
+        $nested_links = get_sitemap_link($key, $link);
+        $nested_links .= format_sitemap($value);
+
+        $formatted .= content_tag('li', $nested_links);
       }
       else
       {
-        $formatted .= '<li>'.get_sitemap_link($key, $value).'</li>';
+        $formatted .= content_tag('li', get_sitemap_link($key, $value));
       }
     }
   }
-  $formatted .= '</ul>';
-  return $formatted;
+
+  return content_tag('ul', $formatted);
 }
 
 
-/*
- * prints the formatted sitemap in the form of nested lists with links to each page
+/**
+ * Prints the formatted sitemap in the form of nested lists with links to each page
  */
-function print_sitemap($exclusions=array())
+function sitemap($exclusions=array())
 {
   $sitemap = get_sitemap();
-  echo format_sitemap($sitemap, $exclusions);
+  return format_sitemap($sitemap, $exclusions);
 }
 
 
@@ -714,20 +767,20 @@ function get_sitemap_link($page, $link)
   }
   else
   {
-    return "<a href=\"$link\">$page</a>";
+    return content_tag('a', $page, array('href' => $link));
   }
 }
 
 
-/*
- * prints a formatted string with links to the current page's parent(s).
+/**
+ * Prints a formatted string with links to the current page's parent(s).
  *
  * * $separator string defaults to the &#8250; character but can be overridden with any string.
  * * current page is bolded and unlinked.
  *
  * @param string $separator the text or html character that will separate each breadcrumb (optional)
  */
-function print_breadcrumbs($separator=' &#8250; ')
+function breadcrumbs($separator=' &#8250; ')
 {
   global $_section, $_page_name;
   $bc_hash = collect_breadcrumbs(get_sitemap());
@@ -749,7 +802,7 @@ function print_breadcrumbs($separator=' &#8250; ')
   $bc_string = '<p class="breadcrumbs">';
   $bc_string .= format_list_with_separator($bc_array, $separator);
   $bc_string .= '</p>';
-  echo $bc_string;
+  return $bc_string;
 }
 
 
@@ -792,7 +845,7 @@ function collect_breadcrumbs($input, $first_run=true)
 
 
 /**
- * Only parse the sitemap once and save it as a static variable.
+ * Parses the sitemap and saves it as a static variable.
  */
 function get_sitemap()
 {
@@ -807,7 +860,7 @@ function get_sitemap()
 
 
 /**
- * processes sitemap.php, creating links from item names
+ * Processes sitemap.php, creating links from item names
  */
 function parse_sitemap()
 {
@@ -822,7 +875,7 @@ function parse_sitemap()
 
 
 /**
- * processes each section of the sitemap,
+ * Processes each section of the sitemap,
  * determining if there is a linked sub-section
  */
 function parse_section($sitemap, $section, $sub_section)
@@ -845,8 +898,8 @@ function parse_section($sitemap, $section, $sub_section)
 
 
 /**
- * processes each suv-section of the sitemap,
- * recusively calling itself for each linked sub-sub-section, etc.
+ * Processes each suv-section of the sitemap,
+ * recursively calling itself for each linked sub-sub-section, etc.
  * Allows for infinitely nested levels of navigation
  */
 function parse_sub_section($section, $sub_section)
@@ -883,7 +936,7 @@ function parse_sub_section($section, $sub_section)
 
 
 /**
- * determines if the current section has sub-pages,
+ * Determines if the current section has sub-pages,
  * optionally check any section given as a parameter
  */
 function has_sub_items($section='')
@@ -945,7 +998,7 @@ function get_section_link($section='', $section_sub='')
 }
 
 
-/*
+/**
  * Recurse through an array to find the first
  * sub item that isn't itself an array
  */
@@ -974,3 +1027,68 @@ function get_first_unnested_item($items)
 //   }
 //   return array_filter($input, $callback);
 // }
+
+
+# ============================================================================ #
+#    COMPATIBILITY SHORTCUTS                                                   #
+# ============================================================================ #
+
+function print_page_title() { echo title_tag(); }
+function print_meta_tags() { echo meta_tags(); }
+
+
+function print_image_tag()
+{
+  $args = func_get_args();
+  echo call_user_func_array('image_tag', $args);
+}
+
+
+function print_navigation()
+{
+  $args = func_get_args();
+  echo call_user_func_array('navigation', $args);
+}
+
+
+function print_inclusive_navigation()
+{
+  $args = func_get_args();
+  echo call_user_func_array('custom_navigation', $args);
+}
+
+
+function print_text_navigation()
+{
+  $args = func_get_args();
+  echo call_user_func_array('text_navigation', $args);
+}
+
+
+function print_sub_navigation()
+{
+  $args = func_get_args();
+  echo call_user_func_array('sub_navigation', $args);
+}
+
+
+function print_sub_navigation_with_heading()
+{
+  $args = func_get_args();
+  echo call_user_func_array('sub_navigation_with_heading', $args);
+}
+
+
+function print_breadcrumbs()
+{
+  $args = func_get_args();
+  echo call_user_func_array('breadcrumbs', $args);
+}
+
+function print_sitemap()
+{
+  $args = func_get_args();
+  echo call_user_func_array('sitemap', $args);
+}
+
+#   ================================= END ==================================   #

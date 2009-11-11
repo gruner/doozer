@@ -10,7 +10,7 @@ class TestOfFramework extends UnitTestCase {
   function setUp()
   {
     # set the variables that would normally be defined on each page
-    $GLOBALS['_h1'] = 'H1 Override';
+    $GLOBALS['_page_headline'] = 'H1 Override';
     $GLOBALS['_section'] = 'Braces 101';
     $GLOBALS['_page_name'] = 'Life with Braces&reg;';
     $GLOBALS['_keyword'] = 'Invisalign';

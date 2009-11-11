@@ -1,3 +1,6 @@
+<?php
+//include_once('includes/ie6_alert.php');
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -29,5 +32,5 @@
 	  </div><!--/sidebar-->
 		<div id="content" class="column">
 			<!-- IE6 Detect Advise Notice --><?php if($ie6_alert){ echo $ie6_alert_box; } ?><!-- // end IE6 Detect Advise Notice -->
-			<?php echo h1_tag(); ?>
-			<?php place_image_if_alt(); ?>
+			<?php echo headline_tag(); ?>
+			<?php echo place_image_if_alt(); ?>
