@@ -60,12 +60,12 @@ require_once('sitemap.php');
 
 
 /**
- * Checks $_section and $_page_name to see if the current page is the homepage
+ * Checks $_section and $_name to see if the current page is the homepage
  */
 function is_homepage()
 {
-  global $_section, $_page_name;
-  return ($_section == 'Home' && $_page_name == 'Home');
+  global $_section, $_name;
+  return ($_section == 'Home' && $_name == 'Home');
 }
 
 
@@ -117,7 +117,7 @@ function slug_name($string)
 function strip_special_chars($string)
 {
   # Define special characters that will be stripped from the name
-  $special_chars = array('.',',','?','!','$','|','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');
+  $special_chars = array(',','?','!','$','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');
   $processed_string = str_replace($special_chars, '', $string);
   return $processed_string;
 }
@@ -191,7 +191,7 @@ function tag($name, $options=null, $open=false)
 
 
 /**
- * Creates an html tag
+ * Creates opening and closing html tags with content in between
  */
 function content_tag($name, $content, $options=null)
 {
@@ -200,6 +200,9 @@ function content_tag($name, $content, $options=null)
 }
 
 
+/**
+ * Formats an associative array into the attributes of an html tag
+ */
 function tag_options($options)
 {
   $boolean_attributes = array('disabled', 'readonly', 'multiple', 'checked', 'autobuffer',
@@ -235,17 +238,18 @@ function tag_options($options)
 
 /**
  * Returns the complete title tag of the page.
- * Looks for local $_title variable but defaults to the value definded in config.php
+ * Looks for local $_title variable but defaults to the value defined in config.php
  */
-function title_tag()
+function title_tag($separator='|')
 {
-  global $_page_name, $_title, $config;
+  global $_name, $_title, $_headline, $config;
 
-  $title = use_default($_title, "$_page_name - ".$config['page_title']);
+  $page_name = use_default($_headline, $_name);
+  $base_title = use_default($_title, $config['page_title']);
+  $title = is_homepage() ? $base_title : "$page_name $separator $base_title";
 
   # remove special chars from page name
-  $title = sanitize_title_text($title);
-  return content_tag('title', $title);
+  return content_tag('title', sanitize_title_text($title));
 }
 
 
@@ -276,17 +280,17 @@ function meta_tags()
 /**
  * Returns a formatted h1 tag
  *
- * Uses $_page_name for the text unless $_h1 is set
+ * Uses $_name for the text unless $_headline is set
  */
 function headline_tag($heading='h1')
 {
-  global $_page_name, $_page_headline;
+  global $_name, $_headline;
 
-  $headline = use_default($_page_headline, $_page_name);
+  $headline = use_default($_headline, $_name);
 
   if ($headline != false)
   {
-    $slug = slug_name($_page_name);
+    $slug = slug_name($_name);
     //return "<h1 class=\"$slug\">$headline</h1>";
     return content_tag($heading, $headline, array('class' => $slug));
   }
@@ -307,7 +311,7 @@ function image_tag($file, $alt='', $class='', $title='')
 /**
  * Prints a formatted image tag with calculated width and height attributes
  *
- * if $file isn't specified, looks for any image named after the $_page_name
+ * if $file isn't specified, looks for any image named after the $_name
  *
  * if $alt isn't specified, looks for page variable $_alt
  *
@@ -317,10 +321,10 @@ function image_tag($file, $alt='', $class='', $title='')
  */
 function place_image($file='', $alt='', $class='', $title='')
 {
-  global $_alt, $_page_name;
+  global $_alt, $_name;
 
   $alt = use_default($alt, $_alt);
-  $file = use_default($file, slug_name($_page_name));
+  $file = use_default($file, slug_name($_name));
 
   if (file_exists("images/$file"))
   {
@@ -390,6 +394,19 @@ function content($content, $default='')
 }
 
 
+/**
+ * Returns html of an alert box if the foul stench of IE6 is recognized
+ */
+function ie6_alert()
+{
+  if(stristr($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.0'))
+  {
+    include('ie6_alert.php');
+    return $ie6_alert_box;
+  }
+}
+
+
 # ============================================================================ #
 #    NAVIGATION HELPERS                                                        #
 # ============================================================================ #
@@ -400,7 +417,7 @@ function content($content, $default='')
  */
 function format_navigation($input, $exclusions=array(), $include_sub_nav=false, $top_level=true)
 {
-  global $_section, $_page_name;
+  global $_section, $_name;
 
   # only include the item's id for top level nav items
   $include_id = $top_level;
@@ -410,7 +427,7 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
   {
     if (!in_array($key, $exclusions)) # skip any sections that are in the exclusions array
     {
-      $current = ($top_level) ? $_section : $_page_name;
+      $current = ($top_level) ? $_section : $_name;
 
       $li_string = '';
 
@@ -493,7 +510,7 @@ function custom_navigation($inclusions=array(), $include_sub_nav=false, $div_id=
  * optionally get the subnav links for any section given as a parameter
  *
  */
-function sub_navigation($section='', $pre_string='', $post_string='')
+function sub_navigation($section='', $pre_string='', $post_string='', $id='subnav')
 {
   global $_section;
   # Use the current section unless a specific section is given as a parameter
@@ -505,7 +522,7 @@ function sub_navigation($section='', $pre_string='', $post_string='')
     $sub_nav = '';
     if (exists($pre_string)) { $sub_nav .= "$pre_string"; }
     $sub_nav_items = format_navigation($sitemap[$section], $exclusions=array(), $include_sub_nav=true, $include_ids=false);
-    $sub_nav .= content_tag('div', $sub_nav_items, array('id' => 'subnav'));
+    $sub_nav .= content_tag('div', $sub_nav_items, array('id' => $id));
     if (exists($post_string)) { $sub_nav .= "$post_string"; }
     return $sub_nav;
   }
@@ -539,7 +556,7 @@ function sub_navigation_with_heading($section='', $link=false, $tag='h3')
  */
 function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
 {
-    global $_section, $_page_name, $sitemap;
+    global $_section, $_name, $sitemap;
 
     # Use the current section unless a specific section is given as a parameter
     if (! $section)
@@ -557,7 +574,7 @@ function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section
     foreach ($sub_items as $sub_name)
     {
       $slug = slug_name($sub_name);
-      $tag_options = ($include_attr) ? get_nav_attributes($_page_name, $sub_name, $sub_items) : array();
+      $tag_options = ($include_attr) ? get_nav_attributes($_name, $sub_name, $sub_items) : array();
       $tag_options['href'] = "$slug.php";
       $link_array[] = content_tag('a', $sub_name, $tag_options);
     }
@@ -760,8 +777,8 @@ function sitemap($exclusions=array())
 
 function get_sitemap_link($page, $link)
 {
-  global $_page_name;
-  if ($page == $_page_name)
+  global $_name;
+  if ($page == $_name)
   {
     return "$page (You are here)";
   }
@@ -782,7 +799,7 @@ function get_sitemap_link($page, $link)
  */
 function breadcrumbs($separator=' &#8250; ')
 {
-  global $_section, $_page_name;
+  global $_section, $_name;
   $bc_hash = collect_breadcrumbs(get_sitemap());
   $bc_array = array();
 
@@ -808,10 +825,10 @@ function breadcrumbs($separator=' &#8250; ')
 
 function collect_breadcrumbs($input, $first_run=true)
 {
-  global $_section, $_page_name;
+  global $_section, $_name;
   $bc_hash = array('Home' => 'index.php');
 
-  $current = $first_run ? $_section : $_page_name;
+  $current = $first_run ? $_section : $_name;
 
   foreach ($input as $key => $value)
   {
@@ -898,7 +915,7 @@ function parse_section($sitemap, $section, $sub_section)
 
 
 /**
- * Processes each suv-section of the sitemap,
+ * Processes each sub-section of the sitemap,
  * recursively calling itself for each linked sub-sub-section, etc.
  * Allows for infinitely nested levels of navigation
  */
@@ -1011,22 +1028,6 @@ function get_first_unnested_item($items)
   }
   return $sub_item;
 }
-
-
-/**
- * Not using this yet
- */
-// function filter_sitemap($input, $callback=null)
-// {
-//   foreach ($input as $key => $value)
-//   {
-//     if (is_array($value))
-//     {
-//       $value = filter_sitemap($value, $callback);
-//     }
-//   }
-//   return array_filter($input, $callback);
-// }
 
 
 # ============================================================================ #

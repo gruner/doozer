@@ -10,13 +10,17 @@ class TestOfFramework extends UnitTestCase {
   function setUp()
   {
     # set the variables that would normally be defined on each page
-    $GLOBALS['_page_headline'] = 'H1 Override';
     $GLOBALS['_section'] = 'Braces 101';
     $GLOBALS['_page_name'] = 'Life with Braces&reg;';
     $GLOBALS['_keyword'] = 'Invisalign';
     $GLOBALS['_page_title'] = '[this text replaces the base title]';
     $GLOBALS['_alt'] = 'lorem ipsum';
   }
+
+
+  # ============================================================================ #
+  #    UTILITY FUNCTIONS                                                         #
+  # ============================================================================ #
 
 
   function test_exists()
@@ -36,9 +40,11 @@ class TestOfFramework extends UnitTestCase {
   }
 
 
-  function test_site_name()
+  function test_format_list_with_separator()
   {
-    $this->assertEqual('Practice Name', get_site_name());
+    $list = Array('one','two','thee','four');
+    $this->assertEqual(format_list_with_separator($list), 'one | two | thee | four');
+    $this->assertEqual(format_list_with_separator($list, ' * '), 'one * two * thee * four');
   }
 
 
@@ -62,35 +68,10 @@ class TestOfFramework extends UnitTestCase {
   }
 
 
-  function test_format_list_with_separator()
+  function test_get_site_name()
   {
-    $list = Array('one','two','thee','four');
-    $this->assertEqual(format_list_with_separator($list), 'one | two | thee | four');
-    $this->assertEqual(format_list_with_separator($list, ' * '), 'one * two * thee * four');
-  }
-
-
-  function test_format_nav_link()
-  {
-    $this->assertEqual(format_nav_link('Lorem Ipsum'), '<a href="lorem-ipsum.php">Lorem Ipsum</a>');
-    $this->assertEqual(format_nav_link('Lorem Ipsum&reg;'), '<a href="lorem-ipsum.php">Lorem Ipsum&reg;</a>');
-    $this->assertEqual(format_nav_link('Lorem Ipsum', 'http://google.com'), '<a href="http://google.com">Lorem Ipsum</a>');
-    $this->assertEqual(format_nav_link('Lorem Ipsum&reg;', '', true), '<a href="lorem-ipsum.php" id="lorem-ipsum">Lorem Ipsum&reg;</a>');
-  }
-
-
-  function test_get_nav_attributes()
-  {
-    $test1 = array('one','two','three');
-    $test2 = array('uno' => $test1, 'dos' => $test1, 'tres' => $test1);
-    $this->assertidentical(' class="uno active first"', get_nav_attributes('uno', 'uno', $test2));
-    $this->assertidentical(' class="dos active"', get_nav_attributes('dos', 'dos', $test2));
-    $this->assertidentical(' class="tres active last"', get_nav_attributes('tres', 'tres', $test2));
-
-    # this section illustrates how php looks at arrays
-    $this->assertIdentical(Array('uno','dos','tres') ,array_keys($test2));
-    $this->assertIdentical('uno', reset(array_keys($test2)));
-    $this->assertidentical('tres', end(array_keys($test2)));
+    global $config;
+    $this->assertEqual($config['site_name'], get_site_name());
   }
 
 
@@ -110,6 +91,11 @@ class TestOfFramework extends UnitTestCase {
   }
 
 
+  # ============================================================================ #
+  #    SITEMAP PARSING                                                           #
+  # ============================================================================ #
+
+
   function test_get_first_unnested_item()
   {
     $nested = array(
@@ -127,10 +113,49 @@ class TestOfFramework extends UnitTestCase {
     $this->assertEqual('tertiary1', get_first_unnested_item($nested));
   }
 
-  function test_h1_tag()
+
+  // function test_get_nav_attributes()
+  // {
+  //   $test1 = array('one','two','three');
+  //   $test2 = array('uno' => $test1, 'dos' => $test1, 'tres' => $test1);
+  //   $this->assertidentical(' class="uno active first"', get_nav_attributes('uno', 'uno', $test2));
+  //   $this->assertidentical(' class="dos active"', get_nav_attributes('dos', 'dos', $test2));
+  //   $this->assertidentical(' class="tres active last"', get_nav_attributes('tres', 'tres', $test2));
+  //
+  //   # this section illustrates how php looks at arrays
+  //   $this->assertIdentical(Array('uno','dos','tres') ,array_keys($test2));
+  //   $this->assertIdentical('uno', reset(array_keys($test2)));
+  //   $this->assertidentical('tres', end(array_keys($test2)));
+  // }
+
+
+  function test_format_nav_link()
   {
-    $this->assertEqual('<h1 class="life-with-braces">H1 Override</h1>', h1_tag());
+    $this->assertEqual(format_nav_link('Lorem Ipsum'), '<a href="lorem-ipsum.php">Lorem Ipsum</a>');
+    $this->assertEqual(format_nav_link('Lorem Ipsum&reg;'), '<a href="lorem-ipsum.php">Lorem Ipsum&reg;</a>');
+    $this->assertEqual(format_nav_link('Lorem Ipsum', 'http://google.com'), '<a href="http://google.com">Lorem Ipsum</a>');
+    $this->assertEqual(format_nav_link('Lorem Ipsum&reg;', '', true), '<a href="lorem-ipsum.php" id="lorem-ipsum">Lorem Ipsum&reg;</a>');
   }
+
+
+  # ============================================================================ #
+  #    HTML HELPERS                                                              #
+  # ============================================================================ #
+
+  function test_headline_tag()
+  {
+    $GLOBALS['_page_headline'] = 'H1 Override';
+    $this->assertEqual('<h1 class="life-with-braces">H1 Override</h1>', headline_tag());
+  }
+
+
+  # ============================================================================ #
+  #    NAVIGATION HELPERS                                                        #
+  # ============================================================================ #
+
+
+
+
 
 }
 ?>

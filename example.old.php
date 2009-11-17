@@ -1,9 +1,9 @@
 <?php
 error_reporting(E_WARNING);
 $_section = 'Braces 101';
-$_page_name = 'Life with Braces';
+$_name = 'Life with Braces';
 $_keyword = 'Invisalign';
-$_page_title = '[this text replaces the base title]';
+$_title = '[this text replaces the base title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
 require_once('global.php');
 ?>

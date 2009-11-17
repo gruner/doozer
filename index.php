@@ -3,7 +3,7 @@ ini_set('display_errors', '1');
 #error_reporting(E_WARNING);
 error_reporting(E_ALL);
 $_section = 'Braces 101';
-$_page_name = 'Life with Braces&reg;';
+$_name = 'Life with Braces&reg;';
 $_keywords = 'Invisalign';
 //$_title = '[this text replaces the title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
@@ -49,13 +49,13 @@ function test($code, $comments='')
 
 </head>
 
-<body class="<?php echo slug_name($_page_name); ?>">
+<body class="<?php echo slug_name($_name); ?>">
 
 <h1>Doozer &ndash; A PHP Framework</h1>
 
 <p>This is an example page illustrating the available php functions that utilize the site structure defined in <code>sitemap.php</code>.</p>
 
-<p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (The framework uses the names <code>$_page_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamically generated navigation elements.</p>
+<p>Using our existing approach of defining <code>$page</code> and <code>$section</code> variables for each page (The framework uses the names <code>$_name</code>, and <code>$_section</code>), we can call the following functions from each page and get dynamically generated navigation elements.</p>
 
 <p>These functions are defined in <code>global.php</code>. To enable this functionality simply include <code>global.php</code> on every page before calling the header include. Then define the site structure as an array in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
 
@@ -67,7 +67,7 @@ function test($code, $comments='')
 
 <p>This page lists PHP commands as headers followed by the output of that exact code. The "&lt; first" and "&lt; last" tags are being added with jQuery to li.first and li.last so you don't have to view the source to see the class names. A similar visualization is being done with external links. The .active class is highlighted in yellow.</p>
 
-<p>To illustrate these examples, this example page has the variables <code>$_section='Braces 101'</code> and <code>$_page_name='Life with Braces'</code>.</p>
+<p>To illustrate these examples, this example page has the variables <code>$_section='Braces 101'</code> and <code>$_name='Life with Braces'</code>.</p>
 
 <hr />
 
@@ -108,7 +108,7 @@ test("print_breadcrumbs(' ++ ')", 'specify custom separator string');
 
 test('echo get_site_name()', 'gets the value of "site_name" defined in config.php');
 
-test('echo headline_tag()', 'Creates an h1 tag. Uses $_page_heading variable for the text (if defined) but defaults to $_page_name variable.');
+test('echo headline_tag()', 'Creates an h1 tag. Uses $_heading variable for the text (if defined) but defaults to $_name variable.');
 
 $slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
 foreach ($slug_tests as $test){
