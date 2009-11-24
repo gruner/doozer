@@ -282,7 +282,7 @@ function meta_tags()
  *
  * Uses $_name for the text unless $_headline is set
  */
-function headline_tag($heading='h1')
+function headline_tag($heading='h1', $class='headline')
 {
   global $_name, $_headline;
 
@@ -290,9 +290,7 @@ function headline_tag($heading='h1')
 
   if ($headline != false)
   {
-    $slug = slug_name($_name);
-    //return "<h1 class=\"$slug\">$headline</h1>";
-    return content_tag($heading, $headline, array('class' => $slug));
+    return content_tag($heading, $headline, array('class' => $class));
   }
 }
 
@@ -350,12 +348,12 @@ function place_image($file='', $alt='', $class='', $title='')
 /**
  * Calls place_image() if the $_alt variable is set for the page
  */
-function place_image_if_alt()
+function place_image_if_alt($file='', $class='auto')
 {
   global $_alt;
   if ($_alt)
   {
-    return place_image('','','auto');
+    return place_image($file,'',$class);
   }
 }
 
