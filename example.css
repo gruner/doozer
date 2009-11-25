@@ -9,7 +9,7 @@ blockquote, q {quotes:"" "";}
 a img {border:none;}
 
 /* typography */
-body {font-size:75%;color:#222;background:#fff;font-family:Arial, Helvetica, sans-serif;}
+body {font-size:90%;color:#222;background:#ddd;font-family:Arial, Helvetica, sans-serif;}
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
 h1 {font-size:2em;line-height:1;margin-bottom:0.5em;}
 h2 {font-size:1.5em;margin-bottom:0.75em;}
@@ -82,7 +82,11 @@ border: 1px solid #CCC;
 padding: 15px 15px 5px 15px;
 }
 
-h3.code {font: 1.25em 'andale mono', 'lucida console', monospace;}
+code {font-size:1.1em;}
+
+h3.code {font: 1.5em 'andale mono', 'lucida console', monospace;}
+
+.example {background-color:#fff; padding:30px;}
 
 /* navigation */
 #nav {}
@@ -127,4 +131,3 @@ h3.code {font: 1.25em 'andale mono', 'lucida console', monospace;}
 #nav li:hover ul,
 #nav li.sfhover ul {left: auto; margin: -0px 0 0 0px;} /* margin: -h 0 0 w */
 
-	
