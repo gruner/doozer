@@ -4,7 +4,7 @@ $ie6_alert_box = '<div id="ie_alert">
 <a href="#" class="ie-alert-link right" title="Close"><img src="images/ie6/close-button.gif" alt="Close" /></a>
 <p>It appears you are viewing this site with IE 6 or earlier.<br/>
 Please upgrade your browser in order to view this site properly.</p>
-<span id="red">Reasons to upgrade:</span>
+<span id="ie_alert_reasons">Reasons to upgrade:</span>
 <ul>
 <li>More security from viruses, hackers, and "phishing"</li>
 <li>Newer browsers are more web compliant</li>
