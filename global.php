@@ -393,11 +393,11 @@ function content($content, $default='')
 
 
 /**
- * Returns html of an alert box if the foul stench of IE6 is recognized
+ * Returns alert box html if the foul stench of IE6 is recognized
  */
 function ie6_alert()
 {
-  if(stristr($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.0'))
+  if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.') !== FALSE)
   {
     include('ie6_alert.php');
     return $ie6_alert_box;
@@ -493,7 +493,7 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 /**
  * Creates a navigation div with only the specified nav items, excluding everything else
  */
-function custom_navigation($inclusions=array(), $include_sub_nav=false, $div_id='util')
+function custom_navigation($inclusions=array(), $include_sub_nav=false, $div_id='utility-nav')
 {
   $sitemap = get_sitemap();
   $sections = array_keys($sitemap);
@@ -1065,6 +1065,13 @@ function print_text_navigation()
 
 
 function print_sub_navigation()
+{
+  $args = func_get_args();
+  echo call_user_func_array('sub_navigation', $args);
+}
+
+
+function subnavigation()
 {
   $args = func_get_args();
   echo call_user_func_array('sub_navigation', $args);
