@@ -3,8 +3,8 @@
 # This is a sitemap used to generate navigation and breadcrumbs.
 
 $sitemap = array(
-  'Home' => 'index.php',
-  'Login' => 'http://google.com',
+  'Home' => 'index.php', // specify a specific file
+  'Login' => 'http://example.com/login', // specify a specific url
   'About Us' => array(
     'Meet Our Staff',
     'Location',
@@ -19,6 +19,5 @@ $sitemap = array(
       'Analog'),
     'Thermometers' => array(
       'Fahrenheit',
-      'Celsius')),
-  'Site Map');
+      'Celsius')));
 ?>

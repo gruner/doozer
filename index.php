@@ -18,6 +18,7 @@ function logr($str)
 
 function print_logr()
 {
+  global $env, $logr;
   if ($env == 'test')
   {
     heading('Log');
@@ -34,7 +35,7 @@ function example($code, $comments='')
 
 function format_example($code, $comments='')
 {
-  $html = content_tag('h3', $code, array('class' => 'code'));
+  $html = content_tag('h3', $code.';', array('class' => 'code'));
   if (!empty($comments))
   {
     $html .= content_tag('p', $comments, array('class' => 'quiet'));
@@ -76,7 +77,7 @@ require_once('global.php');
 	<?php echo meta_tags(); ?>
 	<link rel="stylesheet" href="example.css" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-	<?php echo title_tag(); ?>
+	<title>Doozer PHP Navigation Framework</title>
 
 	<script>
     $(document).ready(function(){
@@ -91,13 +92,15 @@ require_once('global.php');
 
 <body class="<?php echo slug_name($_name); ?>">
 
+<div class="container">
+
 <h1>Doozer &ndash; A PHP Framework</h1>
 
 <p>This is an example page illustrating the available PHP functions that utilize the site structure defined in <code>sitemap.php</code>.</p>
 
 <p>By defining <code>$_page</code> and <code>$_section</code> variables for each page, we can call the following functions from each page and get dynamically generated navigation elements.</p>
 
-<p>These functions are defined in <code>global.php</code>. To enable this functionality simply include <code>global.php</code> on every page before calling the header include. Then define the site structure as an array in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
+<p>These functions are defined in <code>global.php</code>. To enable this functionality include <code>global.php</code> on every page before calling the header include. Then define the site structure as an array in <code>sitemap.php</code>, also kept in the includes folder. (<strong>Note:</strong> The root level &#8216;Site Map&#8217; page should be named <code>site-map.php</code> to avoid conflicting names.)</p>
 
 <h2>Naming Conventions</h2>
 
@@ -116,11 +119,38 @@ require_once('global.php');
 
 <h2>Sitemap</h2>
 
-<p>The navigation for the site is defined as a PHP array in the <code>sitemap.php</code> file. All of the navigation functions are created by parsing the sitemap file.</p>
+<p>The navigation for the site is defined as a PHP array in the <code>sitemap.php</code> file. All of the following navigation functions are created by parsing the sitemap file.</p>
+
+<p>This is the sitemap used for the examples on this page:</p>
+
+<pre>
+$sitemap = array(
+  'Home' => 'index.php', // specify a specific file
+  'Login' => 'http://example.com/login', // specify a specific url
+  'About Us' => array(
+    'Meet Our Staff',
+    'Location',
+    'Contact Form'),
+  'FAQs',
+  'Our Services',
+  'Products' => array(
+    'Nuts',
+    'Bolts',
+    'Clocks' => array(
+      'Digital',
+      'Analog'),
+    'Thermometers' => array(
+      'Fahrenheit',
+      'Celsius')));
+</pre>
+
+<p>Each name in the sitemap will be linked to a corresponding php page. (e.g. 'About Us' will link to '<code>about-us.php</code>'.) To override the defaults, specify a file or url. Note how 'Home' links to 'index.php' and 'Login' links to an external url.</p>
 
 <h2>Page Variables</h2>
 
-<p>Several predefined variables can be defined on each page that will override the default values. These include:</p>
+<p>Several predefined variables can be defined on each page that will override the default values from <code>config.php</code>.</p>
+
+<p>These include:</p>
 
 <ul>
 <li><code>$_section</code> &ndash; identifies the current section in the navigation</li>
@@ -136,49 +166,33 @@ require_once('global.php');
 
 <h2>Examples</h2>
 
-<p>This page lists the available PHP functions followed code examples and the output of each example.</p>
+<p>This page lists the available PHP functions followed by code examples with the output of each example.</p>
 
 <p>The page variables for this example page are set to:</p>
 
 <ul>
-<li><code>$_section = <?php echo $_section; ?></code></li>
-<li><code>$_name = <?php echo $_name; ?></code></li>
-<!-- <li><code>$_title = <?php echo $_title; ?></code></li>
-<li><code>$_headline = <?php echo $_headline; ?></code></li> -->
-<!-- <li><code>$_alt = <?php echo $_alt; ?></code></li>
-<li><code>$_keywords = <?php echo $_keywords; ?></code></li>
-<li><code>$_description = <?php echo $_description; ?></code></li> -->
+<li><code>$_section = <?php echo $_section; ?>;</code></li>
+<li><code>$_name = <?php echo $_name; ?>;</code></li>
+<!-- <li><code>$_title = <?php echo $_title; ?>;</code></li>
+<li><code>$_headline = <?php echo $_headline; ?>;</code></li> -->
+<!-- <li><code>$_alt = <?php echo $_alt; ?></code>;</li>
+<li><code>$_keywords = <?php echo $_keywords; ?>;</code></li>
+<li><code>$_description = <?php echo $_description; ?>;</code></li> -->
 </ul>
 
 <?php
 
 heading('navigation()');
 desc('Formats sitemap.php into the main navigation of the site');
-example("echo navigation(\$exclusions = array('Contact Us', 'Site Map'))");
-example("echo navigation(\$exclusions = array('Contact Us', 'Site Map'), \$include_sub_nav=true)");
+example("echo navigation()");
+example("echo navigation(array(), \$include_sub_nav=true)", 'include the nested sub-navigation');
+example("echo navigation(\$exclusions = array('Products'))", 'exclude the section "Products"');
+example("echo navigation(\$exclusions = array('Products'), \$include_sub_nav=true)", 'exclude the section "Products" and include the sub-navigation');
 
 heading('custom_navigation()');
 desc('Creates a navigation div with only the specified nav items, excluding everything else');
 example("echo custom_navigation(array('Home','Login'))");
 example("echo custom_navigation(array('Our Services','Products'), true)");
-
-heading('sub_navigation()');
-desc('Creates a navigation div with the subnav items of the current section');
-example("echo sub_navigation()");
-example("echo sub_navigation(\$section='About Us')", 'specify a different section');
-example("echo sub_navigation_with_heading()", 'show the current section as a heading');
-example("echo sub_navigation_with_heading('', \$link=true)", 'adds a linked heading');
-example("echo sub_navigation_with_heading('', '', 'h1')", 'specify a different tag for the heading');
-
-heading('sub_nav_p()');
-desc('Formats the sub-navigation as a <p> instead of a <ul>');
-example("sub_nav_p()");
-example("sub_nav_p(2)", 'break the string after the second item');
-example("sub_nav_p(array(2))", 'same as above');
-example("sub_nav_p(array(1,3))", 'break the string after the first and third items');
-example("sub_nav_p('', ' >>>> ')", 'change the text that separates items');
-example("sub_nav_p(array(3),' &bull; ')");
-example("sub_nav_p('', '', '', 'About Us')");
 
 heading('text_navigation()');
 desc('Creates a formatted list of the top-level navigation links');
@@ -189,8 +203,26 @@ example("echo text_navigation(array(2,5))", 'break the string after the second a
 example("echo text_navigation(0, \$exclude=array('Contact Us'))", 'exclude "Contact Us" from the navigation');
 example("echo text_navigation(4, \$exclude=array('Test'), ' **** ')");
 
+heading('sub_navigation()');
+desc('Creates a navigation div with the subnav items of the current section');
+example("echo sub_navigation()");
+example("echo sub_navigation(\$section='About Us')", 'specify a different section');
+example("echo sub_navigation_with_heading()", 'show the current section as a heading');
+example("echo sub_navigation_with_heading('', \$link=true)", 'adds a linked heading');
+example("echo sub_navigation_with_heading('', '', 'h1')", 'specify a different tag for the heading');
+
+heading('text_sub_navigation()');
+desc('Formats the sub-navigation as a <p> instead of a <ul>');
+example("echo text_sub_navigation()");
+example("echo text_sub_navigation(2)", 'break the string after the second item');
+example("echo text_sub_navigation(array(2))", 'same as above');
+example("echo text_sub_navigation(array(1,3))", 'break the string after the first and third items');
+example("echo text_sub_navigation('', ' >>>> ')", 'change the text that separates items');
+example("echo text_sub_navigation(array(3),' &bull; ')");
+example("echo text_sub_navigation('', ' | ', '', 'About Us')", 'specify a different section');
+
 heading('sitemap()');
-desc('Outputs the entire sitemap a series of nested <ul>s');
+desc('Outputs the entire sitemap as a series of nested <ul>s');
 example("echo sitemap()");
 example("echo sitemap(\$exclude=array('Products', 'FAQs'))", 'exclude specific sections from the sitemap');
 
@@ -233,5 +265,6 @@ print_logr();
 
 ?>
 
+</div>
 </body>
 </html>

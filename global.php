@@ -13,9 +13,10 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
+ *  @version 2.0
  */
 
-#   -----------------------------------------------------------------------    #
+#------------------------------------------------------------------------------#
 #    Copyright (c) 2009 Andrew Gruner                                          #
 #                                                                              #
 #    Permission is hereby granted, free of charge, to any person               #
@@ -553,11 +554,10 @@ function sub_navigation_with_heading($section='', $link=false, $tag='h3')
  * @param string $section optionally show subnav links for specific section
  * @param bool $include_attr optionally omit class names set for each link
  */
-function sub_nav_p($breaks='', $separator='', $class_name='sub_nav', $section='', $include_attr=true)
+function text_sub_navigation($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
 {
     global $_section, $_name, $sitemap;
 
-    $separator = use_default($separator, ' | ');
     $section = use_default($section, $_section);
 
     # don't output anything further if there are no sub items
@@ -567,14 +567,16 @@ function sub_nav_p($breaks='', $separator='', $class_name='sub_nav', $section=''
 
     $link_array = array();
     $sub_items = $sitemap[$section];
-    foreach ($sub_items as $sub_name)
+
+
+    foreach ($sub_items as $key => $value)
     {
-      $slug = slug_name($sub_name);
+      $link = (is_numeric($key)) ? $value : get_section_link($key, $value);
+      $sub_name = (is_numeric($key)) ? $value : $key;
       $tag_options = ($include_attr) ? get_nav_attributes($_name, $sub_name, $sub_items) : array();
-      $tag_options['href'] = "$slug.php";
+      $tag_options['href'] = slug_name($link).'.php';
       $link_array[] = content_tag('a', $sub_name, $tag_options);
     }
-
 
     # separate the list of links into separate arrays for adding breaks
     if ($breaks)
@@ -795,27 +797,49 @@ function get_sitemap_link($page, $link)
  */
 function breadcrumbs($separator=' &#8250; ')
 {
+  # <a class="home"> for home, maybe <span class="section"> for section (literal) and <strong class="active" for current page?
+
   global $_section, $_name;
-  $bc_hash = collect_breadcrumbs(get_sitemap());
+  $bc_links = collect_breadcrumbs(get_sitemap());
   $bc_array = array();
 
-  foreach($bc_hash as $name => $url)
+  foreach($bc_links as $name => $url)
   {
-    # format all items except the last as links
-    if ($name != end(array_keys($bc_hash)))
+    $tag = '';
+    $attr = array();
+
+    # format the first item as the home link
+    if ($name === reset(array_keys($bc_links)))
     {
-      $bc_array[] = "<a href=\"$url\">$name</a>";
+      $tag = 'a';
+      $attr['class'] = 'home';
+      $attr['href'] = $url;
     }
+
+    # format the last item
+    elseif ($name === end(array_keys($bc_links)))
+    {
+      $tag = 'strong';
+      $attr['class'] = 'active';
+    }
+
+    # format the middle items as links if there are index pages, else spans
     else
     {
-      $bc_array[] = "<strong>$name</strong>";
+      $tag = has_index_pages() ? 'a' : 'span';
+      if (has_index_pages())
+      {
+        $attr['href'] = $url;
+      }
+      $attr['class'] = 'section';
     }
+
+    # add the tag to the list of breadcrumbs
+    $bc_array[] = content_tag($tag, $name, $attr);
   }
 
-  $bc_string = '<p class="breadcrumbs">';
-  $bc_string .= format_list_with_separator($bc_array, $separator);
-  $bc_string .= '</p>';
-  return $bc_string;
+  $bc_string = format_list_with_separator($bc_array, $separator);
+  return content_tag('p', $bc_string, array('class' => 'breadcrumbs'));
 }
 
 
@@ -979,7 +1003,7 @@ function get_section_link($section='', $section_sub='')
 {
   global $_section;
   # Use the current section unless a specific section is given as a parameter
-  if (! $section) { $section = $_section; }
+  $section = use_default($section, $_section);
 
   # if $section_sub is undefined, get it from the sitemap
   if (! $section_sub)
@@ -1059,6 +1083,13 @@ function print_text_navigation()
 {
   $args = func_get_args();
   echo call_user_func_array('text_navigation', $args);
+}
+
+
+function sub_nav_p()
+{
+  $args = func_get_args();
+  echo call_user_func_array('text_sub_navigation', $args);
 }
 
 
