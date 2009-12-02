@@ -19,7 +19,7 @@
 	<script src="scripts/global.js"></script>
 </head>
 
-<body class="<?php echo slug_name($_page_name); ?>">
+<body class="<?php echo slug_name($_name); ?>">
 <div id="container">
 	<div id="hd" class="container">
 		<h1 id="logo"><a href="index.php"><?php echo get_site_name(); ?></a></h1>

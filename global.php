@@ -117,7 +117,7 @@ function slug_name($string)
 function strip_special_chars($string)
 {
   # Define special characters that will be stripped from the name
-  $special_chars = array(',','?','!','$','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');
+  $special_chars = array('.',',','?','!','$','(',')',':','"',"'",'*','&#39;','&copy;','&reg;','&trade;');
   $processed_string = str_replace($special_chars, '', $string);
   return $processed_string;
 }
@@ -142,7 +142,7 @@ function replace_chars($string, $replacements=array('&amp;' => 'and','&' => 'and
 function sanitize_title_text($string)
 {
   $sanitized_text = strip_special_chars($string);
-  $sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-'));
+  $sanitized_text = replace_chars($sanitized_text, $replacements=array('&amp;' => 'and', '&' => 'and', '/' => '-', 'Dr ' => 'Dr. '));
   return $sanitized_text;
 }
 
@@ -186,7 +186,7 @@ function tag($name, $options=null, $open=false)
 {
   $tag_options = exists($options) ? tag_options($options) : '';
   $closing = $open ? '>' : ' />';
-  return '<'.$name.$tag_options.$closing;
+  return '<'.$name.$tag_options.$closing."\n";
 }
 
 
@@ -196,7 +196,7 @@ function tag($name, $options=null, $open=false)
 function content_tag($name, $content, $options=null)
 {
   $tag_options = exists($options) ? tag_options($options) : '';
-  return '<'.$name.$tag_options.'>'.$content.'</'.$name.'>';
+  return '<'.$name.$tag_options.'>'.$content.'</'.$name.'>'."\n";
 }
 
 
@@ -240,7 +240,7 @@ function tag_options($options)
  * Returns the complete title tag of the page.
  * Looks for local $_title variable but defaults to the value defined in config.php
  */
-function title_tag($separator='|')
+function title_tag($separator='-')
 {
   global $_name, $_title, $_headline, $config;
 
@@ -347,13 +347,14 @@ function place_image($file='', $alt='', $class='', $title='')
 
 /**
  * Calls place_image() if the $_alt variable is set for the page
+ * Looks in images/photos directory
  */
 function place_image_if_alt($file='', $class='auto')
 {
   global $_alt;
   if ($_alt)
   {
-    return place_image($file,'',$class);
+    return place_image('photos/'.$file,'',$class);
   }
 }
 
@@ -472,7 +473,7 @@ function format_nav_link($nav_item, $link='', $include_id=false, $class='')
 
 
 /**
- * Creates the formatted sitemap as nested lists of links wrapped in a div tag
+ * Formats the sitemap into nested lists of links wrapped in a div tag
  *
  * * adds the slug name as the id of each <a> tag
  * * adds 'class="active"' to the current section
@@ -503,7 +504,7 @@ function custom_navigation($inclusions=array(), $include_sub_nav=false, $div_id=
 
 
 /**
- * Prints a <ul> wrapped in a <div> of the subnav links for the current section
+ * Creates a navigation div with the subnav items of the current section
  *
  * optionally get the subnav links for any section given as a parameter
  *
@@ -552,15 +553,12 @@ function sub_navigation_with_heading($section='', $link=false, $tag='h3')
  * @param string $section optionally show subnav links for specific section
  * @param bool $include_attr optionally omit class names set for each link
  */
-function sub_nav_p($breaks='', $separator=' | ', $class_name='sub_nav', $section='', $include_attr=true)
+function sub_nav_p($breaks='', $separator='', $class_name='sub_nav', $section='', $include_attr=true)
 {
     global $_section, $_name, $sitemap;
 
-    # Use the current section unless a specific section is given as a parameter
-    if (! $section)
-    {
-      $section = $_section;
-    }
+    $separator = use_default($separator, ' | ');
+    $section = use_default($section, $_section);
 
     # don't output anything further if there are no sub items
     if (! has_sub_items($section)) {return;}
@@ -657,7 +655,7 @@ function get_nav_attributes($current, $nav_item, $nav_list)
 }
 
 /**
- * Prints a formatted list of the top-level navigation links for placement as the text navigation
+ * Creates a formatted list of the top-level navigation links for placement as the text navigation
  *
  * Examples:
  * {@example text_navigation.php}

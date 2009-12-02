@@ -13,6 +13,6 @@ $config = array(
   'meta_keywords'    => 'paste, the, site, keywords, here', # default meta keywords for every page
   'meta_description' => 'paste the site description text here', # default meta description for every page
   'page_title'       => 'Doozer PHP Navigation Framework', # default base page title for every page
-  'site_name'        => 'Site Name' # name of the site, used in the page header
+  'site_name'        => 'Doozer PHP' # name of the site, used in the page header
   #'index_pages'      => true
 );
