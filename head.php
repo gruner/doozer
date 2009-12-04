@@ -20,7 +20,7 @@
 	</div><!--/hd-->
 	<div id="bd">
 	  <div id="sidebar">
-			<?php content($_sidebar_content); ?>
+			<?php echo content($_sidebar_content); ?>
 		</div><!--/sidebar-->
 		<div id="content">
 			<?php echo ie6_alert(); ?>

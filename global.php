@@ -13,7 +13,7 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
- *  @version 2.0
+ *  @version 2.0.1
  */
 
 #------------------------------------------------------------------------------#
@@ -318,12 +318,17 @@ function image_tag($file, $alt='', $class='', $title='')
  * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
  * @param string $class text for image's class attribute (optional, omits attribute if not set)
  */
-function place_image($file='', $alt='', $class='', $title='')
+function place_image($file='', $alt='', $class='', $title='', $subdir='')
 {
   global $_alt, $_name;
 
   $alt = use_default($alt, $_alt);
   $file = use_default($file, slug_name($_name));
+
+  if (exists($subdir))
+  {
+    $file = $subdir.$file;
+  }
 
   if (file_exists("images/$file"))
   {
@@ -355,7 +360,7 @@ function place_image_if_alt($file='', $class='auto')
   global $_alt;
   if ($_alt)
   {
-    return place_image('photos/'.$file,'',$class);
+    return place_image($file, '', $class, '', 'photos/');
   }
 }
 

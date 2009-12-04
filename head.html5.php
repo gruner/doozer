@@ -26,7 +26,7 @@
 	</div><!--/hd-->
 	<div id="bd" class="container">
 		<div id="sidebar" class="column">
-			<?php content($_sidebar_content); ?>
+			<?php echo content($_sidebar_content); ?>
 		</div><!--/sidebar-->
 		<div id="content" class="column">
 			<?php echo ie6_alert(); ?>

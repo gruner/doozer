@@ -61,11 +61,13 @@ function desc($text)
   echo content_tag('p', htmlspecialchars($text));
 }
 
+/**
+ * Page Variables
+ */
 $_section = 'Products';
 $_name = 'Bolts';
 //$_title = '[this text replaces the title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
-$_content = '<p>sidebar</p>';
 
 require_once('global.php');
 
@@ -94,7 +96,7 @@ require_once('global.php');
 
 <div class="container">
 
-<h1>Doozer &ndash; A PHP Framework</h1>
+<h1>Doozer &ndash; A PHP Navigation Framework</h1>
 
 <p>This is an example page illustrating the available PHP functions that utilize the site structure defined in <code>sitemap.php</code>.</p>
 
