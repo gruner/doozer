@@ -13,7 +13,7 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
- *  @version 2.0.1
+ *  @version 2.0.2
  */
 
 #------------------------------------------------------------------------------#
@@ -627,7 +627,7 @@ function text_sub_navigation($breaks='', $separator=' | ', $class_name='sub_nav'
     }
 
     $tag_options = exists($class_name) ? array('class' => $class_name) : null;
-    echo content_tag('p', $formatted_list, $tag_options);
+    return content_tag('p', $formatted_list, $tag_options);
 }
 
 
