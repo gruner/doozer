@@ -227,6 +227,7 @@ heading('sitemap()');
 desc('Outputs the entire sitemap as a series of nested <ul>s');
 example("echo sitemap()");
 example("echo sitemap(\$exclude=array('Products', 'FAQs'))", 'exclude specific sections from the sitemap');
+example("echo sitemap(array(), \$tag_options=array('class'=>'sitemap_list'))", '<code>$tag_options</code> lets you specify html attributes for the parent &lt;ul&gt;');
 
 heading('breadcrumbs()');
 example("echo breadcrumbs()");

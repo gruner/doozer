@@ -1,0 +1,56 @@
+/**
+ * Prints a formatted image tag with calculated width and height attributes
+ *
+ * if $file isn't specified, looks for any image named after the $_name
+ *
+ * if $alt isn't specified, looks for page variable $_alt
+ *
+ * @param string $file text for image's 'src' attribute (assumes file is in '/images' directory)
+ * @param string $alt text for image's alt attribute (optional, defaults to page's _alt variable, omits attribute if not set)
+ * @param string $class text for image's class attribute (optional, omits attribute if not set)
+ */
+function place_image($file='', $alt='', $class='', $title='', $subdir='')
+{
+  global $_alt, $_name;
+
+  $alt = use_default($alt, $_alt);
+  $file = use_default($file, slug_name($_name));
+
+  if (exists($subdir))
+  {
+    $file = $subdir.$file;
+  }
+
+  if (file_exists("images/$file"))
+  {
+    return image_tag($file, $alt, $class, $title);
+  }
+  else
+  {
+    # look for missing extensions
+    $extensions = array('.jpg', '.gif', '.png');
+    foreach($extensions as $ext)
+    {
+      $try_file = $file.$ext;
+      if(file_exists("images/$try_file"))
+      {
+        return image_tag($try_file, $alt, $class, $title);
+        break;
+      }
+    }
+  }
+}
+
+
+/**
+ * Calls place_image() if the $_alt variable is set for the page
+ * Looks in images/photos directory
+ */
+function place_image_if_alt($file='', $class='auto')
+{
+  global $_alt;
+  if ($_alt)
+  {
+    return place_image($file, '', $class, '', 'photos/');
+  }
+}

@@ -740,7 +740,7 @@ function text_navigation($breaks='', $exclusions=array(), $separator=' | ', $cla
  *
  * recurses for endless nested subnavigation
  */
-function format_sitemap($input, $exclusions=array())
+function format_sitemap($input, $exclusions=array(), $tag_options=array())
 {
   $formatted = '';
   foreach ($input as $key => $value)
@@ -764,17 +764,17 @@ function format_sitemap($input, $exclusions=array())
     }
   }
 
-  return content_tag('ul', $formatted);
+  return content_tag('ul', $formatted, $tag_options);
 }
 
 
 /**
  * Prints the formatted sitemap in the form of nested lists with links to each page
  */
-function sitemap($exclusions=array())
+function sitemap($exclusions=array(), $tag_options=array())
 {
   $sitemap = get_sitemap();
-  return format_sitemap($sitemap, $exclusions);
+  return format_sitemap($sitemap, $exclusions, $tag_options);
 }
 
 
