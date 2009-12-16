@@ -13,7 +13,7 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
- *  @version 2.0.2
+ *  @version 2.0.3
  */
 
 #------------------------------------------------------------------------------#
@@ -289,7 +289,7 @@ function headline_tag($heading='h1', $class='headline')
 
   $headline = use_default($_headline, $_name);
 
-  if ($headline != false)
+  if ($_headline !== false)
   {
     return content_tag($heading, $headline, array('class' => $class));
   }
@@ -579,7 +579,11 @@ function text_sub_navigation($breaks='', $separator=' | ', $class_name='sub_nav'
       $link = (is_numeric($key)) ? $value : get_section_link($key, $value);
       $sub_name = (is_numeric($key)) ? $value : $key;
       $tag_options = ($include_attr) ? get_nav_attributes($_name, $sub_name, $sub_items) : array();
-      $tag_options['href'] = slug_name($link).'.php';
+
+      # check the link fot 'http' or '.php' to see if it's hard coded
+      # otherwise default to the slug name
+      $tag_options['href'] = (stristr($link, 'http') || stristr($link, '.php')) ? $link : slug_name($link).'.php';
+
       $link_array[] = content_tag('a', $sub_name, $tag_options);
     }
 
