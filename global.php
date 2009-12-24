@@ -13,7 +13,7 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
- *  @version 2.0.3
+ *  @version 2.0.4
  */
 
 #------------------------------------------------------------------------------#
@@ -404,7 +404,7 @@ function content($content, $default='')
  */
 function ie6_alert()
 {
-  if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.') !== FALSE)
+  if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== FALSE && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 8') == FALSE)
   {
     include('ie6_alert.php');
     return $ie6_alert_box;
