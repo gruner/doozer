@@ -13,7 +13,7 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
- *  @version 2.0.4
+ *  @version 2.1
  */
 
 #------------------------------------------------------------------------------#
@@ -78,7 +78,7 @@ function is_homepage()
 
   Checks config.php for 'index_pages' option.
 
-  If true, section links go to a section 'index page' (i.e. "In this section...")
+  If true, section links go to a section 'index page' (i.e. "In this section..."),
   Otherwise the section link points to the first sub-page.
 
   The default behavior is to OMIT section index pages and requires no configuration.
@@ -126,7 +126,7 @@ function slug_name($string)
 /*
   Function: strip_special_chars
 
-  Strips special characters from a string
+  Strips special characters from a string.
 
   Returns:
     The altered string
@@ -182,7 +182,7 @@ function sanitize_title_text($string)
 /*
   Function: format_list_with_separator
 
-  Formats an array into a single string by inserting the given separator string between items
+  Formats an array into a single string by inserting the given separator string between items.
 */
 function format_list_with_separator($list, $separator=' | ')
 {
@@ -193,7 +193,7 @@ function format_list_with_separator($list, $separator=' | ')
 /*
   Function: exists
 
-  Determines if a variable has a value
+  Determines if a variable has a value.
 */
 function exists($var)
 {
@@ -204,8 +204,8 @@ function exists($var)
 /*
   Function: use_default
 
-  Checks the existance of a variable, returns it if true otherwise
-  it returns the given default value
+  Checks the existance of a variable, returns it if true
+  otherwise it returns the given default value.
 */
 function use_default($var, $default='')
 {
@@ -221,7 +221,7 @@ function use_default($var, $default='')
 /*
   Function: tag
 
-  Creates a self-closing html tag
+  Creates a self-closing html tag.
 
   Parameters:
     $name - the name of the tag
@@ -239,7 +239,7 @@ function tag($name, $options=null, $open=false)
 /*
   Function: content_tag
 
-  Creates opening and closing html tags with content in between
+  Creates opening and closing html tags with content in between.
 
   Parameters:
     $name - the name of the tag
@@ -257,7 +257,7 @@ function content_tag($name, $content, $options=null)
 /*
   Function: tag_options
 
-  Formats an associative array into the attributes of an html tag
+  Formats an associative array into the attributes of an html tag.
 
   Parameters:
     $options - associative array of html attributes
@@ -301,7 +301,7 @@ function tag_options($options)
 /*
   Function: title_tag
 
-  Creates the title tag for the page
+  Creates the title tag for the page.
 
   Uses $_title variable for the text but defaults to the value defined in config.php
 
@@ -356,7 +356,7 @@ function meta_tags()
 /*
   Function: headline_tag
 
-  Uses $_name for the text unless $_headline is set
+  Uses $_name for the text unless $_headline is set.
 
   Parameters:
     $heading - the heading tag (default is h1)
@@ -392,11 +392,10 @@ function image_tag($file, $alt='', $class='', $title='')
 /*
   Function: place_image
 
-  Creates a formatted image tag with calculated width and height attributes
+  Creates a formatted image tag with calculated width and height attributes.
 
-  if $file isn't specified, looks for any image named after $_name
-
-  if $alt isn't specified, looks for $_alt var
+  - if $file isn't specified, looks for any image named after $_name
+  - if $alt isn't specified, looks for $_alt var
 
   Parameters:
     $file - text for image's 'src' attribute (assumes file is in '/images' directory)
@@ -441,10 +440,13 @@ function place_image($file='', $alt='', $class='', $title='', $subdir='')
 }
 
 
-/**
- * Calls place_image() if the $_alt variable is set for the page
- * Looks in images/photos directory
- */
+/*
+  Function: place_image_if_alt
+
+  Calls place_image() if the $_alt variable is set for the page.
+
+  Looks in images/photos directory.
+*/
 function place_image_if_alt($file='', $class='auto')
 {
   global $_alt;
@@ -458,7 +460,7 @@ function place_image_if_alt($file='', $class='auto')
 /*
   Function: email_link_tag
 
-  Returns the script tag for creating a spam-friendly email link
+  Returns the script tag for creating a spam-friendly email link.
 */
 function email_link_tag($address)
 {
@@ -482,10 +484,10 @@ function email_link_tag($address)
   Function: content
 
   Allows injecting pieces of html content into the header or footer includes,
-  such as sidebar content that might change from page to page
+  such as sidebar content that might change from page to page.
 
-  A default can be defined as the second parameter for when the page-specific
-  $content variable isn't defined
+  A default can be defined as the second parameter for
+  when the page-specific $content variable isn't defined.
 
   Parameters:
     $content - html string
@@ -507,7 +509,7 @@ function content($content, $default='')
 /*
   Function: ie6_alert
 
-  Creates an alert box if the foul stench of IE6 is recognized
+  Creates an alert box if the foul stench of IE6 is recognized.
 
   Returns:
     alert box html
@@ -530,7 +532,7 @@ function ie6_alert()
 /*
   Function: format_navigation
 
-  Recursively formats the navigation sitemap, building a string of nested <ul>s
+  Recursively formats the navigation sitemap, building a string of nested <ul>s.
 */
 function format_navigation($input, $exclusions=array(), $include_sub_nav=false, $top_level=true)
 {
@@ -578,9 +580,9 @@ function format_navigation($input, $exclusions=array(), $include_sub_nav=false, 
 /*
   Function: format_nav_link
 
-  Creates a formatted <a> tag
+  Creates a formatted <a> tag.
 
-  If no link is given it uses the item's slug name
+  If no link is given it uses the item's slug name.
 
   Returns:
     Formatted <a> tag
@@ -599,7 +601,7 @@ function format_nav_link($nav_item, $link='', $include_id=false, $class='')
 /*
   Function: navigation
 
-  Formats the sitemap into nested lists of links wrapped in a div tag
+  Formats the sitemap into nested lists of links wrapped in a div tag.
 
   - adds the slug name as the id of each <a> tag
   - adds 'class="active"' to the current section
@@ -624,7 +626,7 @@ function navigation($exclusions=array(), $include_sub_nav=false, $div_id='nav')
 /*
   Function: custom_navigation
 
-  Creates a navigation div with only the specified nav items, excluding everything else
+  Creates a navigation div with only the specified nav items, excluding everything else.
 
   Returns:
     Formatted navigation <ul> wrapped in a <div>
@@ -644,9 +646,9 @@ function custom_navigation($inclusions=array(), $include_sub_nav=false, $div_id=
 /*
   Function: sub_navigation
 
-  Creates a navigation div with the subnav items of the current section
+  Creates a navigation div with the subnav items of the current section.
 
-  Optionally get the subnav links for any section given as a parameter
+  Optionally get the subnav links for any section given as a parameter.
 
   Parameters:
     $section - defaults to the current section but can be overridden
@@ -695,7 +697,7 @@ function sub_navigation_with_heading($section='', $link=false, $tag='h3')
 /*
   Function: text_sub_navigation
 
-  Creates a formatted <p> of the current section's sub links with ' | ' between each link
+  Creates a formatted <p> of the current section's sub links with ' | ' between each link.
 
   Parameters:
     $breaks - optionally add breaks at specific points in the list
@@ -786,7 +788,7 @@ function text_sub_navigation($breaks='', $separator=' | ', $class_name='sub_nav'
 /*
   Function: get_nav_attributes
 
-  Gets class names for any <li> in the navigation
+  Gets class names for any <li> in the navigation.
 
   - adds 'first' and 'last' classes to the first and last items in the list
   - adds 'active' class to the current section or page
@@ -821,13 +823,17 @@ function get_nav_attributes($current, $nav_item, $nav_list)
 /*
   Function: text_navigation
 
-  Creates a formatted list of the top-level navigation links for placement as the text navigation
+  Creates a formatted list of the top-level navigation links
+  for placement as the text navigation.
 
   Parameters:
     $breaks - optionally force a line break after the nth text link
     $exclusions - optionally omit specific sections from the echoed $nav_string
     $separator - string placed between items
     $class_name - class name to add to the returned <p> tag
+
+  Returns:
+    The formatted <p> tag
 */
 function text_navigation($breaks='', $exclusions=array(), $separator=' | ', $class_name='text_nav')
 {
@@ -894,10 +900,43 @@ function text_navigation($breaks='', $exclusions=array(), $separator=' | ', $cla
 
 
 /*
+  Function: callout_navigation
+
+  Takes an array of names and recursively searches through the sitemap
+  to find the corresponding link for each item.
+
+  Custom links can also be defined as key value pairs.
+
+  Parameters:
+    $callouts - array of item names
+    $attrs - array of attributes for the returned <ul>
+
+  Returns:
+    <ul> element with links as list items
+*/
+function callout_navigation($callouts=array(), $attrs=array('class' => 'callouts'))
+{
+  $sitemap = get_sitemap();
+  $ret = '';
+
+  foreach ($callouts as $key => $value)
+  {
+    # check for an aliased link in the sitemap or use the hard-coded link
+    $href = use_default(find_in_sitemap($value), $value);
+
+    $link_name = (is_numeric($key)) ? $value : $key;
+    $ret .= content_tag('li', content_tag('a', $link_name, array('href' => $href)));
+  }
+
+  return content_tag('ul', $ret, $attrs);
+}
+
+
+/*
   Function: format_sitemap
 
   Formats the sitemap in the form of nested lists with links to each page,
-  recursing for nested subnavigation
+  recursing for nested subnavigation.
 
   Parameters:
     $input - navigation array to convert to a <ul>
@@ -938,7 +977,7 @@ function format_sitemap($input, $exclusions=array(), $tag_options=array())
 /*
   Function: sitemap
 
-  Prints the formatted sitemap in the form of nested lists with links to each page
+  Prints the formatted sitemap in the form of nested lists with links to each page.
 
   Parameters:
     $exclusions - array of top-level items to omit from output
@@ -957,7 +996,7 @@ function sitemap($exclusions=array(), $tag_options=array())
 /*
   Function get_sitemap_link
 
-  Returns <a> tag for a single sitemap item
+  Returns <a> tag for a single sitemap item.
 */
 function get_sitemap_link($page, $link)
 {
@@ -989,8 +1028,6 @@ function get_sitemap_link($page, $link)
 */
 function breadcrumbs($separator=' &#8250; ')
 {
-  # <a class="home"> for home, maybe <span class="section"> for section (literal) and <strong class="active" for current page?
-
   global $_section, $_name;
   $bc_links = collect_breadcrumbs(get_sitemap());
   $bc_array = array();
@@ -1079,7 +1116,7 @@ function collect_breadcrumbs($input, $first_run=true)
   Parses the sitemap and saves it as a static variable.
 
   Returns:
-    Parsed sitemap.
+    Parsed sitemap
 */
 function get_sitemap()
 {
@@ -1099,7 +1136,7 @@ function get_sitemap()
   Processes sitemap.php, creating links from item names.
 
   Returns:
-    Parsed sitemap.
+    Parsed sitemap
 */
 function parse_sitemap()
 {
@@ -1144,7 +1181,7 @@ function parse_section($sitemap, $section, $sub_section)
   Processes each sub-section of the sitemap,
   recursively calling itself for each linked sub-sub-section, etc.
 
-  Allows for infinitely nested levels of navigation
+  Allows for infinitely nested levels of navigation.
 */
 function parse_sub_section($section, $sub_section)
 {
@@ -1180,10 +1217,54 @@ function parse_sub_section($section, $sub_section)
 
 
 /*
+  Function: find_in_sitemap
+
+  Recursively searches the sitemap for an item's corresponding link.
+
+  Parameters:
+    $item - the item name to search for
+    $sitemap - the array to search in (defaults to the global sitemap)
+
+  Returns:
+    The item's corresponding url
+*/
+function find_in_sitemap($item, $sitemap=array())
+{
+  $sitemap = use_default($sitemap, get_sitemap());
+  $link = '';
+
+  foreach ($sitemap as $key => $value)
+  {
+    if ($item === $key)
+    {
+      if (is_array($value))
+      {
+        $link = get_first_unnested_item($value);
+      }
+      else
+      {
+        $link = $value;
+      }
+      break;
+    }
+    elseif (is_array($value))
+    {
+      $link = find_in_sitemap($item, $value);
+      if (exists($link))
+      {
+        break;
+      }
+    }
+  }
+  return $link;
+}
+
+
+/*
   Function: has_sub_items
 
   Determines if the current section has sub-pages,
-  optionally check any section given as a parameter
+  optionally check any section given as a parameter.
 */
 function has_sub_items($section='')
 {
@@ -1250,7 +1331,7 @@ function get_section_link($section='', $section_sub='')
   Function: get_first_unnested_item
 
   Recurse through an array to find the first
-  sub item that isn't itself an array
+  sub item that isn't itself an array.
 */
 function get_first_unnested_item($items)
 {
