@@ -106,11 +106,11 @@ require_once('global.php');
 
 <h2>Naming Conventions</h2>
 
-<p>'Slug Name' is a term used in blogging and CMS software for stripping spaces and special characters from a page title to use as a file name or in a URL. The framework relies on PHP files that follow this naming contention. (e.g. A page titled 'About Us' would be named 'about-us.php').</p>
+<p>'Slug Name' is a term used in blogging and CMS software for stripping spaces and special characters from a page title to use as a file name or in a URL. The framework relies on PHP files that follow this naming convention. (e.g. A page titled 'About Us' would be named 'about-us.php').</p>
 
 <h2>Configuration</h2>
 
-<p>Several default values are defined in <code>config.php</code>. These include:</p>
+<p>Several default values are defined in the <code>config.php</code> file. These include:</p>
 
 <ul>
 <li><code>meta_keywords</code> &ndash; the default meta keywords for every page</li>
@@ -223,6 +223,29 @@ example("echo text_sub_navigation('', ' >>>> ')", 'change the text that separate
 example("echo text_sub_navigation(array(3),' &bull; ')");
 example("echo text_sub_navigation('', ' | ', '', 'About Us')", 'specify a different section');
 
+heading('callout_navigation()');
+desc('Creates a <ul> from a list of link name that correspond to pages defined in the sitemap.');
+
+example(
+  "echo callout_navigation(array('Login', 'Analog', 'Thermometers'))",
+  "For each item we search for a corresponding link in the sitemap, even if it's not a top-level page."
+);
+
+example(
+  "echo callout_navigation(array('Analog Alias' => 'Analog', 'Thermometers'))",
+  "specify a different name for a page in the sitemap"
+);
+
+example(
+  "echo callout_navigation(array('google' => 'http://google.com', 'Analog', 'Thermometers'))",
+  "specify a custom link (google) that's not in the sitemap"
+);
+example(
+  "echo callout_navigation(array('Analog', 'Thermometers'), array('class' => 'custom_class'))",
+  'the second parameter lets you specify custom attributes for the generated &lt;ul&gt; tag'
+);
+
+
 heading('sitemap()');
 desc('Outputs the entire sitemap as a series of nested <ul>s');
 example("echo sitemap()");
@@ -242,10 +265,8 @@ example('echo headline_tag()');
 
 heading('slug_name()');
 desc('Converts a string into a "slug", suitable for file names, css class names, etc.');
-$slug_tests = array('TMJ/TMD', 'Invisalign&reg;', 'Damon&trade;', 'Why Braces?');
-foreach ($slug_tests as $test){
-  example("echo slug_name('$test')");
-}
+$slug_tests = array('This/That', 'Adobe&reg;', 'Kevlar&trade;', 'Who Needs This?');
+foreach ($slug_tests as $test){ example("echo slug_name('$test')"); }
 
 heading('place_image()');
 example('echo place_image("alf.jpg")');
@@ -255,14 +276,25 @@ example('echo place_image("test-gif")');
 example('echo place_image("test-jpg")');
 example('echo place_image("non-existing-file")', "doesn't output anything if it can't find the file");
 
-heading('ie6_alert()');
-desc('Displays an html pop-up if browser is IE6');
+heading('content_tag()');
+desc('Wraps content in an html tag. Specify the attributes for the tag as an array in the third parameter.');
+
+example("echo content_tag('h3', 'My Custom H3 Tag')");
+example("echo content_tag('p', 'My Custom P Tag')");
+example(
+  'echo content_tag(\'p\', \'My Custom P Tag with attributes\', $tag_attributes=array(\'id\' => \'custom_id\', \'class\' => \'custom_class\'))',
+  'add an array of attributes to the tag'
+);
 
 heading('title_tag()');
 desc('Creates the <title> tag for the page based on the configuration and page values.');
 
 heading('meta_tags()');
-desc('Creates the meta keywords and meta description tags based on the configuration and page values');
+desc('Creates the meta keywords and meta description tags based on the configuration and page values.');
+
+heading('ie6_alert()');
+desc('Displays an html pop-up if browser is IE6.');
+//example('echo ie6_alert()');
 
 print_logr();
 

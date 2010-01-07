@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 
 require_once('simpletest/autorun.php');
 require_once('../global.php');
+require_once('../nav.php');
 
 class TestOfFramework extends UnitTestCase {
 
@@ -11,9 +12,9 @@ class TestOfFramework extends UnitTestCase {
   {
     # set the variables that would normally be defined on each page
     $GLOBALS['_section'] = 'Braces 101';
-    $GLOBALS['_page_name'] = 'Life with Braces&reg;';
+    $GLOBALS['_name'] = 'Life with Braces&reg;';
     $GLOBALS['_keyword'] = 'Invisalign';
-    $GLOBALS['_page_title'] = '[this text replaces the base title]';
+    $GLOBALS['_title'] = '[this text replaces the base title]';
     $GLOBALS['_alt'] = 'lorem ipsum';
   }
 
@@ -25,7 +26,7 @@ class TestOfFramework extends UnitTestCase {
 
   function test_exists()
   {
-    $this->assertTrue(exists($GLOBALS['_page_name']));
+    $this->assertTrue(exists($GLOBALS['_name']));
 
     $foo = '';
     $bar = array();
@@ -42,9 +43,9 @@ class TestOfFramework extends UnitTestCase {
 
   function test_format_list_with_separator()
   {
-    $list = Array('one','two','thee','four');
-    $this->assertEqual(format_list_with_separator($list), 'one | two | thee | four');
-    $this->assertEqual(format_list_with_separator($list, ' * '), 'one * two * thee * four');
+    $list = Array('one','two','three','four');
+    $this->assertEqual(format_list_with_separator($list), 'one | two | three | four');
+    $this->assertEqual(format_list_with_separator($list, ' * '), 'one * two * three * four');
   }
 
 
@@ -110,7 +111,20 @@ class TestOfFramework extends UnitTestCase {
       'two',
       'three'
     );
-    $this->assertEqual('tertiary1', get_first_unnested_item($nested));
+    $this->assertIdentical('tertiary1', get_first_unnested_item($nested));
+
+
+    $sitemap = array(
+      'foo' => 'foo.php',
+      'bar' => array('baz' => 'baz.php'),
+      'chewie' => array('han' => 'han.php'),
+      'yoda' => array('obi' => array('luke' => 'luke.php')),
+      'anakin' => 'vader.php'
+    );
+    $this->assertIdentical(get_first_unnested_item($sitemap), 'foo.php');
+    $this->assertIdentical(get_first_unnested_item($sitemap['bar']), 'baz.php');
+    $this->assertIdentical(get_first_unnested_item($sitemap['yoda']), 'luke.php');
+    $this->assertIdentical(get_first_unnested_item($sitemap['chewie']), 'han.php');
   }
 
 
@@ -131,10 +145,42 @@ class TestOfFramework extends UnitTestCase {
 
   function test_format_nav_link()
   {
-    $this->assertEqual(format_nav_link('Lorem Ipsum'), '<a href="lorem-ipsum.php">Lorem Ipsum</a>');
-    $this->assertEqual(format_nav_link('Lorem Ipsum&reg;'), '<a href="lorem-ipsum.php">Lorem Ipsum&reg;</a>');
-    $this->assertEqual(format_nav_link('Lorem Ipsum', 'http://google.com'), '<a href="http://google.com">Lorem Ipsum</a>');
-    $this->assertEqual(format_nav_link('Lorem Ipsum&reg;', '', true), '<a href="lorem-ipsum.php" id="lorem-ipsum">Lorem Ipsum&reg;</a>');
+    $this->assertIdentical(format_nav_link('Lorem Ipsum'), '<a href="lorem-ipsum.php">Lorem Ipsum</a>'."\n");
+    $this->assertIdentical(format_nav_link('Lorem Ipsum&reg;'), '<a href="lorem-ipsum.php">Lorem Ipsum&reg;</a>'."\n");
+    $this->assertIdentical(format_nav_link('Lorem Ipsum', 'http://google.com'), '<a href="http://google.com">Lorem Ipsum</a>'."\n");
+    $this->assertIdentical(format_nav_link('Lorem Ipsum&reg;', '', true), '<a href="lorem-ipsum.php" id="lorem-ipsum">Lorem Ipsum&reg;</a>'."\n");
+  }
+
+
+  function test_find_in_sitemap()
+  {
+    $sitemap = array(
+      'foo' => 'foo.php',
+      'bar' => array('baz' => 'baz.php'),
+      'chewie' => array('han' => 'han.php'),
+
+      'anakin' => 'vader.php',
+      'html' => array('div' => array('p' => array('span' => 'em'))),
+      'yoda' => array('obi' => array('luke' => 'luke.php'))
+    );
+
+    $this->assertIdentical(find_in_sitemap('foo', $sitemap), 'foo.php');
+    $this->assertIdentical(find_in_sitemap('bar', $sitemap), 'baz.php');
+    $this->assertIdentical(find_in_sitemap('baz', $sitemap), 'baz.php'); ##
+
+    $this->assertIdentical(find_in_sitemap('yoda', $sitemap), 'luke.php');
+    $this->assertIdentical(find_in_sitemap('obi', $sitemap), 'luke.php');
+    $this->assertIdentical(find_in_sitemap('luke', $sitemap), 'luke.php');
+
+    $this->assertIdentical(find_in_sitemap('chewie', $sitemap), 'han.php');
+    $this->assertIdentical(find_in_sitemap('han', $sitemap), 'han.php'); ##
+
+    $this->assertIdentical(find_in_sitemap('anakin', $sitemap), 'vader.php');
+
+    $this->assertIdentical(find_in_sitemap('html', $sitemap), 'em');
+    $this->assertIdentical(find_in_sitemap('div', $sitemap), 'em');
+    $this->assertIdentical(find_in_sitemap('p', $sitemap), 'em');
+    $this->assertIdentical(find_in_sitemap('span', $sitemap), 'em');
   }
 
 
@@ -144,14 +190,28 @@ class TestOfFramework extends UnitTestCase {
 
   function test_headline_tag()
   {
-    $GLOBALS['_page_headline'] = 'H1 Override';
-    $this->assertEqual('<h1 class="life-with-braces">H1 Override</h1>', headline_tag());
+    # default to the page name
+    $this->assertIdentical('<h1 class="headline">Life with Braces&reg;</h1>'."\n", headline_tag());
+
+    # default to the page name
+    $this->assertIdentical('<h1 class="custom">Life with Braces&reg;</h1>'."\n", headline_tag('h1', array('class' => 'custom')));
+
+    # specify a _headline variable
+    $GLOBALS['_headline'] = 'H1 Override';
+    $this->assertIdentical('<h1 class="headline">H1 Override</h1>'."\n", headline_tag());
   }
 
 
   # ============================================================================ #
   #    NAVIGATION HELPERS                                                        #
   # ============================================================================ #
+
+
+  function test_callout_navigation()
+  {
+    $callouts = array('one' => 'one.php', 'two' => 'two.php', 'three' => 'three.php');
+    $this->assertEqual(callout_navigation($callouts), "<ul class=\"callouts\"><li><a href=\"one.php\">one</a>\n</li>\n<li><a href=\"two.php\">two</a>\n</li>\n<li><a href=\"three.php\">three</a>\n</li>\n</ul>\n");
+  }
 
 
 

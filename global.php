@@ -13,7 +13,7 @@
  *  @copyright Copyright (c) 2009 Andrew Gruner
  *  @license http://opensource.org/licenses/mit-license.php The MIT License
  *  @package doozer
- *  @version 2.1
+ *  @version 2.1.0
  */
 
 #------------------------------------------------------------------------------#
@@ -516,7 +516,10 @@ function content($content, $default='')
 */
 function ie6_alert()
 {
-  if(strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== FALSE && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 8') == FALSE)
+  $ua = $_SERVER['HTTP_USER_AGENT'];
+  $ie6 = strpos($ua, 'MSIE 6') !== false && strpos($ua, 'MSIE 8') === false;
+
+  if($ie6)
   {
     include('ie6_alert.php');
     return $ie6_alert_box;
@@ -925,9 +928,9 @@ function callout_navigation($callouts=array(), $attrs=array('class' => 'callouts
     $href = use_default(find_in_sitemap($value), $value);
 
     $link_name = (is_numeric($key)) ? $value : $key;
-    $ret .= content_tag('li', content_tag('a', $link_name, array('href' => $href)));
+    $a_tag = content_tag('a', $link_name, array('href' => $href));
+    $ret .= content_tag('li', $a_tag, array('class' => slug_name($link_name)));
   }
-
   return content_tag('ul', $ret, $attrs);
 }
 
