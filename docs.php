@@ -69,7 +69,7 @@ $_name = 'Bolts';
 //$_title = '[this text replaces the title]';
 $_alt = 'this string will be the default alt text when using the place_image() function';
 
-require_once('global.php');
+require_once('lib/doozer/doozer.php');
 
 ?>
 <!DOCTYPE html>
