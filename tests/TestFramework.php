@@ -3,7 +3,7 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 require_once('simpletest/autorun.php');
-require_once('../global.php');
+require_once('../lib/doozer/doozer.php');
 require_once('../nav.php');
 
 class TestOfFramework extends UnitTestCase {

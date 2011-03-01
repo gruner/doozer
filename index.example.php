@@ -1,7 +1,7 @@
 <?php require_once('lib/doozer/doozer.php') ?>
 <?php
   $page_slug = ''; // get slug form url
-  
+
   // if file matches slug
   if (is_file)
   {
@@ -25,7 +25,6 @@
 					<?php echo content($_sidebar_content); ?>
 				</div><!--/sidebar-->
 				<div id="content" class="column">
-					<?php echo ie6_alert() ?>
 					<?php echo headline_tag() ?>
 					<?php echo place_image_if_alt() ?>
 					<?php echo content() ?>
