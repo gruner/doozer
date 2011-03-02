@@ -3,12 +3,12 @@
 # This is a sitemap used to generate navigation and breadcrumbs.
 
 $sitemap = array(
-  'Home' => 'index.php', // specify a specific file
-  'Login' => 'http://example.com/login', // specify a specific url
+  'Home' => 'index.php', // you can specify a specific file
+  'Login' => 'http://example.com/login', // you can specify a specific url
   'About Us' => array(
-    'Meet Our Staff',
-    'Location',
-    'Contact Form'),
+    'Our Mission',
+    'Locations',
+    'Contact'),
   'FAQs',
   'Our Services',
   'Products' => array(

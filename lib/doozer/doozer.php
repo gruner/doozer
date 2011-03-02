@@ -7,7 +7,7 @@
  *
  * a PHP navigation framework.
  *
- * For more information: {@link http://github/gruner/doozer}
+ * For more information: {@link http://github.com/gruner/doozer}
  *
  * @author Andrew Gruner
  * @copyright Copyright (c) 2009 Andrew Gruner
@@ -21,7 +21,7 @@
  *
  * These define site-specific settings
  * such as page title and meta information. This allows for site-specific changes
- * without having to edit this file.
+ * without having to modify this file.
  */
 require_once('config.php');
 require_once('sitemap.php');

@@ -1,12 +1,22 @@
-<?php require_once('lib/doozer/doozer.php') ?>
 <?php
-  $page_slug = ''; // get slug form url
-
-  // if file matches slug
-  if (is_file)
-  {
-  	# code...
-  }
+	require_once('lib/doozer/doozer.php');
+	
+	$path = $_SERVER['REQUEST_URI'];
+	$page_slug = ''; // get slug form url
+	
+	# Set name and section based on url
+	$_name = '';
+	$_section = '';
+	
+	// if file matches slug
+	if (is_file('pages/'.$slug))
+	{
+		ob_start();
+	}
+	else
+	{
+		# 404
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +32,7 @@
 			</div><!--/hd-->
 			<div id="bd" class="container">
 				<div id="sidebar" class="column">
-					<?php echo content($_sidebar_content); ?>
+					<?php echo content($_sidebar_content) ?>
 				</div><!--/sidebar-->
 				<div id="content" class="column">
 					<?php echo headline_tag() ?>
